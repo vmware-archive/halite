@@ -1,0 +1,53 @@
+<h1><code ng:non-bindable="">$filterProvider</code>
+<span class="hint">(service in module <code ng:non-bindable="">ng</code>
+)</span>
+</h1>
+<div><a href="http://github.com/angular/angular.js/edit/master/src/ng/filter.js" class="improve-docs btn btn-primary">Improve this doc</a><h2 id="Description">Description</h2>
+<div class="description"><p>Filters are just functions which transform input to an output. However filters need to be Dependency Injected. To
+achieve this a filter definition consists of a factory function which is annotated with dependencies and is
+responsible for creating a filter function.</p>
+
+<pre class="prettyprint linenums">
+  // Filter registration
+  function MyModule($provide, $filterProvider) {
+    // create a service to demonstrate injection (not always needed)
+    $provide.value('greet', function(name){
+      return 'Hello ' + name + '!';
+    });
+
+    // register a filter factory which uses the
+    // greet service to demonstrate DI.
+    $filterProvider.register('greet', function(greet){
+      // return the filter function which uses the greet service
+      // to generate salutation
+      return function(text) {
+        // filters need to be forgiving so check input validity
+        return text && greet(text) || text;
+      };
+    });
+  }
+</pre>
+
+<p>The filter function is registered with the <code>$injector</code> under the filter name suffixe with <code>Filter</code>.
+<pre class="prettyprint linenums">
+  it('should be the same instance', inject(
+    function($filterProvider) {
+      $filterProvider.register('reverse', function(){
+        return ...;
+      });
+    },
+    function($filter, reverseFilter) {
+      expect($filter('reverse')).toBe(reverseFilter);
+    });
+</pre>
+
+<p>For more information about how angular filters work, and how to create your own filters, see
+<a href="guide/dev_guide.templates.filters">Understanding Angular Filters</a> in the angular Developer
+Guide.</p></div>
+<div class="member method"><h2 id="Methods">Methods</h2>
+<ul class="methods"><li><h3 id="register">register(name, fn)</h3>
+<div class="register"><p>Register filter factory function.</p><h5 id="parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>name</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><p>Name of the filter.</p></td></tr><tr><td>fn</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><p>The filter factory function which is injectable.</p></td></tr></tbody></table></div>
+</li>
+</ul>
+</div>
+</div>

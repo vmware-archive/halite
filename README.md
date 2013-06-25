@@ -2,86 +2,105 @@
 Crystalline
 ===========
 
-(Code-name) Crystalline is a Salt GUI.
+(Code-name) Crystalline Project Directory is a Salt GUI.
 
 Requirements
 ============
 
-Support for ES5 is required. This means any modern browser or > IE9.
+Web browser requirements.
+Support for ES5 and HTML5 is required. This means any modern browser or > IE9.
+
+Client side web application uses: 
+AngularJS framework (http://angularjs.org/) 
+Twitter Bootstrap Layout CSS (http://twitter.github.io/bootstrap/)
+AngularUI framwork (http://angular-ui.github.io/)
+Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
+Jasmine unit test framework (http://pivotal.github.io/jasmine/)
+CoffeeScript Python/Ruby like javascript transpiler (http://coffeescript.org/)
+among others
 
 
 Installation Instructions
 --------------------------
 
-For buiding development version using Yeoman, Bower, Grunt, Karma
-First install nodejs and npm
+The development version uses Coffeescript, Karma, Jasmine, and others which are all
+dependent on node.js.
+
+Also one of the static content web servers provided uses express.js which is
+also dependent on node.js.
+
+First install nodejs and npm  using the package installers. (http://nodejs.org/)
+Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli
+
+  $ sudo npm install -g coffee-script
+  $ sudo npm install -g karma
+  $ sudo npm install -g jasmine-node
+  $ sudo npm install -g grunt-cli
+  $ sudo npm install -g express
+
+  $ sudo npm install -g requirejs
 
 
-## Install Grunt, Bower, Yeoman, Karma and Generators
+To use grunt do a local install of grunt
 
-http://yeoman.io/
-https://github.com/yeoman/generator-angular
-https://github.com/yeoman/generator-angular.git
+  $ cd crystalline
+  $ npm install grunt
+  $ grunt
+  
+Halide is the code name for the pip install package that includes not only the angular 
+single page client side web application but also sample web servers for serving 
+up the initial web page loads. 
 
-    $ sudo npm install -g grunt-cli
-    $ sudo npm install -g bower
-    $ sudo npm install -g karma
-    $ sudo npm install -g yo
-    $ sudo npm install -g generator-karma
-    $ sudo npm install -g generator-mocha
-    $ sudo npm install -g generator-webapp
-
-Fix bug in prompt.js that is used by yeoman.
-
-In these two files change as follows:
-
-/usr/local/lib/node_modules/yo/node_modules/yeoman-generator/node_modules/prompt/lib/prompt.js
-/usr/local/lib/node_modules/yo/node_modules/insight/node_modules/prompt/lib/prompt.js
-
-    var events = require('events'),
-        readline = require('readline'),
-        utile = require('utile'),
-        async = utile.async,
-        /* capitalize = utile.inflect.capitalize, Changed Sam Smith 20130621 */
-        capitalize = utile.capitalize,
-        read = require('read'),
-        validate = require('revalidator').validate,
-        winston = require('winston');
+The directory structure for the web application inside the Halide package 
+notionally is a customized layout tuned to the salt UI application. Notably it
+follows some of the  latest thinking that the templates and controllers for 
+application views should be kept together.  The directory structure is as folows:
 
 
-## Now install angular generator
-The standard install does not work
+  crystalline/
+    LICENSE
+    LICENSE.txt
+    README.rst
+    README.md
+    setup.py  # python package setup
+    Gruntfile.coffee #grunt conf file
+    package.json # node package conf file
+    bower.json # bower conf file
     
-    $ sudo npm install -g generator-angular
-
-
-Instead Download zip from git repo onto local file system unzip and then install from file
-
-    $ sudo npm install -g /Users/samuel/Downloads/generator-angular-master 
-
-Now verify that the generators are all there
-
-    $ yo --help
-
-Should show that karma one of the generators
-
-Now build the angular skeleton. Goto the directory 
-
-    $ cd /Volumes/Gob/Data/SaltStack/Code/crystalline
-
-
-    $ yo angular  halide --coffee --minsafe 
-
-Accept all the options
-Now install the other libraries
-
-    $ bower install angular-mocks           
-    $ bower install angular-ui          
-    $ bower install angular-strap
-    $ bower install angular-ui-router
-
-To test do this. Not working yet
-
-    $ grunt test                        
-    $ grunt server                      
-    $ grunt         
+    node_modules/  # local node.js modules
+  
+  
+  
+    halide/
+      __init__.py  # Python package file
+  
+      app/  # web application
+        main.html  # entry point for single page web application
+        main.css  # application specific design for web application
+        main.coffee # main angular application module
+        main.js  # transpiled version of main.coffee
+        favicon.ico # application favicon
+        robots.txt # robots.txt file
+    
+        view/   # html templates, controllers, styles for specific app views
+          home.html
+          home.coffee
+          home.js
+          home.css
+    
+        util/  # common support modules for application such as services, directives, and filters
+          demoSrvc.coffee
+          demoDrtv.coffee
+          demoFltr.coffee
+    
+        rsrc/  # JSON resources or other assets such as images etc
+  
+      lib/ # Third party libraries for application such as angular etc
+        angular/
+        bootstrap/
+        angular-unstable/
+        angular-ui/
+  
+    test/  # unit and end to end (e2e) tests for the web application
+    
+    
