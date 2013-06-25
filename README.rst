@@ -30,7 +30,24 @@ Also one of the static content web servers provided uses express.js which is
 also dependent on node.js.
 
 First install nodejs and npm  using the package installers. (http://nodejs.org/)
+Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli
 
+  $ sudo npm install -g coffee-script
+  $ sudo npm install -g karma
+  $ sudo npm install -g jasmine-node
+  $ sudo npm install -g grunt-cli
+  $ sudo npm install -g express
+
+  $ sudo npm install -g requirejs
+
+
+To use express and/or grunt do a local installs of each
+
+  $ cd crystalline
+  $ npm install express
+  $ npm install grunt
+  $ grunt
+  
 Halide is the code name for the pip install package that includes not only the angular 
 single page client side web application but also sample web servers for serving 
 up the initial web page loads. 
@@ -48,7 +65,7 @@ application views should be kept together.  The directory structure is as folows
     README.md
     setup.py  # python package setup
     Gruntfile.coffee #grunt conf file
-    package.json # npm conf file
+    package.json # node package conf file
     bower.json # bower conf file
     
     node_modules/  # local node.js modules
@@ -86,5 +103,13 @@ application views should be kept together.  The directory structure is as folows
         angular-ui/
   
     test/  # unit and end to end (e2e) tests for the web application
-    
+
+Running Application
+-------------------
+
+To run the included sample ExpressJS web server for the web application
+
+  $ crystalline/halide/
+  $ node expressWs.js
+  
     
