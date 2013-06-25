@@ -2,7 +2,7 @@
 A simple app to serve static content from a directory
 
 To serve static files from a subdirectory named ``static`` inside the parent
-directory ``/path/to/static/files``, create a ``halite.conf`` with the
+directory ``/path/to/static/files``, create a ``halide.conf`` with the
 following config items::
 
     [global]
@@ -21,7 +21,7 @@ following config items::
 
 Run the app::
 
-    $ cherryd -i cpapp -c halite.conf
+    $ cherryd -i cpapp -c halide.conf
 
 '''
 import cherrypy
@@ -32,11 +32,11 @@ class Root:
         return '''\
 <html>
     <head>
-        <title>Halite</title>
+        <title>Halide</title>
     </head>
 
     <body>
-        <h1>Halite</h1>
+        <h1>Halide</h1>
     </body>
 </html>
 '''
