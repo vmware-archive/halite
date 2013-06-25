@@ -41,9 +41,10 @@ Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli
   $ sudo npm install -g requirejs
 
 
-To use grunt do a local install of grunt
+To use express and/or grunt do a local installs of each
 
   $ cd crystalline
+  $ npm install express
   $ npm install grunt
   $ grunt
   
@@ -102,5 +103,13 @@ application views should be kept together.  The directory structure is as folows
         angular-ui/
   
     test/  # unit and end to end (e2e) tests for the web application
-    
+
+Running Application
+-------------------
+
+To run the included sample ExpressJS web server for the web application
+
+  $ crystalline/halide/
+  $ node expressWs.js
+  
     
