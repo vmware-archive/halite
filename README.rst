@@ -107,9 +107,37 @@ application views should be kept together.  The directory structure is as folows
 Running Application
 -------------------
 
-To run the included sample ExpressJS web server for the web application
+To run the included sample Express.js web server for the web application
 
-  $ crystalline/halide/
+  $ cd crystalline/halide/
   $ node expressWs.js
   
-    
+
+To run the included sample Bottle.py web server for the web application
+
+  $ cd crystalline/halide/
+  $ python bottleWs.py
+  
+To get command line options
+
+  $ python bottleWs.py -h
+  
+  usage: bottleWs.py [-h] [-l {info,debug,critical,warning,error}] [-s [SERVER]]
+                   [-a [HOST]] [-p [PORT]] [-r] [-d]
+
+  Runs localhost wsgi service on given host address and port. Default host:port
+  is localhost:8080.
+  
+  optional arguments:
+    -h, --help            show this help message and exit
+    -l {info,debug,critical,warning,error}, --level {info,debug,critical,warning,error}
+                          Logging level.
+    -s [SERVER], --server [SERVER]
+                          Wsgi server type.
+    -a [HOST], --host [HOST]
+                          Wsgi server ip host address.
+    -p [PORT], --port [PORT]
+                          Wsgi server ip port.
+    -r, --reload          Server reload mode if also in debug mode.
+    -d, --devel           Development mode.
+
