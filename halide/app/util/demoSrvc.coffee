@@ -2,11 +2,12 @@
 # $scope.actionPromise = TeamActionService.call($scope, tid, 'practice')
 # sends post to "/owd/team/2/practice"
 
-angular.module("demoService", []).factory "DemoService", 
-    ['$http', ($http) -> 
+angular.module("demoService", ['metaService']).factory "DemoService", 
+    ['$http', 'MetaConstants', ($http, MetaConstants) -> 
         { #object literal
             call: ($scope, action) -> 
-                $http.get( "/demo" )
+                base = MetaConstants.baseUrl
+                $http.get( "#{base}/demo" )
                 .success((data, status, headers, config) ->
                     console.log("DemoService #{action} success")
                     console.log(config)

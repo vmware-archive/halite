@@ -5,13 +5,13 @@
   mainApp = angular.module("MainApp");
 
   mainApp.controller('HomeCtlr', [
-    '$scope', '$location', '$route', 'MainConstants', 'DemoService', function($scope, $location, $route, MainConstants, DemoService) {
+    '$scope', '$location', '$route', 'MetaConstants', 'DemoService', function($scope, $location, $route, MetaConstants, DemoService) {
       $scope.location = $location;
       $scope.route = $route;
       $scope.windowLocation = window.location;
       console.log("HomeCtlr");
       $scope.errorMsg = "";
-      $scope.baseUrl = MainConstants.baseUrl;
+      $scope.baseUrl = MetaConstants.baseUrl;
       return true;
     }
   ]);

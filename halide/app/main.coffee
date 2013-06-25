@@ -9,19 +9,22 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['demoService'])
+mainApp = angular.module("MainApp", ['metaService', 'demoService'])
 
 
 mainApp.constant 'MainConstants', 
-    baseUrl: '/halide'
+    name: 'Halide'
     owner: 'SaltStack'
 
-mainApp.config ["MainConstants","$locationProvider", "$routeProvider",
-    (MainConstants, $locationProvider, $routeProvider) ->
+mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routeProvider",
+    (MetaConstants, MainConstants, $locationProvider, $routeProvider) ->
         $locationProvider.html5Mode(true)
+        console.log("MetaConstants")
+        console.log(MetaConstants)
+        console.log("MainConstants")
         console.log(MainConstants)
         #using absolute urls here in html5 mode
-        base = MainConstants.baseUrl # for use in coffeescript string interpolation #{base}
+        base = MetaConstants.baseUrl # for use in coffeescript string interpolation #{base}
         $routeProvider.when "#{base}/app/home",
             templateUrl: "#{base}/static/app/view/home.html"
             controller: "HomeCtlr"

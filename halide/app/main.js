@@ -2,19 +2,22 @@
 (function() {
   var mainApp;
 
-  mainApp = angular.module("MainApp", ['demoService']);
+  mainApp = angular.module("MainApp", ['metaService', 'demoService']);
 
   mainApp.constant('MainConstants', {
-    baseUrl: '/halide',
+    name: 'Halide',
     owner: 'SaltStack'
   });
 
   mainApp.config([
-    "MainConstants", "$locationProvider", "$routeProvider", function(MainConstants, $locationProvider, $routeProvider) {
+    "MetaConstants", "MainConstants", "$locationProvider", "$routeProvider", function(MetaConstants, MainConstants, $locationProvider, $routeProvider) {
       var base;
       $locationProvider.html5Mode(true);
+      console.log("MetaConstants");
+      console.log(MetaConstants);
+      console.log("MainConstants");
       console.log(MainConstants);
-      base = MainConstants.baseUrl;
+      base = MetaConstants.baseUrl;
       $routeProvider.when("" + base + "/app/home", {
         templateUrl: "" + base + "/static/app/view/home.html",
         controller: "HomeCtlr"
