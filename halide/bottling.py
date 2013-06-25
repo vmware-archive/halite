@@ -147,6 +147,8 @@ else: # dynamically generate using mustache
     @mustache.template(MAIN_TEMPLATE_PATH)
     def appGet(path=''):
         data = dict(baseUrl=BASE_PATH, mini=".min" if not development else "")
+        if development: #add devMode copy of data to enable devMode only parts
+            data = dict(devMode=data, **data)
         return data
     
 @app.route('/static/lib/<filepath:path>')

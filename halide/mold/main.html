@@ -28,6 +28,13 @@
       <script src="{{baseUrl}}/static/lib/angular/angular-cookies{{mini}}.js"></script>
       <script src="{{baseUrl}}/static/lib/angular/angular-sanitize{{mini}}.js"></script>
       
+      {{#devMode}}
+      <script src="{{baseUrl}}/static/lib/angular/angular-mocks{{mini}}.js"></script>
+      <script src="{{baseUrl}}/static/lib/angular/angular-scenario{{mini}}.js"></script>
+      {{/devMode}}
+      
+      <script src="{{baseUrl}}/static/lib/angular-ui/ui-bootstrap/ui-bootstrap-tpls{{mini}}.js"></script>
+      
       <script src="{{baseUrl}}/static/app/main.js"></script>
       <script src="{{baseUrl}}/static/app/view/home.js"></script>
       <script src="{{baseUrl}}/static/app/util/demoSrvc.js"></script>
