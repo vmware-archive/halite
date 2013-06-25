@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Halide Salt UI</title>
+    <meta name="description" content="Main app entry point">
+    <meta name="viewport" content="width=device-width">
+    
+    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive.css" >
+    <link rel="stylesheet" href="{{baseUrl}}/static/app/main.css" >
+    
+    <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
+    
+  </head>
+  <body ng-app="MainApp">
+      <!--[if lt IE 9]>
+        <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+      <![endif]-->
+      
+      <div class="container" ng-view=""></div>
+      
+      
+      <script src="{{baseUrl}}/static/lib/angular/angular{{mini}}.js"></script>
+      <script src="{{baseUrl}}/static/lib/angular/angular-resource{{mini}}.js"></script>
+      <script src="{{baseUrl}}/static/lib/angular/angular-cookies{{mini}}.js"></script>
+      <script src="{{baseUrl}}/static/lib/angular/angular-sanitize{{mini}}.js"></script>
+      
+      <script src="{{baseUrl}}/static/app/main.js"></script>
+      <script src="{{baseUrl}}/static/app/view/home.js"></script>
+      <script src="{{baseUrl}}/static/app/util/demoSrvc.js"></script>
+  </body>
+</html>

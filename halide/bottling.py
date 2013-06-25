@@ -2,6 +2,7 @@
 
 
 """
+import sys
 import datetime
 import logging
 from os import path
@@ -13,7 +14,11 @@ except ImportError as ex:
     
 import bottle
 
-
+try:
+    import mustache
+except ImportError as ex:
+    pass
+    
 
 """ Utility Helper Objects """
 
@@ -58,10 +63,10 @@ def getLogger(name=LOGGER_NAME, level=LOGGER_LEVEL):
 
 logger = getLogger()
 
-""" Bottle application"""
+""" Bottle application and globals"""
 
 app = bottle.default_app() # create bottle app
-
+development = False # development mode means use non minified javascript libraries
 
 """ Decorated Error functions for bottle web application
     Error methods do not automatically jsonify dicts so must manually do so.
@@ -117,6 +122,7 @@ def testGet():
 
 """ Static files """
 
+MAIN_TEMPLATE_PATH = path.join(path.dirname(path.abspath(__file__)), 'mold', 'main.html')
 
 # Web application specific static files
 STATIC_APP_PATH = path.join(path.dirname(path.abspath(__file__)), 'app')
@@ -124,14 +130,25 @@ STATIC_APP_PATH = path.join(path.dirname(path.abspath(__file__)), 'app')
 # Third party static web libraries
 STATIC_LIB_PATH =  path.join(path.dirname(path.abspath(__file__)), 'lib')
 
+BASE_PATH = '/halide' # application base url path
 
-#catch all for page refreshes of any app url
-@app.route('/app/<path:path>') # /app/<path>
-@app.route('/app') # /app
-@app.route('/') # /
-def appGet(path=''):
-    return bottle.static_file('main.html', root=STATIC_APP_PATH)
-
+if not 'mustache' in sys.modules: #use static file
+    #catch all for page refreshes of any app url
+    @app.route('/app/<path:path>') # /app/<path>
+    @app.route('/app') # /app
+    @app.route('/') # /
+    def appGet(path=''):
+        return bottle.static_file('main.html', root=STATIC_APP_PATH)
+else: # dynamically generate using mustache
+    #catch all for page refreshes of any app url
+    @app.route('/app/<path:path>') # /app/<path>
+    @app.route('/app') # /app
+    @app.route('/') # /
+    @mustache.template(MAIN_TEMPLATE_PATH)
+    def appGet(path=''):
+        data = dict(baseUrl=BASE_PATH, mini=".min" if not development else "")
+        return data
+    
 @app.route('/static/lib/<filepath:path>')
 def staticAppGet(filepath):
     return bottle.static_file(filepath, root=STATIC_LIB_PATH)
@@ -146,7 +163,7 @@ def staticLibGet(filepath):
     http://localhost:8080/demo/test
 """
 
-BASE_PATH = '/halide' # application base url path
+
 old = bottle.app.pop() # get current app
 app = bottle.app.push() # create new app
 app.mount(BASE_PATH, old) # remount old on new path
