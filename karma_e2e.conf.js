@@ -8,8 +8,8 @@ basePath = 'halide/';
 
 // list of files / patterns to load in the browser
 files = [
-  JASMINE,
-  JASMINE_ADAPTER,
+  ANGULAR_SCENARIO,
+  ANGULAR_SCENARIO_ADAPTER,
   'lib/angular-unstable/angular.js',
   'lib/angular-unstable/angular-resource.js',
   'lib/angular-unstable/angular-cookies.js',
@@ -17,14 +17,14 @@ files = [
   'lib/angular-unstable/angular-mocks.js',
   'lib/angular-ui/**/*.js',
   'app/**/*.js',
-  'test/**/*.spec.coffee',
-  'test/**/*.spec.litcoffee',
-  'test/**/*.spec.js'
+  'test/e2e/**/*.spec.coffee',
+  'test/e2e/**/*.spec.litcoffee',
+  'test/e2e/**/*.spec.js'
 ];
 
 
 // list of files to exclude
-exclude = [];
+exclude = ['test/unit/*'];
 
 
 // test results reporter to use
