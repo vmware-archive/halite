@@ -47,6 +47,25 @@
       </div><!-- /row-fluid -->
     </div><!-- /container-fluid -->  
     
+    <pre ng-show="true" ng-controller="RouteCtlr">
+      window.location.href = {{winLoc.href}}
+      window.location.pathname = {{winLoc.pathname}}
+      $location.absUrl() = {{location.absUrl()}}
+      $location.url() = {{location.url()}}
+      $location.protocol() = {{location.protocol()}}
+      $location.host() = {{location.host()}}
+      $location.port() = {{location.port()}}
+      $location.path() = {{location.path()}}  Document Root Path
+      $location.search() = {{location.search()}}
+      $location.hash() = {{location.hash()}}
+      $route.current.templateUrl = {{route.current.templateUrl}}
+      $route.current.controller = {{route.current.controller}}
+      $route.current.params = {{route.current.params}}
+      $route.current.pathParams = {{route.current.pathParams}}
+      $route.routes = {{route.routes}}
+      $state = {{state}}
+    </pre>
+    
     <script src="/halide/static/lib/angular-unstable/angular.js"></script>
     <script src="/halide/static/lib/angular-unstable/angular-resource.js"></script>
     <script src="/halide/static/lib/angular-unstable/angular-cookies.js"></script>

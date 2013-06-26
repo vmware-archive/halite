@@ -86,3 +86,18 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$routeParams', '$location', '$route
 
         return true
 ]
+
+
+mainApp.controller 'RouteCtlr', ['$scope', '$routeParams', '$location', '$route', 
+        '$state','MetaConstants',
+    ($scope, $routeParams, $location, $route, $state,MetaConstants) ->
+        console.log("RouteCtlr")
+        $scope.location = $location
+        $scope.route = $route
+        $scope.winLoc = window.location
+        $scope.state = $state
+        $scope.baseUrl = MetaConstants.baseUrl
+        $scope.errorMsg = ''
+
+        return true
+]

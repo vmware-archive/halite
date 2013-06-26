@@ -1,10 +1,6 @@
 # jasmine
+
 describe "A suite", () ->
-    it "contains spec with an expectation", () -> 
-        expect(true).toBe(true);
-
-
-describe "A spec", () ->
   foo = 0
 
   beforeEach () ->

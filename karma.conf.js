@@ -3,16 +3,23 @@
 
 
 // base path, that will be used to resolve files and exclude
-basePath = 'halide/test/';
+basePath = 'halide/';
 
 
 // list of files / patterns to load in the browser
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  '**/*.spec.coffee',
-  '**/*.spec.litcoffee',
-  '**/*.spec.js'
+  'lib/angular-unstable/angular.js',
+  'lib/angular-unstable/angular-resource.js',
+  'lib/angular-unstable/angular-cookies.js',
+  'lib/angular-unstable/angular-sanitize.js',
+  'lib/angular-unstable/angular-mocks.js',
+  'lib/angular-ui/**/*.js',
+  'app/**/*.js',
+  'test/**/*.spec.coffee',
+  'test/**/*.spec.litcoffee',
+  'test/**/*.spec.js'
 ];
 
 
