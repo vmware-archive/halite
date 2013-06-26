@@ -143,3 +143,12 @@ To get command line options
     -d, --devel           Development mode.
     -g, --gen             Generate main.html dynamically.
 
+
+
+Testing
+------------
+
+To run the karma test runner
+
+  $ cd crystalline
+  $ karma start karma.conf.js
