@@ -2,7 +2,7 @@
 (function() {
   var mainApp;
 
-  mainApp = angular.module("MainApp", ['metaService', 'demoService']);
+  mainApp = angular.module("MainApp", ['metaService', 'demoService', 'ui.state']);
 
   mainApp.constant('MainConstants', {
     name: 'Halide',
@@ -10,7 +10,7 @@
   });
 
   mainApp.config([
-    "MetaConstants", "MainConstants", "$locationProvider", "$routeProvider", function(MetaConstants, MainConstants, $locationProvider, $routeProvider) {
+    "MetaConstants", "MainConstants", "$locationProvider", "$routeProvider", "$stateProvider", "$urlRouterProvider", function(MetaConstants, MainConstants, $locationProvider, $routeProvider, $stateProvider, $urlRouterProvider) {
       var base;
       $locationProvider.html5Mode(true);
       console.log("MetaConstants");
@@ -18,15 +18,16 @@
       console.log("MainConstants");
       console.log(MainConstants);
       base = MetaConstants.baseUrl;
-      $routeProvider.when("" + base + "/app/home", {
+      $stateProvider.state('home', {
+        url: "" + base + "/app/home",
         templateUrl: "" + base + "/static/app/view/home.html",
         controller: "HomeCtlr"
-      }).when("" + base + "/app/test", {
+      }).state('test', {
+        url: "" + base + "/app/test",
         templateUrl: "" + base + "/static/app/view/test.html",
         controller: "TestCtlr"
-      }).otherwise({
-        redirectTo: "" + base + "/app/home"
       });
+      $urlRouterProvider.otherwise("" + base + "/app/home");
       return true;
     }
   ]);

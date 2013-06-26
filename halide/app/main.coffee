@@ -9,15 +9,17 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['metaService', 'demoService'])
+mainApp = angular.module("MainApp", ['metaService', 'demoService', 'ui.state'])
 
 
 mainApp.constant 'MainConstants', 
     name: 'Halide'
     owner: 'SaltStack'
 
-mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routeProvider",
-    (MetaConstants, MainConstants, $locationProvider, $routeProvider) ->
+mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routeProvider", 
+        "$stateProvider", "$urlRouterProvider",
+    (MetaConstants, MainConstants, $locationProvider, $routeProvider, 
+        $stateProvider, $urlRouterProvider) ->
         $locationProvider.html5Mode(true)
         console.log("MetaConstants")
         console.log(MetaConstants)
@@ -25,13 +27,22 @@ mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routePro
         console.log(MainConstants)
         #using absolute urls here in html5 mode
         base = MetaConstants.baseUrl # for use in coffeescript string interpolation #{base}
-        $routeProvider.when "#{base}/app/home",
+        
+        
+        
+        $stateProvider
+        .state 'home', 
+            url: "#{base}/app/home",
             templateUrl: "#{base}/static/app/view/home.html"
             controller: "HomeCtlr"
-        .when "#{base}/app/test",
+        .state 'test', 
+            url: "#{base}/app/test",
             templateUrl: "#{base}/static/app/view/test.html"
             controller: "TestCtlr"
-        .otherwise redirectTo: "#{base}/app/home"
+        
+        $urlRouterProvider
+        .otherwise "#{base}/app/home"
+        
         return true
 ]
 
