@@ -30,18 +30,19 @@ Also one of the static content web servers provided uses express.js which is
 also dependent on node.js.
 
 First install nodejs and npm  using the package installers. (http://nodejs.org/)
-Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli
+Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli, Less etc
 
   $ sudo npm install -g coffee-script
   $ sudo npm install -g karma
   $ sudo npm install -g jasmine-node
   $ sudo npm install -g grunt-cli
   $ sudo npm install -g express
-
+  $ sudo npm install -g less
   $ sudo npm install -g requirejs
 
 
-To use express and/or grunt do a local installs of each
+To use express and/or grunt do a local installs of each. Any npm module that is
+used locally via a require statement must be installed or linked locally.
 
   $ cd crystalline
   $ npm install express
@@ -123,7 +124,7 @@ To get command line options
   $ python bottleWs.py -h
   
   usage: bottleWs.py [-h] [-l {info,debug,critical,warning,error}] [-s [SERVER]]
-                   [-a [HOST]] [-p [PORT]] [-r] [-d]
+                   [-a [HOST]] [-p [PORT]] [-r] [-d] [-g]
 
   Runs localhost wsgi service on given host address and port. Default host:port
   is localhost:8080.
@@ -140,4 +141,5 @@ To get command line options
                           Wsgi server ip port.
     -r, --reload          Server reload mode if also in debug mode.
     -d, --devel           Development mode.
+    -g, --gen             Generate main.html dynamically.
 
