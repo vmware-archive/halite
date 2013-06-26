@@ -10,6 +10,8 @@ basePath = 'halide/test/';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
+  '**/*.spec.coffee',
+  '**/*.spec.litcoffee',
   '**/*.spec.js'
 ];
 
