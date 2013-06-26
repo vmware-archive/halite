@@ -70,7 +70,12 @@ if __name__ == "__main__":
                     action = 'store_const',
                     const = True,
                     default = False,
-                    help = "Development mode.")    
+                    help = "Development mode.")
+    p.add_argument('-g','--gen',
+                    action = 'store_const',
+                    const = True,
+                    default = False,
+                    help = "Generate main.html dynamically.")    
 
     args = p.parse_args()
     
@@ -85,8 +90,9 @@ if __name__ == "__main__":
         logger.info("Running in development mode")
     logger.info("Logger %s at level %s." % (logger.name, args.level))
     
-    
-    bottling.development = args.devel #inject dependency before using app
+    #inject dependencies before using app
+    bottling.development = args.devel 
+    bottling.generate = args.gen
     from bottling import app
      
     bottle.run( app=app,

@@ -67,6 +67,7 @@ logger = getLogger()
 
 app = bottle.default_app() # create bottle app
 development = False # development mode means use non minified javascript libraries
+generate = False # generate main.html dynamically
 
 """ Decorated Error functions for bottle web application
     Error methods do not automatically jsonify dicts so must manually do so.
@@ -132,7 +133,7 @@ STATIC_LIB_PATH =  path.join(path.dirname(path.abspath(__file__)), 'lib')
 
 BASE_PATH = '/halide' # application base url path
 
-if not 'mustache' in sys.modules: #use static file
+if not generate or not 'mustache' in sys.modules: #use static file
     #catch all for page refreshes of any app url
     @app.route('/app/<path:path>') # /app/<path>
     @app.route('/app') # /app

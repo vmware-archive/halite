@@ -15,26 +15,48 @@
     <link rel="shortcut icon" type="image/x-icon" href="/halide/static/app/favicon.ico">
     
   </head>
-  <body ng-app="MainApp">
+  <body ng-app="MainApp" >
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
+    <div class="navbar" ng-controller="NavbarCtlr">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" ng-href="{{baseUrl}}/app" >
+            <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
+          </a>
+          <ul class="nav">
+            <li ng-class="navery.states.home">
+              <a ng-href="{{baseUrl}}/app/home">Halide</a>
+            </li>
+            <li ng-class="navery.states.test">
+              <a ng-href="{{baseUrl}}/app/test" >Test</a>
+            </li>
+          </ul>
+        </div>
+      </div><!-- /navbar-inner -->
+    </div><!-- /navbar -->
       
-      <div class="container" ng-view=""></div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12"><div ng-view></div></div>
+      </div><!-- /row-fluid -->
+    </div><!-- /container-fluid -->  
       
-      <script src="/halide/static/lib/angular/angular.js"></script>
-      <script src="/halide/static/lib/angular/angular-resource.js"></script>
-      <script src="/halide/static/lib/angular/angular-cookies.js"></script>
-      <script src="/halide/static/lib/angular/angular-sanitize.js"></script>
-      <script src="/halide/static/lib/angular/angular-mocks.js"></script>
-      <script src="/halide/static/lib/angular/angular-scenario.js"></script>
-      
-      <script src="/halide/static/lib/angular-ui/bootstrap/bootstrap-tpls.js"></script>
-      <script src="/halide/static/lib/angular-ui/router/router.js"></script>
-      
-      <script src="/halide/static/app/main.js"></script>
-      <script src="/halide/static/app/view/home.js"></script>
-      <script src="/halide/static/app/util/metaSrvc.js"></script>
-      <script src="/halide/static/app/util/demoSrvc.js"></script>
+    <script src="/halide/static/lib/angular/angular.js"></script>
+    <script src="/halide/static/lib/angular/angular-resource.js"></script>
+    <script src="/halide/static/lib/angular/angular-cookies.js"></script>
+    <script src="/halide/static/lib/angular/angular-sanitize.js"></script>
+    <!--<script src="/halide/static/lib/angular/angular-mocks.js"></script>-->
+    <!--<script src="/halide/static/lib/angular/angular-scenario.js"></script>-->
+    
+    <script src="/halide/static/lib/angular-ui/bootstrap/bootstrap-tpls.js"></script>
+    <script src="/halide/static/lib/angular-ui/router/router.js"></script>
+    
+    <script src="/halide/static/app/main.js"></script>
+    <script src="/halide/static/app/view/home.js"></script>
+    <script src="/halide/static/app/view/test.js"></script>
+    <script src="/halide/static/app/util/metaSrvc.js"></script>
+    <script src="/halide/static/app/util/demoSrvc.js"></script>
   </body>
 </html>

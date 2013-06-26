@@ -19,26 +19,52 @@
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
+    <div class="navbar" ng-controller="NavbarCtlr">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" ng-href="{{baseUrl}}/app" >
+            <img ng-src="{{baseUrl}}/static/files/leaf.png" />
+          </a>
+          <ul class="nav">
+            <li ng-class="navery.states.home">
+              <a ng-href="{{baseUrl}}/app">Halide</a>
+            </li>
+            <li ng-class="navery.states.home">
+              <a ng-href="{{baseUrl}}/app/home" >Home</a>
+            </li>
+            <li ng-class="navery.states.test">
+              <a ng-href="{{baseUrl}}/app/test" >Test</a>
+            </li>
+          </ul>
+        </div>
+      </div><!-- /navbar-inner -->
+    </div><!-- /navbar -->
       
-      <div class="container" ng-view=""></div>
-      
-      
-      <script src="{{baseUrl}}/static/lib/angular/angular{{mini}}.js"></script>
-      <script src="{{baseUrl}}/static/lib/angular/angular-resource{{mini}}.js"></script>
-      <script src="{{baseUrl}}/static/lib/angular/angular-cookies{{mini}}.js"></script>
-      <script src="{{baseUrl}}/static/lib/angular/angular-sanitize{{mini}}.js"></script>
-      
-      {{#devMode}}
-      <script src="{{baseUrl}}/static/lib/angular/angular-mocks{{mini}}.js"></script>
-      <script src="{{baseUrl}}/static/lib/angular/angular-scenario{{mini}}.js"></script>
-      {{/devMode}}
-      
-      <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
-      <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
-      
-      <script src="{{baseUrl}}/static/app/main.js"></script>
-      <script src="{{baseUrl}}/static/app/view/home.js"></script>
-      <script src="{{baseUrl}}/static/app/util/metaSrvc.js"></script>
-      <script src="{{baseUrl}}/static/app/util/demoSrvc.js"></script>
+    
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12"><div ng-view></div></div>
+      </div><!-- /row-fluid -->
+    </div><!-- /container-fluid -->  
+    
+    
+    <script src="{{baseUrl}}/static/lib/angular/angular{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular/angular-resource{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular/angular-cookies{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular/angular-sanitize{{mini}}.js"></script>
+    
+    {{#devMode}}
+    <script src="{{baseUrl}}/static/lib/angular/angular-mocks{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular/angular-scenario{{mini}}.js"></script>
+    {{/devMode}}
+    
+    <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
+    
+    <script src="{{baseUrl}}/static/app/main.js"></script>
+    <script src="{{baseUrl}}/static/app/view/home.js"></script>
+    <script src="{{baseUrl}}/static/app/view/test.js"></script>
+    <script src="{{baseUrl}}/static/app/util/metaSrvc.js"></script>
+    <script src="{{baseUrl}}/static/app/util/demoSrvc.js"></script>
   </body>
 </html>

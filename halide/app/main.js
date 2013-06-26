@@ -21,8 +21,60 @@
       $routeProvider.when("" + base + "/app/home", {
         templateUrl: "" + base + "/static/app/view/home.html",
         controller: "HomeCtlr"
+      }).when("" + base + "/app/test", {
+        templateUrl: "" + base + "/static/app/view/test.html",
+        controller: "TestCtlr"
       }).otherwise({
         redirectTo: "" + base + "/app/home"
+      });
+      return true;
+    }
+  ]);
+
+  mainApp.controller('NavbarCtlr', [
+    '$scope', '$routeParams', '$location', '$route', 'MetaConstants', function($scope, $routeParams, $location, $route, MetaConstants) {
+      console.log("NavbarCtlr");
+      $scope.location = $location;
+      $scope.route = $route;
+      $scope.winLoc = window.location;
+      $scope.baseUrl = MetaConstants.baseUrl;
+      $scope.errorMsg = '';
+      $scope.navery = {
+        'states': {
+          'home': 'inactive',
+          'test': 'inactive'
+        },
+        'paths': {
+          "/app$": "home",
+          "/app/home": "home",
+          "/app/test": "test"
+        },
+        'activate': function(nav) {
+          var x;
+          this.states[nav] = 'active';
+          for (x in this.states) {
+            if (x !== nav) {
+              this.states[x] = 'inactive';
+            }
+          }
+          return true;
+        },
+        'update': function(newPath, oldPath) {
+          var nav, path, _ref;
+          _ref = this.paths;
+          for (path in _ref) {
+            nav = _ref[path];
+            if (newPath.match(path) != null) {
+              this.activate(nav);
+              return true;
+            }
+          }
+          return true;
+        }
+      };
+      $scope.$watch('location.path()', function(newPath, oldPath) {
+        $scope.navery.update(newPath, oldPath);
+        return true;
       });
       return true;
     }
