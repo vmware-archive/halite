@@ -28,21 +28,16 @@ mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routePro
         #using absolute urls here in html5 mode
         base = MetaConstants.baseUrl # for use in coffeescript string interpolation #{base}
         
-        
-        
-        $stateProvider
-        .state 'home', 
-            url: "#{base}/app/home",
+        $routeProvider
+        .when "#{base}/app/home",
             templateUrl: "#{base}/static/app/view/home.html"
             controller: "HomeCtlr"
-        .state 'test', 
-            url: "#{base}/app/test",
+        .when "#{base}/app/test",
             templateUrl: "#{base}/static/app/view/test.html"
             controller: "TestCtlr"
-        
-        $urlRouterProvider
-        .otherwise "#{base}/app/home"
-        
+        .otherwise 
+            redirectTo: "#{base}/app/home"
+
         return true
 ]
 

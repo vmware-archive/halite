@@ -18,16 +18,15 @@
       console.log("MainConstants");
       console.log(MainConstants);
       base = MetaConstants.baseUrl;
-      $stateProvider.state('home', {
-        url: "" + base + "/app/home",
+      $routeProvider.when("" + base + "/app/home", {
         templateUrl: "" + base + "/static/app/view/home.html",
         controller: "HomeCtlr"
-      }).state('test', {
-        url: "" + base + "/app/test",
+      }).when("" + base + "/app/test", {
         templateUrl: "" + base + "/static/app/view/test.html",
         controller: "TestCtlr"
+      }).otherwise({
+        redirectTo: "" + base + "/app/home"
       });
-      $urlRouterProvider.otherwise("" + base + "/app/home");
       return true;
     }
   ]);
