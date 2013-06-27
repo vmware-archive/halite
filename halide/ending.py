@@ -59,7 +59,6 @@ def error409(ex):
 
 
 """ Test endpoint for bottle application """
-
 @app.get('/test') 
 def testGet():
     """ Show location of this file and also show all routes"""
@@ -77,6 +76,22 @@ def testGet():
     content = "%s\n%s" %  (content, siteMap)
     return content
 
+""" Ajax test endpoint for web application demoService """
+@app.get('/demo')
+@app.get('/demo/<action>')
+def demoGet(action=None):
+    """ Show location of this file and also show all routes"""
+    
+    #convert to json serializible dict
+    query = { key: val for key, val in bottle.request.query.items()}
+    
+    data = dict(verb='GET',
+                url=bottle.request.url,
+                action=action,
+                query=query,
+                content=bottle.request.json)
+    
+    return data
 
 """ Static files """
 

@@ -1,13 +1,21 @@
-#usage
-# $scope.actionPromise = TeamActionService.call($scope, tid, 'practice')
-# sends post to "/owd/team/2/practice"
+###
+usage:
+$scope.demoPromise = DemoService.call $scope, 'doit', {'name':'John'}
+$scope.demoPromise.success (data, status, headers, config) ->
+    console.log("Demo success")
+    $scope.demo = data
+    return true
+
+###
+
 
 angular.module("demoService", ['metaService']).factory "DemoService", 
     ['$http', 'MetaConstants', ($http, MetaConstants) -> 
         { #object literal
-            call: ($scope, action) -> 
+            call: ($scope, action, query) -> 
                 base = MetaConstants.baseUrl
-                $http.get( "#{base}/demo" )
+                url = if action? then "#{base}/demo/#{action}" else "#{base}/demo"
+                $http.get( url, {params: query}  )
                 .success((data, status, headers, config) ->
                     console.log("DemoService #{action} success")
                     console.log(config)
@@ -17,7 +25,7 @@ angular.module("demoService", ['metaService']).factory "DemoService",
                     return true
                 )
                 .error((data, status, headers, config) -> 
-                    console.log("DemoService failure")
+                    console.log("DemoService #{action} failure")
                     console.log(config)
                     console.log(status)
                     console.log(headers())

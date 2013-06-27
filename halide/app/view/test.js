@@ -11,6 +11,14 @@
       $scope.winLoc = window.location;
       console.log("TestCtlr");
       $scope.errorMsg = "";
+      $scope.demoPromise = DemoService.call($scope, 'doit', {
+        'name': 'John'
+      });
+      $scope.demoPromise.success(function(data, status, headers, config) {
+        console.log("Demo success");
+        $scope.demo = data;
+        return true;
+      });
       return true;
     }
   ]);
