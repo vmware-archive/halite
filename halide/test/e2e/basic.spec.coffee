@@ -24,5 +24,13 @@ describe "Basic app disply suite", () ->
     browser().navigateTo('/halide/app')
     expect(browser().window().path()).toBeDefined()
     expect(browser().window().path()).toContain('halide/app')
-    
   
+  it "check navbar click", () ->
+    browser().navigateTo('/halide/app/home')
+    expect(browser().window().path()).toBeDefined()
+    expect(browser().window().path()).toContain('halide/app/home')
+    expect(element('li:contains("Test")').count()).toBe(1)
+    expect(element('a:contains("Test")').count()).toBe(1)
+    element('a:contains("Test")').click();
+    expect(browser().window().path()).toBeDefined()
+    expect(browser().window().path()).toContain('halide/app/test')

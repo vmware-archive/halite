@@ -21,17 +21,14 @@
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" ng-href="{{baseUrl}}/app" >
-            <img ng-src="{{baseUrl}}/static/files/leaf.png" />
+            <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
           </a>
           <ul class="nav">
             <li ng-class="navery.states.home">
-              <a ng-href="{{baseUrl}}/app">Halide</a>
-            </li>
-            <li ng-class="navery.states.home">
-              <a ng-href="{{baseUrl}}/app/home" >Home</a>
+              <a ng-href="{{baseUrl}}/app/home">Home</a>
             </li>
             <li ng-class="navery.states.test">
-              <a ng-href="{{baseUrl}}/app/test" >Test</a>
+              <a ng-href="{{baseUrl}}/app/test">Test</a>
             </li>
           </ul>
         </div>
@@ -70,10 +67,8 @@
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-cookies{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-sanitize{{mini}}.js"></script>
     
-    {{#devMode}}
-    <script src="{{baseUrl}}/static/lib/angular-unstable/angular-mocks{{mini}}.js"></script>
-    <script src="{{baseUrl}}/static/lib/angular-unstable/angular-scenario{{mini}}.js"></script>
-    {{/devMode}}
+    <!--<script src="{{baseUrl}}/static/lib/angular-unstable/angular-mocks{{mini}}.js"></script>-->
+    <!--<script src="{{baseUrl}}/static/lib/angular-unstable/angular-scenario{{mini}}.js"></script>-->
     
     <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>

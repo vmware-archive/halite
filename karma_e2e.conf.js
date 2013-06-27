@@ -1,4 +1,4 @@
-// Karma configuration
+// Karma configuration for end to end testing of angular
 // Generated on Wed Jun 26 2013 13:43:18 GMT-0600 (MDT)
 
 
@@ -10,13 +10,6 @@ basePath = 'halide/';
 files = [
   ANGULAR_SCENARIO,
   ANGULAR_SCENARIO_ADAPTER,
-  'lib/angular-unstable/angular.js',
-  'lib/angular-unstable/angular-resource.js',
-  'lib/angular-unstable/angular-cookies.js',
-  'lib/angular-unstable/angular-sanitize.js',
-  'lib/angular-unstable/angular-mocks.js',
-  'lib/angular-ui/**/*.js',
-  'app/**/*.js',
   'test/e2e/**/*.spec.coffee',
   'test/e2e/**/*.spec.litcoffee',
   'test/e2e/**/*.spec.js'
@@ -73,3 +66,12 @@ captureTimeout = 60000;
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
 singleRun = false;
+
+
+// Proxy server for end to end testing
+// Server must be running for tests to work
+proxies = { "/": "http://localhost:8080/" };
+
+
+// Map karma specific pages to not conflict with proxy server
+urlRoot = "/__karma/";

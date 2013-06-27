@@ -1,10 +1,10 @@
 #!/usr/local/bin/python2.7
 
-""" Runs bottle.py wsgi server
-    Interface to Bottle application
+""" Runs wsgi web server using bottle framework
+    
     To get usage
     
-    $ .bottleWs.py -h
+    $ python serving.py -h
     
     Runs embedded wsgi server when run directly as __main__.
     The server is at http://localhost:port or http://127.0.0.1:port
@@ -16,24 +16,13 @@
 """
 import argparse
 
-try:
-    import gevent
-    from gevent import monkey
-    monkey.patch_all()
-except ImportError as ex:
-    pass #gevent support not available
-
-import bottle
-
-import bottling  #bottle app file
-
-logger = bottling.getLogger()    
+import aiding
 
 
 if __name__ == "__main__":
     """Process command line args """
     
-    levels = bottling.LOGGING_LEVELS #map of strings to logging levels
+    levels = aiding.LOGGING_LEVELS #map of strings to logging levels
     
     d = "Runs localhost wsgi service on given host address and port. "
     d += "\nDefault host:port is localhost:8080."
@@ -79,9 +68,19 @@ if __name__ == "__main__":
 
     args = p.parse_args()
     
+    logger = aiding.getLogger(name="Halide", level=levels[args.level])
     
-    logger.setLevel(levels[args.level]) #set local logger level from args
-    bottling.logger.setLevel(levels[args.level]) # set bottle app logger from args
+    if args.server in ['gevent']:
+        try:
+            import gevent
+            from gevent import monkey
+            monkey.patch_all()
+        except ImportError as ex: #gevent support not available
+            args.server = 'wsgiref' # use default server
+    
+    
+    import bottle
+    
     
     logger.info("Running web application with server %s on %s:%s" %
                 (args.server, args.host, args.port))
@@ -91,9 +90,13 @@ if __name__ == "__main__":
     logger.info("Logger %s at level %s." % (logger.name, args.level))
     
     #inject dependencies before using app
-    bottling.development = args.devel 
-    bottling.generate = args.gen
-    from bottling import app
+    import ending  #bottle app file
+    
+    ending.logger.setLevel(levels[args.level]) # set bottle app logger from args
+    
+    ending.development = args.devel 
+    ending.generate = args.gen
+    from ending import app
      
     bottle.run( app=app,
                 server=args.server,
