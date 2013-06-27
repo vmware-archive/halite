@@ -20,23 +20,8 @@
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
-    <div class="navbar" ng-controller="NavbarCtlr">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" ng-href="{{baseUrl}}/app" >
-            <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
-          </a>
-          <ul class="nav">
-            <li ng-class="navery.states.home">
-              <a ng-href="{{baseUrl}}/app/home">Home</a>
-            </li>
-            <li ng-class="navery.states.test">
-              <a ng-href="{{baseUrl}}/app/test">Test</a>
-            </li>
-          </ul>
-        </div>
-      </div><!-- /navbar-inner -->
-    </div><!-- /navbar -->
+    
+    <div ng-include="'{{baseUrl}}/static/app/navbar.html'" ></div>
       
     <div class="container-fluid">
       <div class="row-fluid">

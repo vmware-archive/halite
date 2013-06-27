@@ -1,0 +1,17 @@
+<div class="navbar" ng-controller="NavbarCtlr">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" ng-href="{{baseUrl}}/app" >
+        <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
+      </a>
+      <ul class="nav">
+        <li ng-class="navery.states.home">
+          <a ng-href="{{baseUrl}}/app/home">Home</a>
+        </li>
+        <li ng-class="navery.states.test">
+          <a ng-href="{{baseUrl}}/app/test">Test</a>
+        </li>
+      </ul>
+    </div>
+  </div><!-- /navbar-inner -->
+</div><!-- /navbar -->
