@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive.css" >
-    <link rel="stylesheet" href="{{baseUrl}}/static/app/main.css" >
-    
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
+    
+    {{#styles}}
+    <link rel="stylesheet" href="{{name}}" >
+    {{/styles}}
+    
     <title>Halide Salt UI</title>
   </head>
   <body ng-app="MainApp">
@@ -35,32 +38,13 @@
       </div><!-- /navbar-inner -->
     </div><!-- /navbar -->
       
-    
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12"><div ng-view></div></div>
       </div><!-- /row-fluid -->
     </div><!-- /container-fluid -->  
     
-    <pre ng-show="true" ng-controller="RouteCtlr">
-      window.location.href = {{winLoc.href}}
-      window.location.pathname = {{winLoc.pathname}}
-      $location.absUrl() = {{location.absUrl()}}
-      $location.url() = {{location.url()}}
-      $location.protocol() = {{location.protocol()}}
-      $location.host() = {{location.host()}}
-      $location.port() = {{location.port()}}
-      $location.path() = {{location.path()}}  Document Root Path
-      $location.search() = {{location.search()}}
-      $location.hash() = {{location.hash()}}
-      $route.current.$$route = {{route.current.$$route}}
-      $route.current.templateUrl = {{route.current.templateUrl}}
-      $route.current.controller = {{route.current.controller}}
-      $route.current.params = {{route.current.params}}
-      $route.current.pathParams = {{route.current.pathParams}}
-      $route.routes = {{route.routes}}
-      $state = {{state}}
-    </pre>
+    <div ng-include="'{{baseUrl}}/static/app/route.html'" ></div>
     
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-resource{{mini}}.js"></script>
@@ -73,10 +57,8 @@
     <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
     
-    <script src="{{baseUrl}}/static/app/main.js"></script>
-    <script src="{{baseUrl}}/static/app/view/home.js"></script>
-    <script src="{{baseUrl}}/static/app/view/test.js"></script>
-    <script src="{{baseUrl}}/static/app/util/metaSrvc.js"></script>
-    <script src="{{baseUrl}}/static/app/util/demoSrvc.js"></script>
+    {{#scripts}}
+    <script src="{{name}}"></script>
+    {{/scripts}}
   </body>
 </html>

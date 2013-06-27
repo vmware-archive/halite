@@ -14,6 +14,8 @@
     "/" is http://localhost:port/
      
 """
+import sys
+import os
 import argparse
 
 import aiding
@@ -65,11 +67,26 @@ if __name__ == "__main__":
                     action = 'store_const',
                     const = True,
                     default = False,
-                    help = "Generate main.html dynamically.")    
+                    help = "Generate main.html dynamically.")
+    p.add_argument('-c','--create',
+                    action = 'store',
+                    nargs='?', 
+                    const = 'app/main.html',
+                    default = '',
+                    help = "Create app/main.html (default) or given file and quit.")    
 
     args = p.parse_args()
     
     logger = aiding.getLogger(name="Halide", level=levels[args.level])
+    
+    if args.create:
+        logger.info("Creating %s" % args.create)
+        path = os.path.abspath(args.create)
+        import ending
+        ending.logger.setLevel(levels[args.level]) # set bottle app logger from args
+        ending.development = args.devel         
+        ending.createStaticMain(path=path)
+        sys.exit()
     
     if args.server in ['gevent']:
         try:

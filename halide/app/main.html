@@ -8,27 +8,28 @@
     <link rel="stylesheet" href="/halide/static/lib/bootstrap/css/bootstrap.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/halide/static/lib/bootstrap/css/bootstrap-responsive.css" >
+    <link rel="shortcut icon" type="image/x-icon" href="/halide/static/app/favicon.ico">
+    
     <link rel="stylesheet" href="/halide/static/app/main.css" >
     
-    <link rel="shortcut icon" type="image/x-icon" href="/halide/static/app/favicon.ico">
     <title>Halide Salt UI</title>
   </head>
-  <body ng-app="MainApp" >
+  <body ng-app="MainApp">
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
     <div class="navbar" ng-controller="NavbarCtlr">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" ng-href="{{baseUrl}}/app" >
-            <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
+          <a class="brand" ng-href="/halide/app" >
+            <img ng-src="/halide/static/app/SaltStack-Logo.png" />
           </a>
           <ul class="nav">
             <li ng-class="navery.states.home">
-              <a ng-href="{{baseUrl}}/app/home">Home</a>
+              <a ng-href="/halide/app/home">Home</a>
             </li>
             <li ng-class="navery.states.test">
-              <a ng-href="{{baseUrl}}/app/test">Test</a>
+              <a ng-href="/halide/app/test">Test</a>
             </li>
           </ul>
         </div>
@@ -41,36 +42,13 @@
       </div><!-- /row-fluid -->
     </div><!-- /container-fluid -->  
     
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12"><div ui-view></div></div>
-      </div><!-- /row-fluid -->
-    </div><!-- /container-fluid -->  
-    
-    <pre ng-show="true" ng-controller="RouteCtlr">
-      window.location.href = {{winLoc.href}}
-      window.location.pathname = {{winLoc.pathname}}
-      $location.absUrl() = {{location.absUrl()}}
-      $location.url() = {{location.url()}}
-      $location.protocol() = {{location.protocol()}}
-      $location.host() = {{location.host()}}
-      $location.port() = {{location.port()}}
-      $location.path() = {{location.path()}}  Document Root Path
-      $location.search() = {{location.search()}}
-      $location.hash() = {{location.hash()}}
-      $route.current.$$route = {{route.current.$$route}}
-      $route.current.templateUrl = {{route.current.templateUrl}}
-      $route.current.controller = {{route.current.controller}}
-      $route.current.params = {{route.current.params}}
-      $route.current.pathParams = {{route.current.pathParams}}
-      $route.routes = {{route.routes}}
-      $state = {{state}}
-    </pre>
+    <div ng-include="'/halide/static/app/route.html'" ></div>
     
     <script src="/halide/static/lib/angular-unstable/angular.js"></script>
     <script src="/halide/static/lib/angular-unstable/angular-resource.js"></script>
     <script src="/halide/static/lib/angular-unstable/angular-cookies.js"></script>
     <script src="/halide/static/lib/angular-unstable/angular-sanitize.js"></script>
+    
     <!--<script src="/halide/static/lib/angular-unstable/angular-mocks.js"></script>-->
     <!--<script src="/halide/static/lib/angular-unstable/angular-scenario.js"></script>-->
     
@@ -78,9 +56,11 @@
     <script src="/halide/static/lib/angular-ui/router/router.js"></script>
     
     <script src="/halide/static/app/main.js"></script>
+    <script src="/halide/static/app/util/demoDrtv.js"></script>
+    <script src="/halide/static/app/util/demoFltr.js"></script>
+    <script src="/halide/static/app/util/demoSrvc.js"></script>
+    <script src="/halide/static/app/util/metaSrvc.js"></script>
     <script src="/halide/static/app/view/home.js"></script>
     <script src="/halide/static/app/view/test.js"></script>
-    <script src="/halide/static/app/util/metaSrvc.js"></script>
-    <script src="/halide/static/app/util/demoSrvc.js"></script>
   </body>
 </html>

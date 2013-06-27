@@ -3,7 +3,7 @@
 
 """
 import sys
-from os import path
+import os
 
 try:
     import simplejson as json
@@ -13,7 +13,7 @@ except ImportError as ex:
 import bottle
 
 try:
-    import mustache
+    import pystache
 except ImportError as ex:
     pass
     
@@ -63,7 +63,7 @@ def error409(ex):
 def testGet():
     """ Show location of this file and also show all routes"""
     bottle.response.set_header('content-type', 'text/plain')
-    content =  "Web app file is located at %s" % path.dirname(path.abspath(__file__))
+    content =  "Web app file is located at %s" % os.path.dirname(os.path.abspath(__file__))
     siteMap = ""
     
     for route in app.routes:
@@ -95,43 +95,60 @@ def demoGet(action=None):
 
 """ Static files """
 
-MAIN_TEMPLATE_PATH = path.join(path.dirname(path.abspath(__file__)), 'mold', 'main.html')
+MAIN_TEMPLATE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mold', 'main.html')
 
 # Web application specific static files
-STATIC_APP_PATH = path.join(path.dirname(path.abspath(__file__)), 'app')
+STATIC_APP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app')
 
 # Third party static web libraries
-STATIC_LIB_PATH =  path.join(path.dirname(path.abspath(__file__)), 'lib')
+STATIC_LIB_PATH =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
 
 BASE_PATH = '/halide' # application base url path
 
-if not generate or not 'mustache' in sys.modules: #use static file
-    #catch all for page refreshes of any app url
-    @app.route('/app/<path:path>') # /app/<path>
-    @app.route('/app') # /app
-    @app.route('/') # /
-    def appGet(path=''):
-        return bottle.static_file('main.html', root=STATIC_APP_PATH)
-else: # dynamically generate using mustache
-    #catch all for page refreshes of any app url
-    @app.route('/app/<path:path>') # /app/<path>
-    @app.route('/app') # /app
-    @app.route('/') # /
-    @mustache.template(MAIN_TEMPLATE_PATH)
-    def appGet(path=''):
-        data = dict(baseUrl=BASE_PATH, mini=".min" if not development else "")
-        #if development: #add devMode copy of data to enable devMode only parts
-            #data = dict(devMode=data, **data)
-        return data
-    
-@app.route('/static/lib/<filepath:path>')
-def staticAppGet(filepath):
-    return bottle.static_file(filepath, root=STATIC_LIB_PATH)
 
+#catch all for page refreshes of any app url
+@app.route('/app/<path:path>') # /app/<path>
+@app.route('/app') # /app
+@app.route('/') # /
+def appGet(path=''):
+    if not generate or not 'pystache' in sys.modules: #use static file
+        return bottle.static_file('main.html', root=STATIC_APP_PATH)
+    else: # dynamically generate using template
+        return buildContent()         
+    
 @app.route('/static/app/<filepath:path>')
-def staticLibGet(filepath):
+def staticAppGet(filepath):
     return bottle.static_file(filepath, root=STATIC_APP_PATH)
 
+@app.route('/static/lib/<filepath:path>')
+def staticLibGet(filepath):
+    return bottle.static_file(filepath, root=STATIC_LIB_PATH)
+
+
+def buildContent(mold=MAIN_TEMPLATE_PATH):
+    """ Dynamically generate contents using template file path mold"""
+    data = dict(baseUrl=BASE_PATH, mini=".min" if not development else "")
+    #if development: #add devMode copy of data to enable devMode only parts
+        #data = dict(devMode=data, **data)
+    
+    #get lists of app scripts and styles filenames
+    scripts, styles = aiding.getFiles(STATIC_APP_PATH, "%s/static/app/" % BASE_PATH)
+    data['scripts'] = scripts
+    data['styles'] = styles
+    renderer = pystache.Renderer()
+    content = renderer.render_path(mold, data)
+                
+    return content             
+    
+def createStaticMain(path=os.path.join(STATIC_APP_PATH, 'main.html'), 
+                     mold=MAIN_TEMPLATE_PATH):
+    """ Generate and write to filepath path
+        using template filepath mold
+    """
+    content = buildContent(mold=mold)
+    with open(path, 'w+') as f:
+        f.write(content)
+    
 
 """ remount app to be behind BASE_PATH to enable different root path such as proxy
     app.mount(BASE_PATH, app) 
