@@ -133,18 +133,16 @@ To run the included sample Express.js web server for the web application
 To run the included sample web server for the web application
 
   $ cd crystalline/halide/
-  $ python serving.py
+  $ python serving.py 
   
 To get command line options
 
   $ python serving.py -h
-  
   usage: serving.py [-h] [-l {info,debug,critical,warning,error}] [-s [SERVER]]
-                   [-a [HOST]] [-p [PORT]] [-r] [-d] [-g]
-
-  Runs localhost wsgi service on given host address and port. 
-  Default host:port is 0.0.0.0:8080.  
-  (0.0.0.0 is any interface on localhost)
+                    [-a [HOST]] [-p [PORT]] [-r] [-d] [-g] [-c [CREATE]]
+  
+  Runs localhost wsgi service on given host address and port. Default host:port
+  is 0.0.0.0:8080. (0.0.0.0 is any interface on localhost)
   
   optional arguments:
     -h, --help            show this help message and exit
@@ -159,8 +157,33 @@ To get command line options
     -r, --reload          Server reload mode if also in debug mode.
     -d, --devel           Development mode.
     -g, --gen             Generate main.html dynamically.
+    -c [CREATE], --create [CREATE]
+                          Create app/main.html (default) or given file and quit.
 
+The recommended options for development are -d and -g. The last option will add
+any application specific .js and .css files from halide/app directory tree
+to the main.html for the initial page load.
 
+  $ python serving.py -d -g
+
+Once the app code is stable an updated static app/main.html can be generated with
+
+  $ python serving.py -d -c
+  
+  
+In production for a cached content delivery network with minified libraries then
+generate the static app/main.html with
+  $ python serving.py -c
+  
+And serve it with
+
+  $ python serving.py -s cherrypy
+
+or
+
+  $ python serving.py -s gevent
+  
+Or some other more performant server
 
 Testing
 ------------
@@ -171,7 +194,10 @@ To run the karma jasmine unit test runner
   $ karma start karma_unit.conf.js
   
 
-To run the karma angular scenario e2e test runner
+To run the karma angular scenario e2e test runner first start up a web server. A
+multithreaded or asynchronous one will be needed if more than one browser is
+tested at once.
+
   $ cd crystalline
   $ python serving.py -d -g -s cherrypy
   $ karma start karma_e2e.conf.js
