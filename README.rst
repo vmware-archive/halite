@@ -8,18 +8,24 @@ Requirements
 ============
 
 Web browser requirements.
-Support for ES5 and HTML5 is required. This means any modern browser or > IE9.
+  - Support for ES5 and HTML5 is required. This means any modern browser or > IE9.
 
-Client side web application uses: 
-AngularJS framework (http://angularjs.org/) 
-Twitter Bootstrap Layout CSS (http://twitter.github.io/bootstrap/)
-AngularUI framwork (http://angular-ui.github.io/)
-Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
-Jasmine unit test framework (http://pivotal.github.io/jasmine/)
-CoffeeScript Python/Ruby like javascript transpiler (http://coffeescript.org/)
-among others
+Client side web application requirements: 
+  - AngularJS framework (http://angularjs.org/) 
+  - Twitter Bootstrap Layout CSS (http://twitter.github.io/bootstrap/)
+  - AngularUI framwork (http://angular-ui.github.io/)
+  - Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
+  - Jasmine unit test framework (http://pivotal.github.io/jasmine/)
+  - CoffeeScript Python/Ruby like javascript transpiler (http://coffeescript.org/)
+  - Express javascript web server
+  - Less css compiler
 
-
+Local test web server
+  - Uses bottle.py which is included. The default server is wsgiref which is single
+    threaded. For multi-threaded support other web servers can be used if installed.
+    Tested ones include paste, gevent, and cherrypy. For karma end to end testing
+    of multiple browsers a multi-threaded or asynchronous server is required.
+    
 Installation Instructions
 --------------------------
 
@@ -83,17 +89,25 @@ application views should be kept together.  The directory structure is as folows
         main.js  # transpiled version of main.coffee
         favicon.ico # application favicon
         robots.txt # robots.txt file
+        SaltStack-Logo.png
     
         view/   # html templates, controllers, styles for specific app views
           home.html
           home.coffee
           home.js
           home.css
+          ...
     
         util/  # common support modules for application such as services, directives, and filters
-          demoSrvc.coffee
           demoDrtv.coffee
+          demoDrtv.js
           demoFltr.coffee
+          demoFltr.js
+          demoSrvc.coffee
+          demoSrvc.js
+          metaSrvc.coffee
+          metaSrvc.js
+          
     
         rsrc/  # JSON resources or other assets such as images etc
   
@@ -104,6 +118,8 @@ application views should be kept together.  The directory structure is as folows
         angular-ui/
   
     test/  # unit and end to end (e2e) tests for the web application
+      unit/ # jasmine unit test spec files
+      e2e/ # angular scenario runner test spec files
 
 Running Application
 -------------------
@@ -111,23 +127,24 @@ Running Application
 To run the included sample Express.js web server for the web application
 
   $ cd crystalline/halide/
-  $ node expressWs.js
+  $ node server.js
   
 
-To run the included sample Bottle.py web server for the web application
+To run the included sample web server for the web application
 
   $ cd crystalline/halide/
-  $ python bottleWs.py
+  $ python serving.py
   
 To get command line options
 
-  $ python bottleWs.py -h
+  $ python serving.py -h
   
-  usage: bottleWs.py [-h] [-l {info,debug,critical,warning,error}] [-s [SERVER]]
+  usage: serving.py [-h] [-l {info,debug,critical,warning,error}] [-s [SERVER]]
                    [-a [HOST]] [-p [PORT]] [-r] [-d] [-g]
 
-  Runs localhost wsgi service on given host address and port. Default host:port
-  is localhost:8080.
+  Runs localhost wsgi service on given host address and port. 
+  Default host:port is 0.0.0.0:8080.  
+  (0.0.0.0 is any interface on localhost)
   
   optional arguments:
     -h, --help            show this help message and exit
@@ -148,7 +165,13 @@ To get command line options
 Testing
 ------------
 
-To run the karma test runner
+To run the karma jasmine unit test runner
 
   $ cd crystalline
-  $ karma start karma.conf.js
+  $ karma start karma_unit.conf.js
+  
+
+To run the karma angular scenario e2e test runner
+  $ cd crystalline
+  $ python serving.py -d -g -s cherrypy
+  $ karma start karma_e2e.conf.js

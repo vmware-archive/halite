@@ -25,7 +25,8 @@ if __name__ == "__main__":
     levels = aiding.LOGGING_LEVELS #map of strings to logging levels
     
     d = "Runs localhost wsgi service on given host address and port. "
-    d += "\nDefault host:port is localhost:8080."
+    d += "\nDefault host:port is 0.0.0.0:8080."
+    d += "\n(0.0.0.0 is any interface on localhost)"
     p = argparse.ArgumentParser(description = d)
     p.add_argument('-l','--level',
                     action='store',
