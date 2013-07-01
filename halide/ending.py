@@ -9,14 +9,10 @@ try:
     import simplejson as json
 except ImportError as ex:
     import json
-    
+
+import stache 
 import bottle
 
-try:
-    import pystache
-except ImportError as ex:
-    pass
-    
 import aiding
 
 logger = aiding.getLogger(name='Ending')
@@ -114,7 +110,7 @@ def appGet(path=''):
     if not generate or not 'pystache' in sys.modules: #use static file
         return bottle.static_file('main.html', root=STATIC_APP_PATH)
     else: # dynamically generate using template
-        return buildContent()         
+        return stacheContent()         
     
 @app.route('/static/app/<filepath:path>')
 def staticAppGet(filepath):
@@ -124,30 +120,29 @@ def staticAppGet(filepath):
 def staticLibGet(filepath):
     return bottle.static_file(filepath, root=STATIC_LIB_PATH)
 
-
-def buildContent(mold=MAIN_TEMPLATE_PATH):
-    """ Dynamically generate contents using template file path mold"""
+def stacheContent(moldPath=MAIN_TEMPLATE_PATH):
+    """ Dynamically generate contents using mustache template file path mold"""
     data = dict(baseUrl=BASE_PATH, mini=".min" if not development else "")
-    #if development: #add devMode copy of data to enable devMode only parts
-        #data = dict(devMode=data, **data)
-    
+   
     #get lists of app scripts and styles filenames
     scripts, styles = aiding.getFiles(STATIC_APP_PATH, "%s/static/app/" % BASE_PATH)
     data['scripts'] = scripts
     data['styles'] = styles
-    renderer = pystache.Renderer()
-    content = renderer.render_path(mold, data)
+    
+    with open(moldPath, "ru") as fp:
+        mold = fp.read()
+        content = stache.render(mold, data)
                 
-    return content             
+    return content
     
 def createStaticMain(path=os.path.join(STATIC_APP_PATH, 'main.html'), 
-                     mold=MAIN_TEMPLATE_PATH):
+                     moldPath=MAIN_TEMPLATE_PATH):
     """ Generate and write to filepath path
         using template filepath mold
     """
-    content = buildContent(mold=mold)
-    with open(path, 'w+') as f:
-        f.write(content)
+    content = stacheContent(moldPath=moldPath)
+    with open(path, 'w+') as fp:
+        fp.write(content)
     
 
 """ remount app to be behind BASE_PATH to enable different root path such as proxy
