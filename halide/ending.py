@@ -10,7 +10,7 @@ try:
 except ImportError as ex:
     import json
 
-import stache 
+import staching 
 import bottle
 
 import aiding
@@ -132,7 +132,7 @@ def stacheContent(moldPath=MAIN_TEMPLATE_PATH):
     
     with open(moldPath, "ru") as fp:
         mold = fp.read()
-        content = stache.render(mold, data)
+        content = staching.render(mold, data)
                 
     return content
     
