@@ -4,14 +4,13 @@
 
   mainApp = angular.module("MainApp");
 
-  mainApp.controller('HomeCtlr', [
+  mainApp.controller('WatchCtlr', [
     '$scope', '$location', '$route', 'MetaConstants', 'DemoService', function($scope, $location, $route, MetaConstants, DemoService) {
       $scope.location = $location;
       $scope.route = $route;
       $scope.winLoc = window.location;
-      console.log("HomeCtlr");
+      console.log("WatchCtlr");
       $scope.errorMsg = "";
-      $scope.views = MetaConstants.views;
       return true;
     }
   ]);

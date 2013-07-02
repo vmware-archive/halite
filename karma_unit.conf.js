@@ -73,3 +73,6 @@ captureTimeout = 60000;
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
 singleRun = false;
+
+// Map karma specific pages to not conflict with proxy server
+urlRoot = "/__karma/";

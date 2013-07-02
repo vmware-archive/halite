@@ -37,7 +37,7 @@ also dependent on node.js.
 
 First install nodejs and npm  using the package installers. (http://nodejs.org/)
 Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli, Less etc
-
+```bash
   $ sudo npm install -g coffee-script
   $ sudo npm install -g karma
   $ sudo npm install -g jasmine-node
@@ -45,7 +45,7 @@ Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli, Les
   $ sudo npm install -g express
   $ sudo npm install -g less
   $ sudo npm install -g requirejs
-
+```
 
 To use express and/or grunt do a local installs of each. Any npm module that is
 used locally via a require statement must be installed or linked locally.

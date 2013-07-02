@@ -104,6 +104,7 @@ BASE_PATH = '/halide' # application base url path
 
 #catch all for page refreshes of any app url
 @app.route('/app/<path:path>') # /app/<path>
+@app.route('/app/') # /app/
 @app.route('/app') # /app
 @app.route('/') # /
 def appGet(path=''):

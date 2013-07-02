@@ -9,7 +9,7 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['metaService', 'demoService', 'ui.state'])
+mainApp = angular.module("MainApp", ['metaService', 'demoService'])
 
 
 mainApp.constant 'MainConstants', 
@@ -17,9 +17,7 @@ mainApp.constant 'MainConstants',
     owner: 'SaltStack'
 
 mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routeProvider", 
-        "$stateProvider", "$urlRouterProvider",
-    (MetaConstants, MainConstants, $locationProvider, $routeProvider, 
-        $stateProvider, $urlRouterProvider) ->
+    (MetaConstants, MainConstants, $locationProvider, $routeProvider) ->
         $locationProvider.html5Mode(true)
         console.log("MetaConstants")
         console.log(MetaConstants)
@@ -32,6 +30,9 @@ mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routePro
         .when "#{base}/app/home",
             templateUrl: "#{base}/static/app/view/home.html"
             controller: "HomeCtlr"
+        .when "#{base}/app/watch/:id",
+            templateUrl: "#{base}/static/app/view/watch.html"
+            controller: "WatchCtlr"
         .when "#{base}/app/test",
             templateUrl: "#{base}/static/app/view/test.html"
             controller: "TestCtlr"
@@ -41,14 +42,16 @@ mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routePro
         return true
 ]
 
-mainApp.controller 'NavbarCtlr', ['$scope', '$routeParams', '$location', '$route', 'MetaConstants',
-    ($scope, $routeParams, $location, $route, MetaConstants) ->
+mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams','MetaConstants',
+    ($scope, $location, $route, $routeParams, MetaConstants) ->
         console.log("NavbarCtlr")
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
         $scope.baseUrl = MetaConstants.baseUrl
         $scope.errorMsg = ''
+        
+        $scope.views =MetaConstants.views
         
         $scope.navery =
             'states': 
@@ -57,7 +60,9 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$routeParams', '$location', '$route
             
             'paths':
                 "/app$": "home"
+                "/app/$": "home"
                 "/app/home": "home"
+                "/app/watch": "watch"
                 "/app/test": "test"
             
             'activate': (nav) ->
@@ -83,14 +88,13 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$routeParams', '$location', '$route
 ]
 
 
-mainApp.controller 'RouteCtlr', ['$scope', '$routeParams', '$location', '$route', 
-        '$state','MetaConstants',
-    ($scope, $routeParams, $location, $route, $state,MetaConstants) ->
+mainApp.controller 'RouteCtlr', ['$scope', '$location', '$route', '$routeParams',
+        'MetaConstants',
+    ($scope, $location, $route, $$routeParams, MetaConstants) ->
         console.log("RouteCtlr")
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
-        $scope.state = $state
         $scope.baseUrl = MetaConstants.baseUrl
         $scope.errorMsg = ''
 

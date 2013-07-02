@@ -15,5 +15,8 @@
   $route.current.params = {{route.current.params}}
   $route.current.pathParams = {{route.current.pathParams}}
   $route.routes = {{route.routes}}
-  $state = {{state}}
+  
+  <span ng-repeat="(name, data) in route.routes" ng-show="true">
+    {{name}}  {{data.redirectTo}} {{data.templateUrl}} {{data.controller}}</span>
 </pre>
+

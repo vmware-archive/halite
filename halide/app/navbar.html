@@ -1,17 +1,27 @@
-<div class="navbar" ng-controller="NavbarCtlr">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="brand" ng-href="{{baseUrl}}/app" >
-        <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
-      </a>
-      <ul class="nav">
-        <li ng-class="navery.states.home">
-          <a ng-href="{{baseUrl}}/app/home">Home</a>
-        </li>
-        <li ng-class="navery.states.test">
-          <a ng-href="{{baseUrl}}/app/test">Test</a>
-        </li>
-      </ul>
-    </div>
-  </div><!-- /navbar-inner -->
-</div><!-- /navbar -->
+<div ng-controller="NavbarCtlr">
+  <div class="navbar" >
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" ng-href="{{baseUrl}}/app/home" >
+          <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
+        </a>
+        <ul class="nav">
+          <li ng-class="navery.states.home">
+            <a ng-href="{{baseUrl}}/app/home">Home</a>
+          </li>
+          <li ng-class="navery.states.watch">
+            <a ng-href="{{baseUrl}}/app/watch/">Watch</a>
+          </li>
+          <li ng-class="navery.states.test">
+            <a ng-href="{{baseUrl}}/app/test">Test</a>
+          </li>
+        </ul>
+      </div>
+    </div><!-- /navbar-inner -->
+  </div><!-- /navbar -->
+  <pre>
+  views = 
+  <span ng-repeat="(name, data) in views" ng-show="true">
+    {{name}}: {{data.label}} {{data.route}} {{data.template}} {{data.controller}}</span>
+  </pre>
+</div>

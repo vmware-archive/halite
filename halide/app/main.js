@@ -2,7 +2,7 @@
 (function() {
   var mainApp;
 
-  mainApp = angular.module("MainApp", ['metaService', 'demoService', 'ui.state']);
+  mainApp = angular.module("MainApp", ['metaService', 'demoService']);
 
   mainApp.constant('MainConstants', {
     name: 'Halide',
@@ -10,7 +10,7 @@
   });
 
   mainApp.config([
-    "MetaConstants", "MainConstants", "$locationProvider", "$routeProvider", "$stateProvider", "$urlRouterProvider", function(MetaConstants, MainConstants, $locationProvider, $routeProvider, $stateProvider, $urlRouterProvider) {
+    "MetaConstants", "MainConstants", "$locationProvider", "$routeProvider", function(MetaConstants, MainConstants, $locationProvider, $routeProvider) {
       var base;
       $locationProvider.html5Mode(true);
       console.log("MetaConstants");
@@ -21,6 +21,9 @@
       $routeProvider.when("" + base + "/app/home", {
         templateUrl: "" + base + "/static/app/view/home.html",
         controller: "HomeCtlr"
+      }).when("" + base + "/app/watch/:id", {
+        templateUrl: "" + base + "/static/app/view/watch.html",
+        controller: "WatchCtlr"
       }).when("" + base + "/app/test", {
         templateUrl: "" + base + "/static/app/view/test.html",
         controller: "TestCtlr"
@@ -32,13 +35,14 @@
   ]);
 
   mainApp.controller('NavbarCtlr', [
-    '$scope', '$routeParams', '$location', '$route', 'MetaConstants', function($scope, $routeParams, $location, $route, MetaConstants) {
+    '$scope', '$location', '$route', '$routeParams', 'MetaConstants', function($scope, $location, $route, $routeParams, MetaConstants) {
       console.log("NavbarCtlr");
       $scope.location = $location;
       $scope.route = $route;
       $scope.winLoc = window.location;
       $scope.baseUrl = MetaConstants.baseUrl;
       $scope.errorMsg = '';
+      $scope.views = MetaConstants.views;
       $scope.navery = {
         'states': {
           'home': 'inactive',
@@ -46,7 +50,9 @@
         },
         'paths': {
           "/app$": "home",
+          "/app/$": "home",
           "/app/home": "home",
+          "/app/watch": "watch",
           "/app/test": "test"
         },
         'activate': function(nav) {
@@ -81,12 +87,11 @@
   ]);
 
   mainApp.controller('RouteCtlr', [
-    '$scope', '$routeParams', '$location', '$route', '$state', 'MetaConstants', function($scope, $routeParams, $location, $route, $state, MetaConstants) {
+    '$scope', '$location', '$route', '$routeParams', 'MetaConstants', function($scope, $location, $route, $$routeParams, MetaConstants) {
       console.log("RouteCtlr");
       $scope.location = $location;
       $scope.route = $route;
       $scope.winLoc = window.location;
-      $scope.state = $state;
       $scope.baseUrl = MetaConstants.baseUrl;
       $scope.errorMsg = '';
       return true;
