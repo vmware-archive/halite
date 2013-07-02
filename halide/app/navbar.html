@@ -2,26 +2,19 @@
   <div class="navbar" >
     <div class="navbar-inner">
       <div class="container">
-        <a class="brand" ng-href="{{baseUrl}}/app/home" >
+        <a class="brand" ng-href="{{views.otherwise.url}}">
           <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
         </a>
         <ul class="nav">
-          <li ng-class="navery.states.home">
-            <a ng-href="{{baseUrl}}/app/home">Home</a>
-          </li>
-          <li ng-class="navery.states.watch">
-            <a ng-href="{{baseUrl}}/app/watch/">Watch</a>
-          </li>
-          <li ng-class="navery.states.test">
-            <a ng-href="{{baseUrl}}/app/test">Test</a>
+          <li ng-repeat="view in views.tabs" ng-class="navery.navs[view.label].state">
+            <a ng-href="{{view.url}}">{{view.label | capitalize}}</a>
           </li>
         </ul>
       </div>
     </div><!-- /navbar-inner -->
   </div><!-- /navbar -->
   <pre>
-  views = 
-  <span ng-repeat="(name, data) in views" ng-show="true">
-    {{name}}: {{data.label}} {{data.route}} {{data.regex}} {{data.template}} {{data.controller}}</span>
+  views = {{views}}
+  navery.navs = {{navery.navs}}
   </pre>
 </div>

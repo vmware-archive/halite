@@ -2,7 +2,7 @@
 (function() {
   var mainApp;
 
-  mainApp = angular.module("MainApp", ['metaService', 'demoService']);
+  mainApp = angular.module("MainApp", ['metaService', 'ssFilter', 'demoService']);
 
   mainApp.constant('MainConstants', {
     name: 'Halide',
@@ -44,40 +44,60 @@
       $scope.errorMsg = '';
       $scope.views = MetaConstants.views;
       $scope.navery = {
-        'states': {
-          'home': 'inactive',
-          'test': 'inactive'
-        },
-        'paths': {
-          "/app$": "home",
-          "/app/$": "home",
-          "/app/home": "home",
-          "/app/watch": "watch",
-          "/app/test": "test"
-        },
-        'activate': function(nav) {
-          var x;
-          this.states[nav] = 'active';
-          for (x in this.states) {
-            if (x !== nav) {
-              this.states[x] = 'inactive';
+        'navs': {},
+        'activate': function(navact) {
+          var label, nav, _ref;
+          navact.state = 'active';
+          _ref = this.navs;
+          for (label in _ref) {
+            nav = _ref[label];
+            if (nav !== navact) {
+              nav.state = 'inactive';
             }
           }
           return true;
         },
         'update': function(newPath, oldPath) {
-          var nav, path, _ref;
-          _ref = this.paths;
-          for (path in _ref) {
-            nav = _ref[path];
-            if (newPath.match(path) != null) {
+          var label, nav, _ref;
+          _ref = this.navs;
+          for (label in _ref) {
+            nav = _ref[label];
+            if (newPath.match(nav.matcher) != null) {
               this.activate(nav);
               return true;
             }
           }
           return true;
+        },
+        'load': function(views) {
+          var item, name, view, _results;
+          _results = [];
+          for (name in views) {
+            item = views[name];
+            if (item.label != null) {
+              _results.push(this.navs[item.label] = {
+                state: 'inactive',
+                matcher: item.matcher
+              });
+            } else {
+              _results.push((function() {
+                var _i, _len, _results1;
+                _results1 = [];
+                for (_i = 0, _len = item.length; _i < _len; _i++) {
+                  view = item[_i];
+                  _results1.push(this.navs[view.label] = {
+                    state: 'inactive',
+                    matcher: view.matcher
+                  });
+                }
+                return _results1;
+              }).call(this));
+            }
+          }
+          return _results;
         }
       };
+      $scope.navery.load($scope.views);
       $scope.$watch('location.path()', function(newPath, oldPath) {
         $scope.navery.update(newPath, oldPath);
         return true;

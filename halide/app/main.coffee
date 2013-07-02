@@ -9,7 +9,7 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['metaService', 'demoService'])
+mainApp = angular.module("MainApp", ['metaService', 'ssFilter', 'demoService'])
 
 
 mainApp.constant 'MainConstants', 
@@ -51,33 +51,39 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         $scope.baseUrl = MetaConstants.baseUrl
         $scope.errorMsg = ''
         
-        $scope.views =MetaConstants.views
+        $scope.views = MetaConstants.views
         
         $scope.navery =
-            'states': 
-                'home' : 'inactive'
-                'test' : 'inactive'
+            'navs': {}
             
-            'paths':
-                "/app$": "home"
-                "/app/$": "home"
-                "/app/home": "home"
-                "/app/watch": "watch"
-                "/app/test": "test"
-            
-            'activate': (nav) ->
-                @states[nav] = 'active'
-                for x of this.states
-                    if x != nav
-                        @states[x] = 'inactive'
+            'activate': (navact) ->
+                navact.state = 'active'
+                for label, nav of @navs
+                    if nav != navact
+                        nav.state = 'inactive'
                 return true
             
             'update': (newPath, oldPath) ->
-                for path, nav of this.paths
-                    if newPath.match(path)?
+                for label, nav of @navs
+                    if newPath.match(nav.matcher)?
                         @activate(nav)
                         return true
                 return true
+        
+            'load': (views) ->
+                for name, item of views
+                    if item.label? #item is vies
+                        @navs[item.label] = 
+                            state: 'inactive'
+                            matcher: item.matcher
+                            
+                    else # item is list of views
+                        for view in item
+                            @navs[view.label] =
+                                state: 'inactive'
+                                matcher: view.matcher
+        
+        $scope.navery.load($scope.views)
         
         $scope.$watch('location.path()', (newPath, oldPath) ->
             $scope.navery.update(newPath, oldPath)

@@ -8,33 +8,42 @@ views =
     otherwise: 
         label: "home"
         route: "#{base}/app/home"
+        url: "#{base}/app/home"
         template: "#{base}/static/app/view/home.html"
         controller: "HomeCtlr"
-    watch:
-        label: "watch"
-        route: "#{base}/app/watch/:id"
-        template: "#{base}/static/app/view/watch.html"
-        controller: "WatchCtlr"
-    test:
-        label: "test"
-        route: "#{base}/app/test"
-        template: "#{base}/static/app/view/test.html"
-        controller: "testCtlr"
+    tabs:
+        [
+            label: "watch"
+            route: "#{base}/app/watch/:id"
+            url: "#{base}/app/watch/"
+            template: "#{base}/static/app/view/watch.html"
+            controller: "WatchCtlr"
+        ,
+            label: "test"
+            route: "#{base}/app/test"
+            url: "#{base}/app/test"
+            template: "#{base}/static/app/view/test.html"
+            controller: "testCtlr"
+        ]
 
-buildRegex = (url) ->
-    chunks = url.split("/")
+buildMatcher = (route) ->
+    chunks = route.split("/")
     for chunk, i in chunks
         if chunk.match("^:\\w+$")?
-            chunks[i] = "\\\\w*"
-    regex = "^" + chunks.join("/") + "$"
-    
-    return regex
+            chunks[i] = "\\w*"
+    matcher = "^" + chunks.join("/") + "$"
+    return matcher
 
-regexify = (views) ->
-    for name, view of views
-        views[name].regex = buildRegex(view.route)
+matcherify = (views) ->
+    for name, item of views
+        if item.label? # item is a view
+            item.matcher = buildMatcher(item.route)
+        else # item is a list of views
+            for view in item
+                view.matcher = buildMatcher(view.route)
+    return views
 
-regexify(views)
+matcherify(views)
 
 metaservice.constant( 'MetaConstants', 
     baseUrl: "#{base}"
