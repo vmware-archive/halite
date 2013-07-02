@@ -4,7 +4,15 @@
 
   ssFilter = angular.module('ssFilter', []);
 
-  ssFilter.filter('capitalize', function() {
+  ssFilter.filter('capitalcase', function() {
+    var filter;
+    filter = function(input) {
+      return input.substring(0, 1).toUpperCase() + input.substring(1);
+    };
+    return filter;
+  });
+
+  ssFilter.filter('titlecase', function() {
     var filter;
     filter = function(input) {
       var chunk, chunks, i, _i, _len;

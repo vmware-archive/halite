@@ -7,7 +7,7 @@
         </a>
         <ul class="nav">
           <li ng-repeat="view in views.tabs" ng-class="navery.navs[view.label].state">
-            <a ng-href="{{view.url}}">{{view.label | capitalize}}</a>
+            <a ng-href="{{view.url}}">{{view.label | capitalcase}}</a>
           </li>
         </ul>
       </div>
