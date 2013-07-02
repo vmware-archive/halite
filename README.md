@@ -54,7 +54,7 @@ $ cd crystalline
 $ npm install express
 $ npm install grunt
 $ grunt
-'''
+```
   
 Halide is the code name for the pip install package that includes not only the angular 
 single page client side web application but also sample web servers for serving 
