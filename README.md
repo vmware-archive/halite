@@ -37,22 +37,24 @@ also dependent on node.js.
 First install nodejs and npm  using the package installers. (http://nodejs.org/)
 Then do global installs of Coffeescript, Karma, Jasmine, Express, Grunt-cli, Less etc
 ```bash
-  $ sudo npm install -g coffee-script
-  $ sudo npm install -g karma
-  $ sudo npm install -g jasmine-node
-  $ sudo npm install -g grunt-cli
-  $ sudo npm install -g express
-  $ sudo npm install -g less
-  $ sudo npm install -g requirejs
+$ sudo npm install -g coffee-script
+$ sudo npm install -g karma
+$ sudo npm install -g jasmine-node
+$ sudo npm install -g grunt-cli
+$ sudo npm install -g express
+$ sudo npm install -g less
+$ sudo npm install -g requirejs
 ```
 
 To use express and/or grunt do a local installs of each. Any npm module that is
 used locally via a require statement must be installed or linked locally.
 
-  $ cd crystalline
-  $ npm install express
-  $ npm install grunt
-  $ grunt
+```bash
+$ cd crystalline
+$ npm install express
+$ npm install grunt
+$ grunt
+'''
   
 Halide is the code name for the pip install package that includes not only the angular 
 single page client side web application but also sample web servers for serving 
@@ -63,79 +65,82 @@ notionally is a customized layout tuned to the salt UI application. Notably it
 follows some of the  latest thinking that the templates and controllers for 
 application views should be kept together.  The directory structure is as folows:
 
+```
+crystalline/
+  LICENSE
+  LICENSE.txt
+  README.rst
+  README.md
+  setup.py  # python package setup
+  Gruntfile.coffee #grunt conf file
+  package.json # node package conf file
+  bower.json # bower conf file
+  
+  node_modules/  # local node.js modules
 
-  crystalline/
-    LICENSE
-    LICENSE.txt
-    README.rst
-    README.md
-    setup.py  # python package setup
-    Gruntfile.coffee #grunt conf file
-    package.json # node package conf file
-    bower.json # bower conf file
-    
-    node_modules/  # local node.js modules
+
+
+  halide/
+    __init__.py  # Python package file
+
+    app/  # web application
+      main.html  # entry point for single page web application
+      main.css  # application specific design for web application
+      main.coffee # main angular application module
+      main.js  # transpiled version of main.coffee
+      favicon.ico # application favicon
+      robots.txt # robots.txt file
+      SaltStack-Logo.png
   
+      view/   # html templates, controllers, styles for specific app views
+        home.html
+        home.coffee
+        home.js
+        home.css
+        ...
   
+      util/  # common support modules for application such as services, directives, and filters
+        demoDrtv.coffee
+        demoDrtv.js
+        demoFltr.coffee
+        demoFltr.js
+        demoSrvc.coffee
+        demoSrvc.js
+        metaSrvc.coffee
+        metaSrvc.js
+        
   
-    halide/
-      __init__.py  # Python package file
-  
-      app/  # web application
-        main.html  # entry point for single page web application
-        main.css  # application specific design for web application
-        main.coffee # main angular application module
-        main.js  # transpiled version of main.coffee
-        favicon.ico # application favicon
-        robots.txt # robots.txt file
-        SaltStack-Logo.png
-    
-        view/   # html templates, controllers, styles for specific app views
-          home.html
-          home.coffee
-          home.js
-          home.css
-          ...
-    
-        util/  # common support modules for application such as services, directives, and filters
-          demoDrtv.coffee
-          demoDrtv.js
-          demoFltr.coffee
-          demoFltr.js
-          demoSrvc.coffee
-          demoSrvc.js
-          metaSrvc.coffee
-          metaSrvc.js
-          
-    
-        rsrc/  # JSON resources or other assets such as images etc
-  
-      lib/ # Third party libraries for application such as angular etc
-        angular/
-        bootstrap/
-        angular-unstable/
-        angular-ui/
-  
-    test/  # unit and end to end (e2e) tests for the web application
-      unit/ # jasmine unit test spec files
-      e2e/ # angular scenario runner test spec files
+      rsrc/  # JSON resources or other assets such as images etc
+
+    lib/ # Third party libraries for application such as angular etc
+      angular/
+      bootstrap/
+      angular-unstable/
+      angular-ui/
+
+  test/  # unit and end to end (e2e) tests for the web application
+    unit/ # jasmine unit test spec files
+    e2e/ # angular scenario runner test spec files
+```
 
 Running Application
 -------------------
 
 To run the included sample Express.js web server for the web application
 
+```bash
   $ cd crystalline/halide/
   $ node server.js
-  
+```  
 
 To run the included sample web server for the web application
-
+```bash
   $ cd crystalline/halide/
   $ python serving.py 
-  
-To get command line options
+```  
 
+To get command line options
+```bash
   $ python serving.py -h
   usage: serving.py [-h] [-l {info,debug,critical,warning,error}] [-s [SERVER]]
                     [-a [HOST]] [-p [PORT]] [-r] [-d] [-g] [-c [CREATE]]
@@ -158,45 +163,48 @@ To get command line options
     -g, --gen             Generate main.html dynamically.
     -c [CREATE], --create [CREATE]
                           Create app/main.html (default) or given file and quit.
+```
 
 The recommended options for development are -d and -g. The last option will add
 any application specific .js and .css files from halide/app directory tree
 to the main.html for the initial page load.
-
+```bash
   $ python serving.py -d -g
 
 Once the app code is stable an updated static app/main.html can be generated with
-
+```bash
   $ python serving.py -d -c
-  
+```  
   
 In production for a cached content delivery network with minified libraries then
 generate the static app/main.html with
+```bash
   $ python serving.py -c
-  
+```  
 And serve it with
-
+```bash
   $ python serving.py -s cherrypy
-
+```
 or
-
+```bash
   $ python serving.py -s gevent
-  
+```  
 Or some other more performant server
 
 Testing
 ------------
 
 To run the karma jasmine unit test runner
-
+```bash
   $ cd crystalline
   $ karma start karma_unit.conf.js
-  
+```
 
 To run the karma angular scenario e2e test runner first start up a web server. A
 multithreaded or asynchronous one will be needed if more than one browser is
 tested at once.
-
+```bash
   $ cd crystalline
   $ python serving.py -d -g -s cherrypy
   $ karma start karma_e2e.conf.js
+```
