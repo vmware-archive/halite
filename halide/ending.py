@@ -108,7 +108,7 @@ BASE_PATH = '/halide' # application base url path
 @app.route('/app') # /app
 @app.route('/') # /
 def appGet(path=''):
-    if not generate or not 'pystache' in sys.modules: #use static file
+    if not generate: #use static file
         return bottle.static_file('main.html', root=STATIC_APP_PATH)
     else: # dynamically generate using template
         return stacheContent()         

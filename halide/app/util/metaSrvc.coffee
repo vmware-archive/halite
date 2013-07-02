@@ -12,7 +12,7 @@ views =
         controller: "HomeCtlr"
     watch:
         label: "watch"
-        route: "#{base}/app/watch/:mid"
+        route: "#{base}/app/watch/:id"
         template: "#{base}/static/app/view/watch.html"
         controller: "WatchCtlr"
     test:
@@ -22,7 +22,19 @@ views =
         controller: "testCtlr"
 
 buildRegex = (url) ->
-    return
+    chunks = url.split("/")
+    for chunk, i in chunks
+        if chunk.match("^:\\w+$")?
+            chunks[i] = "\\\\w*"
+    regex = "^" + chunks.join("/") + "$"
+    
+    return regex
+
+regexify = (views) ->
+    for name, view of views
+        views[name].regex = buildRegex(view.route)
+
+regexify(views)
 
 metaservice.constant( 'MetaConstants', 
     baseUrl: "#{base}"
