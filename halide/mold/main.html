@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive.css" >
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
 
-    {{#styles}}
-    <link rel="stylesheet" href="{{name}}" >
-    {{/styles}}
+    {% for css in stylesheets %}
+    <link rel="stylesheet" href="{{css.name}}">
+    {%- endfor %}
 
     <title>Halide Salt UI</title>
   </head>
@@ -42,19 +42,17 @@
     <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
 
-    {{#scripts}}
-    <script src="{{name}}" type="{{mtype}}"></script>
-    {{/scripts}}
-    
-    {{#coffee}}
+    {% for script in scripts %}
+    <script src="{{script.name}}" type="{{script.mtype}}"></script>
+    {%- endfor %}
+
+    {% if coffee %}
     <script type="text/coffeescript">
         angular.element(document).ready () ->
             body = angular.element(document).find("body")[0]
             angular.bootstrap(body, ['MainApp'])
     </script>
     <script src="{{baseUrl}}/static/lib/coffeescript/coffee-script.js"></script>
-    {{/coffee}}
-    {{^coffee}}
     <script type="text/javascript">
         (function() {
             angular.element(document).ready(function() {
@@ -64,6 +62,6 @@
             });
         }).call(this);
     </script>
-    {{/coffee}}
+    {% endif %}
   </body>
 </html>
