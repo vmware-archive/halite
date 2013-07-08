@@ -9,39 +9,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive.css" >
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
-    
+
     {{#styles}}
     <link rel="stylesheet" href="{{name}}" >
     {{/styles}}
-    
+
     <title>Halide Salt UI</title>
   </head>
   <body>
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
-    
+
     <div ng-include="'{{baseUrl}}/static/app/navbar.html'" ></div>
-      
+
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12"><div ng-view></div></div>
       </div><!-- /row-fluid -->
-    </div><!-- /container-fluid -->  
-    
+    </div><!-- /container-fluid -->
+
     <div ng-include="'{{baseUrl}}/static/app/route.html'" ></div>
-    
+
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-resource{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-cookies{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-sanitize{{mini}}.js"></script>
-    
+
     <!--<script src="{{baseUrl}}/static/lib/angular-unstable/angular-mocks{{mini}}.js"></script>-->
     <!--<script src="{{baseUrl}}/static/lib/angular-unstable/angular-scenario{{mini}}.js"></script>-->
-    
+
     <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
-   
+
     {{#scripts}}
     <script src="{{name}}" type="{{mtype}}"></script>
     {{/scripts}}
