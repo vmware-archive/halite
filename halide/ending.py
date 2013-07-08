@@ -22,6 +22,7 @@ logger = aiding.getLogger(name='Ending')
 app = bottle.default_app() # create bottle app
 development = False # development mode means use non minified javascript libraries
 generate = False # generate main.html dynamically
+baseprefix = '' # application base url path
 
 """ Decorated Error functions for bottle web application
     Error methods do not automatically jsonify dicts so must manually do so.
@@ -99,8 +100,7 @@ STATIC_APP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app'
 # Third party static web libraries
 STATIC_LIB_PATH =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
 
-BASE_PATH = '/halide' # application base url path
-
+BASE_PATH = '/halide'
 
 #catch all for page refreshes of any app url
 @app.route('/app/<path:path>') # /app/<path>
@@ -111,7 +111,7 @@ def appGet(path=''):
     if not generate: #use static file
         return bottle.static_file('main.html', root=STATIC_APP_PATH)
     else: # dynamically generate using template
-        return stacheContent()         
+        return stacheContent(base=baseprefix)         
     
 @app.route('/static/app/<filepath:path>')
 def staticAppGet(filepath):
@@ -121,12 +121,12 @@ def staticAppGet(filepath):
 def staticLibGet(filepath):
     return bottle.static_file(filepath, root=STATIC_LIB_PATH)
 
-def stacheContent(moldPath=MAIN_TEMPLATE_PATH):
+def stacheContent(moldPath=MAIN_TEMPLATE_PATH, base=BASE_PATH):
     """ Dynamically generate contents using mustache template file path mold"""
-    data = dict(baseUrl=BASE_PATH, mini=".min" if not development else "")
+    data = dict(baseUrl=base, mini=".min" if not development else "")
    
     #get lists of app scripts and styles filenames
-    scripts, styles = aiding.getFiles(STATIC_APP_PATH, "%s/static/app/" % BASE_PATH)
+    scripts, styles = aiding.getFiles(STATIC_APP_PATH, "%s/static/app/" % base)
     data['scripts'] = scripts
     data['styles'] = styles
     
@@ -137,11 +137,11 @@ def stacheContent(moldPath=MAIN_TEMPLATE_PATH):
     return content
     
 def createStaticMain(path=os.path.join(STATIC_APP_PATH, 'main.html'), 
-                     moldPath=MAIN_TEMPLATE_PATH):
+                     moldPath=MAIN_TEMPLATE_PATH, base=BASE_PATH):
     """ Generate and write to filepath path
         using template filepath mold
     """
-    content = stacheContent(moldPath=moldPath)
+    content = stacheContent(moldPath=moldPath, base=base)
     with open(path, 'w+') as fp:
         fp.write(content)
     
@@ -151,7 +151,8 @@ def createStaticMain(path=os.path.join(STATIC_APP_PATH, 'main.html'),
     http://localhost:8080/demo/test
 """
 
-
-old = bottle.app.pop() # get current app
-app = bottle.app.push() # create new app
-app.mount(BASE_PATH, old) # remount old on new path
+def remount(base=BASE_PATH):
+    global app
+    old = bottle.app.pop() # get current app
+    app = bottle.app.push() # create new app
+    app.mount(base, old) # remount old on new path
