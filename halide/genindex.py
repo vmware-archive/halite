@@ -35,7 +35,7 @@ def parse_args():
                     help="Create app/main.html (default) or given file and quit.")
     p.add_option('-b', '--base',
                     action='store',
-                    default='/halide',
+                    default='/halide/static',
                     help="Base URL for client side web application.")
     p.add_option('-a', '--app',
                     action='store',
