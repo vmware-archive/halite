@@ -1,143 +1,107 @@
 #!/usr/bin/env python
 '''
-Runs wsgi web server using bottle framework
-
-To get usage::
-
-    $ python serving.py -h
-
-Runs embedded wsgi server when run directly as __main__.
-The server is at http://localhost:port or http://127.0.0.1:port
-The default port is 8080
-The root path is http://localhost:port
-and routes below are relative to this root path so
-"/" is http://localhost:port/
-
+A small script to run a template through Jinja and write the result to the
+filesystem
 '''
-import sys
+import optparse
 import os
-import argparse
+import sys
+import urlparse
+
+import jinja2
 
 import aiding
 
+logger = aiding.getLogger(name=__file__)
 
-if __name__ == "__main__":
+def parse_args():
     '''
     Process command line args
     '''
-
     levels = aiding.LOGGING_LEVELS #map of strings to logging levels
 
-    d = "Runs localhost wsgi service on given host address and port. "
-    d += "\nDefault host:port is 0.0.0.0:8080."
-    d += "\n(0.0.0.0 is any interface on localhost)"
-    p = argparse.ArgumentParser(description = d)
-    p.add_argument('-l','--level',
+    p = optparse.OptionParser(description=__doc__)
+    p.add_option('-l', '--level',
                     action='store',
                     default='info',
                     choices=levels.keys(),
                     help="Logging level.")
-    p.add_argument('-s','--server',
-                    action = 'store',
-                    nargs='?',
-                    const='wsgiref',
-                    default='wsgiref',
-                    help = "Wsgi server type.")
-    p.add_argument('-a','--host',
-                    action = 'store',
-                    nargs='?',
-                    const='0.0.0.0',
-                    default='0.0.0.0',
-                    help = "Wsgi server ip host address.")
-    p.add_argument('-p','--port',
-                    action = 'store',
-                    nargs='?',
-                    const='8080',
-                    default='8080',
-                    help = "Wsgi server ip port.")
-    p.add_argument('-r','--reload',
-                    action = 'store_const',
-                    const = True,
-                    default = False,
-                    help = "Server reload mode if also in debug mode.")
-    p.add_argument('-d','--devel',
-                    action = 'store_const',
-                    const = True,
-                    default = False,
-                    help = "Development mode.")
-    p.add_argument('-g','--gen',
-                    action = 'store_const',
-                    const = True,
-                    default = False,
-                    help = "Generate main.html dynamically.")
-    p.add_argument('-c','--create',
-                    action = 'store',
-                    nargs='?',
-                    const = 'app/main.html',
-                    default = '',
-                    help = "Create app/main.html (default) or given file and quit.")
-    p.add_argument('-b','--base',
-                    action = 'store',
-                    nargs='?',
-                    const = '/halide',
-                    default = '/halide',
-                    help = "Base Url for client side web application.")
-    p.add_argument('-C','--coffee',
-                    action = 'store',
-                    nargs='?',
-                    const = True,
-                    default = False,
-                    help = "When -g or -c configure main.html to compile coffeescript.")
+    p.add_option('-d', '--devel',
+                    action='store',
+                    default=False,
+                    help="Development mode.")
+    p.add_option('-c', '--create',
+                    action='store',
+                    default='app/main.html',
+                    help="Create app/main.html (default) or given file and quit.")
+    p.add_option('-b', '--base',
+                    action='store',
+                    default='/halide',
+                    help="Base URL for client side web application.")
+    p.add_option('-p', '--prefix',
+                    action='store',
+                    default='',
+                    help="Prefix to prepend to the path for static files.")
+    p.add_option('-a', '--app',
+                    action='store',
+                    default='app',
+                    help="Directory containing the app (JS/CSS) files.")
+    p.add_option('-t', '--tmpl',
+                    action='store',
+                    default='mold/main.html',
+                    help="Location of the template file to render.")
+    p.add_option('-C', '--coffee',
+                    action='store_true',
+                    default=False,
+                    help="When -g or -c configure main.html to compile coffeescript.")
 
-    args = p.parse_args()
+    return p.parse_args()
 
-    logger = aiding.getLogger(name="Halide", level=levels[args.level])
+def load_tmpl(filename):
+    '''
+    Load a template from the file system
 
-    if args.create:
-        logger.info("Creating %s" % args.create)
-        path = os.path.abspath(args.create)
-        import ending
-        ending.logger.setLevel(levels[args.level]) # set bottle app logger from args
-        ending.development = args.devel
-        ending.createStaticMain(path=path, base=args.base)
-        sys.exit()
+    Default base path is the directory containing this script
+    '''
+    loader = jinja2.FileSystemLoader([
+        os.path.abspath(os.path.dirname(__file__)),
+    ])
 
-    if args.server in ['gevent']:
-        try:
-            import gevent
-            from gevent import monkey
-            monkey.patch_all()
-        except ImportError as ex: #gevent support not available
-            args.server = 'wsgiref' # use default server
+    env = jinja2.Environment(loader=loader)
+    return env.get_template(filename)
 
+def main():
+    '''
+    Render a template from the filesystem and write the result to stdout
+    '''
+    opts, args = parse_args()
 
-    import bottle
+    logger.setLevel(opts.level.upper())
 
+    appdir = os.path.join(os.path.abspath(os.path.dirname(__file__)), opts.app)
 
-    logger.info("Running web application with server %s on %s:%s" %
-                (args.server, args.host, args.port))
+    scripts, stylesheets = aiding.getFiles(
+            appdir,
+            urlparse.urljoin(opts.base, opts.prefix),
+            coffee=opts.coffee)
 
-    if args.devel:
-        logger.info("Running in development mode")
-    logger.info("Logger %s at level %s." % (logger.name, args.level))
+    context = {
+        'baseUrl': opts.base,
+        'mini': '.min' if not opts.devel else '',
+        'scripts': scripts,
+        'stylesheets': stylesheets,
+        'coffee': opts.coffee,
+    }
 
-    #inject dependencies before using app
-    import ending  #bottle app file
+    template = load_tmpl(opts.tmpl)
 
-    ending.logger.setLevel(levels[args.level]) # set bottle app logger from args
+    if opts.create == '-':
+        sys.stdout.write(template.render(context))
+    else:
+        logger.info("Creating {0}".format(opts.create))
 
-    ending.development = args.devel
-    ending.generate = args.gen
-    ending.baseprefix = args.base
-    ending.coffeescript = args.coffee
-    ending.remount(base=args.base)
-    from ending import app
+        with open(opts.create, 'w+') as fp:
+            fp.write(template.render(context))
 
-    bottle.run( app=app,
-                server=args.server,
-                host=args.host,
-                port=args.port,
-                debug=args.devel,
-                reloader=args.reload,
-                interval=1,
-                quiet=False)
+if __name__ == '__main__':
+    raise SystemExit(main())
