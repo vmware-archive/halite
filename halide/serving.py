@@ -1,19 +1,19 @@
 #!/usr/bin/env python
-
-""" Runs wsgi web server using bottle framework
+'''
+Runs wsgi web server using bottle framework
     
-    To get usage
+To get usage::
     
     $ python serving.py -h
     
-    Runs embedded wsgi server when run directly as __main__.
-    The server is at http://localhost:port or http://127.0.0.1:port
-    The default port is 8080
-    The root path is http://localhost:port
-    and routes below are relative to this root path so
-    "/" is http://localhost:port/
+Runs embedded wsgi server when run directly as __main__.
+The server is at http://localhost:port or http://127.0.0.1:port
+The default port is 8080
+The root path is http://localhost:port
+and routes below are relative to this root path so
+"/" is http://localhost:port/
      
-"""
+'''
 import sys
 import os
 import argparse
@@ -22,7 +22,9 @@ import aiding
 
 
 if __name__ == "__main__":
-    """Process command line args """
+    '''
+    Process command line args
+    '''
     
     levels = aiding.LOGGING_LEVELS #map of strings to logging levels
     
