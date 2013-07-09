@@ -26,7 +26,7 @@ def parse_args():
                     choices=levels.keys(),
                     help="Logging level.")
     p.add_option('-d', '--devel',
-                    action='store',
+                    action='store_true',
                     default=False,
                     help="Development mode.")
     p.add_option('-c', '--create',
