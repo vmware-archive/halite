@@ -6,7 +6,6 @@ filesystem
 import optparse
 import os
 import sys
-import urlparse
 
 import jinja2
 
@@ -38,10 +37,6 @@ def parse_args():
                     action='store',
                     default='/halide',
                     help="Base URL for client side web application.")
-    p.add_option('-p', '--prefix',
-                    action='store',
-                    default='',
-                    help="Prefix to prepend to the path for static files.")
     p.add_option('-a', '--app',
                     action='store',
                     default='app',
@@ -82,7 +77,7 @@ def main():
 
     scripts, stylesheets = aiding.getFiles(
             appdir,
-            urlparse.urljoin(opts.base, opts.prefix),
+            opts.base,
             coffee=opts.coffee)
 
     context = {
