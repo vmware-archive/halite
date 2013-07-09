@@ -26,19 +26,20 @@ mainApp.config ["Configuration", "MainConstants","$locationProvider", "$routePro
         #using absolute urls here in html5 mode
         base = Configuration.baseUrl # for use in coffeescript string interpolation #{base}
         
-        $routeProvider
-        .when "#{base}/app/home",
-            templateUrl: "#{base}/static/app/view/home.html"
-            controller: "HomeCtlr"
-        .when "#{base}/app/watch/:id",
-            templateUrl: "#{base}/static/app/view/watch.html"
-            controller: "WatchCtlr"
-        .when "#{base}/app/test",
-            templateUrl: "#{base}/static/app/view/test.html"
-            controller: "TestCtlr"
-        .otherwise 
-            redirectTo: "#{base}/app/home"
-
+        for name, item of Configuration.views
+            if item.label? # item is a view
+                $routeProvider.when item.route,
+                    templateUrl: item.template
+                    controller: item.controller
+            else # item is a list of views
+                for view in item
+                    $routeProvider.when view.route,
+                        templateUrl: view.template
+                        controller: view.controller
+        
+        $routeProvider.otherwise
+            redirectTo: Configuration.views.otherwise.route
+        
         return true
 ]
 

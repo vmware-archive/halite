@@ -26,7 +26,7 @@ configuration =
                 route: "#{base}/app/test"
                 url: "#{base}/app/test"
                 template: "#{base}/static/app/view/test.html"
-                controller: "testCtlr"
+                controller: "TestCtlr"
             ]
 
 
