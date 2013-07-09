@@ -23,6 +23,7 @@ app = bottle.default_app() # create bottle app
 development = False # development mode means use non minified javascript libraries
 generate = False # generate main.html dynamically
 baseprefix = '' # application base url path
+coffeescript = False
 
 """ Decorated Error functions for bottle web application
     Error methods do not automatically jsonify dicts so must manually do so.
@@ -111,7 +112,7 @@ def appGet(path=''):
     if not generate: #use static file
         return bottle.static_file('main.html', root=STATIC_APP_PATH)
     else: # dynamically generate using template
-        return stacheContent(base=baseprefix)         
+        return stacheContent(base=baseprefix, coffee=coffeescript)         
     
 @app.route('/static/app/<filepath:path>')
 def staticAppGet(filepath):
@@ -121,12 +122,16 @@ def staticAppGet(filepath):
 def staticLibGet(filepath):
     return bottle.static_file(filepath, root=STATIC_LIB_PATH)
 
-def stacheContent(moldPath=MAIN_TEMPLATE_PATH, base=BASE_PATH):
+def stacheContent(moldPath=MAIN_TEMPLATE_PATH, base=BASE_PATH, coffee=False):
     """ Dynamically generate contents using mustache template file path mold"""
-    data = dict(baseUrl=base, mini=".min" if not development else "")
+    data = dict(baseUrl=base,
+                mini=".min" if not development else "",
+                coffee = coffeescript)
    
     #get lists of app scripts and styles filenames
-    scripts, styles = aiding.getFiles(STATIC_APP_PATH, "%s/static/app/" % base)
+    scripts, styles = aiding.getFiles(top=STATIC_APP_PATH,
+                        prefix="%s/static/app/" % base,
+                        coffee = coffee)
     data['scripts'] = scripts
     data['styles'] = styles
     
@@ -141,7 +146,7 @@ def createStaticMain(path=os.path.join(STATIC_APP_PATH, 'main.html'),
     """ Generate and write to filepath path
         using template filepath mold
     """
-    content = stacheContent(moldPath=moldPath, base=base)
+    content = stacheContent(moldPath=moldPath, base=base, coffee=coffeescript)
     with open(path, 'w+') as fp:
         fp.write(content)
     

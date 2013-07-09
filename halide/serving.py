@@ -79,7 +79,13 @@ if __name__ == "__main__":
                     nargs='?', 
                     const = '/halide',
                     default = '/halide',
-                    help = "Base Url for client side web application.")     
+                    help = "Base Url for client side web application.")
+    p.add_argument('-C','--coffee',
+                    action = 'store',
+                    nargs='?', 
+                    const = True,
+                    default = False,
+                    help = "When -g or -c configure main.html to compile coffeescript.")    
 
     args = p.parse_args()
     
@@ -121,6 +127,7 @@ if __name__ == "__main__":
     ending.development = args.devel 
     ending.generate = args.gen
     ending.baseprefix = args.base
+    ending.coffeescript = args.coffee
     ending.remount(base=args.base)
     from ending import app
      

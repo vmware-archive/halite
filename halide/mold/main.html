@@ -16,7 +16,7 @@
     
     <title>Halide Salt UI</title>
   </head>
-  <body ng-app="MainApp">
+  <body>
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
@@ -41,10 +41,29 @@
     
     <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/bootstrap-tpls{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
-    
+   
     {{#scripts}}
-    <script src="{{name}}"></script>
+    <script src="{{name}}" type="{{mtype}}"></script>
     {{/scripts}}
     
+    {{#coffee}}
+    <script type="text/coffeescript">
+        angular.element(document).ready () ->
+            body = angular.element(document).find("body")[0]
+            angular.bootstrap(body, ['MainApp'])
+    </script>
+    <script src="{{baseUrl}}/static/lib/coffeescript/coffee-script.js"></script>
+    {{/coffee}}
+    {{^coffee}}
+    <script type="text/javascript">
+        (function() {
+            angular.element(document).ready(function() {
+              var body;
+              body = angular.element(document).find("body")[0];
+              return angular.bootstrap(body, ['MainApp']);
+            });
+        }).call(this);
+    </script>
+    {{/coffee}}
   </body>
 </html>
