@@ -2,30 +2,32 @@
 #  Can also used to avoid circular dependencies
 
 # inject these from config.json
-
 base = "/halide"
-date = "20130709"
-views =
-    otherwise: 
-        label: "home"
-        route: "#{base}/app/home"
-        url: "#{base}/app/home"
-        template: "#{base}/static/app/view/home.html"
-        controller: "HomeCtlr"
-    tabs:
-        [
-            label: "watch"
-            route: "#{base}/app/watch/:id"
-            url: "#{base}/app/watch/"
-            template: "#{base}/static/app/view/watch.html"
-            controller: "WatchCtlr"
-        ,
-            label: "test"
-            route: "#{base}/app/test"
-            url: "#{base}/app/test"
-            template: "#{base}/static/app/view/test.html"
-            controller: "testCtlr"
-        ]
+
+configuration =
+    baseUrl: "#{base}"
+    date: "20130709"
+    views:
+        otherwise: 
+            label: "home"
+            route: "#{base}/app/home"
+            url: "#{base}/app/home"
+            template: "#{base}/static/app/view/home.html"
+            controller: "HomeCtlr"
+        tabs:
+            [
+                label: "watch"
+                route: "#{base}/app/watch/:id"
+                url: "#{base}/app/watch/"
+                template: "#{base}/static/app/view/watch.html"
+                controller: "WatchCtlr"
+            ,
+                label: "test"
+                route: "#{base}/app/test"
+                url: "#{base}/app/test"
+                template: "#{base}/static/app/view/test.html"
+                controller: "testCtlr"
+            ]
 
 
 
@@ -46,13 +48,11 @@ matcherify = (views) ->
                 view.matcher = buildMatcher(view.route)
     return views
 
-matcherify(views)
+configuration.views = matcherify(configuration.views)
 
 configService = angular.module( "configService",[])
 
-configService.constant 'Configuration', 
-    baseUrl: "#{base}"
-    date: '20120625'
-    views: views
+configService.constant 'Configuration', configuration
+
 
 
