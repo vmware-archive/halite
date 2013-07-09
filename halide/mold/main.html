@@ -16,7 +16,11 @@
 
     <title>Halide Salt UI</title>
   </head>
+  {% if coffee %}
   <body>
+  {% else %}
+    <body ng-app="MainApp">
+  {% endif %}
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
@@ -53,15 +57,6 @@
             angular.bootstrap(body, ['MainApp'])
     </script>
     <script src="{{baseUrl}}/lib/coffeescript/coffee-script.js"></script>
-    <script type="text/javascript">
-        (function() {
-            angular.element(document).ready(function() {
-              var body;
-              body = angular.element(document).find("body")[0];
-              return angular.bootstrap(body, ['MainApp']);
-            });
-        }).call(this);
-    </script>
     {% endif %}
   </body>
 </html>
