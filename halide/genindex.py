@@ -77,7 +77,7 @@ def main():
 
     scripts, stylesheets = aiding.getFiles(
             appdir,
-            opts.base,
+            '', # handle the prefixing in the template
             coffee=opts.coffee)
 
     context = {
