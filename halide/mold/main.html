@@ -11,7 +11,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/app/favicon.ico">
 
     {% for css in stylesheets %}
-    <link rel="stylesheet" href="{{css.name}}">
+    <link rel="stylesheet" href="{{baseUrl}}/app/{{css.name}}">
     {%- endfor %}
 
     <title>Halide Salt UI</title>
@@ -47,7 +47,7 @@
     <script src="{{baseUrl}}/lib/angular-ui/router/router{{mini}}.js"></script>
 
     {% for script in scripts %}
-    <script src="{{script.name}}" type="{{script.mtype}}"></script>
+    <script src="{{baseUrl}}/app/{{script.name}}" type="{{script.mtype}}"></script>
     {%- endfor %}
 
     {% if coffee %}
