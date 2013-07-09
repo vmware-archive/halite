@@ -9,22 +9,22 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['metaService', 'ssFilter', 'demoService'])
+mainApp = angular.module("MainApp", ['configService', 'ssFilter', 'demoService'])
 
 
 mainApp.constant 'MainConstants', 
     name: 'Halide'
     owner: 'SaltStack'
 
-mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routeProvider", 
-    (MetaConstants, MainConstants, $locationProvider, $routeProvider) ->
+mainApp.config ["Configuration", "MainConstants","$locationProvider", "$routeProvider", 
+    (Configuration, MainConstants, $locationProvider, $routeProvider) ->
         $locationProvider.html5Mode(true)
-        console.log("MetaConstants")
-        console.log(MetaConstants)
+        console.log("Configuration")
+        console.log(Configuration)
         console.log("MainConstants")
         console.log(MainConstants)
         #using absolute urls here in html5 mode
-        base = MetaConstants.baseUrl # for use in coffeescript string interpolation #{base}
+        base = Configuration.baseUrl # for use in coffeescript string interpolation #{base}
         
         $routeProvider
         .when "#{base}/app/home",
@@ -42,16 +42,16 @@ mainApp.config ["MetaConstants", "MainConstants","$locationProvider", "$routePro
         return true
 ]
 
-mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams','MetaConstants',
-    ($scope, $location, $route, $routeParams, MetaConstants) ->
+mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams','Configuration',
+    ($scope, $location, $route, $routeParams, Configuration) ->
         console.log("NavbarCtlr")
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
-        $scope.baseUrl = MetaConstants.baseUrl
+        $scope.baseUrl = Configuration.baseUrl
         $scope.errorMsg = ''
         
-        $scope.views = MetaConstants.views
+        $scope.views = Configuration.views
         
         $scope.navery =
             'navs': {}
@@ -95,13 +95,13 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
 
 
 mainApp.controller 'RouteCtlr', ['$scope', '$location', '$route', '$routeParams',
-        'MetaConstants',
-    ($scope, $location, $route, $$routeParams, MetaConstants) ->
+        'Configuration',
+    ($scope, $location, $route, $$routeParams, Configuration) ->
         console.log("RouteCtlr")
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
-        $scope.baseUrl = MetaConstants.baseUrl
+        $scope.baseUrl = Configuration.baseUrl
         $scope.errorMsg = ''
 
         return true

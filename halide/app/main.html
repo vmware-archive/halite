@@ -16,7 +16,7 @@
     <title>Halide Salt UI</title>
   </head>
   
-    <body ng-app="MainApp">
+  <body>
   
       <!--[if lt IE 9]>
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
@@ -32,27 +32,34 @@
 
     <div ng-include="'/halide/static/app/route.html'" ></div>
 
-    <script src="/halide/static/lib/angular-unstable/angular.min.js"></script>
-    <script src="/halide/static/lib/angular-unstable/angular-resource.min.js"></script>
-    <script src="/halide/static/lib/angular-unstable/angular-cookies.min.js"></script>
-    <script src="/halide/static/lib/angular-unstable/angular-sanitize.min.js"></script>
+    <script src="/halide/static/lib/angular-unstable/angular.js"></script>
+    <script src="/halide/static/lib/angular-unstable/angular-resource.js"></script>
+    <script src="/halide/static/lib/angular-unstable/angular-cookies.js"></script>
+    <script src="/halide/static/lib/angular-unstable/angular-sanitize.js"></script>
 
-    <!--<script src="/halide/static/lib/angular-unstable/angular-mocks.min.js"></script>-->
-    <!--<script src="/halide/static/lib/angular-unstable/angular-scenario.min.js"></script>-->
+    <!--<script src="/halide/static/lib/angular-unstable/angular-mocks.js"></script>-->
+    <!--<script src="/halide/static/lib/angular-unstable/angular-scenario.js"></script>-->
 
-    <script src="/halide/static/lib/angular-ui/bootstrap/bootstrap-tpls.min.js"></script>
-    <script src="/halide/static/lib/angular-ui/router/router.min.js"></script>
+    <script src="/halide/static/lib/angular-ui/bootstrap/bootstrap-tpls.js"></script>
+    <script src="/halide/static/lib/angular-ui/router/router.js"></script>
 
     
-    <script src="/halide/static/app/main.js" type="text/javascript"></script>
-    <script src="/halide/static/app/util/demoDrtv.js" type="text/javascript"></script>
-    <script src="/halide/static/app/util/demoSrvc.js" type="text/javascript"></script>
-    <script src="/halide/static/app/util/metaSrvc.js" type="text/javascript"></script>
-    <script src="/halide/static/app/util/ssFltr.js" type="text/javascript"></script>
-    <script src="/halide/static/app/view/home.js" type="text/javascript"></script>
-    <script src="/halide/static/app/view/test.js" type="text/javascript"></script>
-    <script src="/halide/static/app/view/watch.js" type="text/javascript"></script>
+    <script src="/halide/static/app/configuration.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/main.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/util/demoDrtv.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/util/demoSrvc.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/util/ssFltr.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/view/home.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/view/test.coffee" type="text/coffeescript"></script>
+    <script src="/halide/static/app/view/watch.coffee" type="text/coffeescript"></script>
 
+    
+    <script type="text/coffeescript">
+        angular.element(document).ready () ->
+            body = angular.element(document).find("body")[0]
+            angular.bootstrap(body, ['MainApp'])
+    </script>
+    <script src="/halide/static/lib/coffeescript/coffee-script.js"></script>
     
   </body>
 </html>

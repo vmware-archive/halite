@@ -1,0 +1,32 @@
+{
+    "base": "/halide"
+    "date": "2013/07/09"
+    "views":
+    {
+        "otherwise": 
+        {
+            "label": "home"
+            "route": "#{base}/app/home"
+            "url": "#{base}/app/home"
+            "template": "#{base}/static/app/view/home.html"
+            "controller": "HomeCtlr"
+        },
+        "tabs":
+        [
+            {
+                "label": "watch"
+                "route": "#{base}/app/watch/:id"
+                "url": "#{base}/app/watch/"
+                "template": "#{base}/static/app/view/watch.html"
+                "controller": "WatchCtlr"
+            },
+            {
+                "label": "test"
+                "route": "#{base}/app/test"
+                "url": "#{base}/app/test"
+                "template": "#{base}/static/app/view/test.html"
+                "controller": "testCtlr"
+            }
+        ] 
+    }
+}

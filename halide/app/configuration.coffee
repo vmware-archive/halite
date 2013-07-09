@@ -1,9 +1,10 @@
-# Service to provide global meta data for application 
-#   Also can used to avoid circular dependencies
+# Service to provide global configuration meta data for application 
+#  Can also used to avoid circular dependencies
 
-metaservice = angular.module( "metaService",[])
+# inject these from config.json
 
-base = '/halide'
+base = "/halide"
+date = "20130709"
 views =
     otherwise: 
         label: "home"
@@ -26,6 +27,8 @@ views =
             controller: "testCtlr"
         ]
 
+
+
 buildMatcher = (route) ->
     chunks = route.split("/")
     for chunk, i in chunks
@@ -45,9 +48,11 @@ matcherify = (views) ->
 
 matcherify(views)
 
-metaservice.constant( 'MetaConstants', 
+configService = angular.module( "configService",[])
+
+configService.constant 'Configuration', 
     baseUrl: "#{base}"
     date: '20120625'
     views: views
-)
+
 

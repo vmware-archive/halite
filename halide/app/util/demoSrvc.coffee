@@ -9,11 +9,11 @@ $scope.demoPromise.success (data, status, headers, config) ->
 ###
 
 
-angular.module("demoService", ['metaService']).factory "DemoService", 
-    ['$http', 'MetaConstants', ($http, MetaConstants) -> 
+angular.module("demoService", ['configService']).factory "DemoService", 
+    ['$http', 'Configuration', ($http, Configuration) -> 
         { #object literal
             call: ($scope, action, query) -> 
-                base = MetaConstants.baseUrl
+                base = Configuration.baseUrl
                 url = if action? then "#{base}/demo/#{action}" else "#{base}/demo"
                 $http.get( url, {params: query}  )
                 .success((data, status, headers, config) ->

@@ -1,8 +1,8 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
-mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','MetaConstants',
+mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
      'DemoService',
-    ($scope, $location, $route, MetaConstants, DemoService) ->
+    ($scope, $location, $route, Configuration, DemoService) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -10,6 +10,6 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','MetaConstants',
         console.log("HomeCtlr")
         $scope.errorMsg = ""
         
-        $scope.views = MetaConstants.views
+        $scope.views = Configuration.views
         return true
 ]
