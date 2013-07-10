@@ -1,11 +1,11 @@
-ssFilter = angular.module 'ssFilter', []
+saltFilter = angular.module 'saltFilter', []
 
-ssFilter.filter 'capitalcase', () ->
+saltFilter.filter 'capitalcase', () ->
     filter = (input) ->
         return input.substring(0,1).toUpperCase()+input.substring(1)
     return filter   
 
-ssFilter.filter 'titlecase', () ->
+saltFilter.filter 'titlecase', () ->
     filter = (input) ->
         chunks = input.split(" ")
         for chunk, i in chunks

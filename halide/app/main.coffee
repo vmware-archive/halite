@@ -9,7 +9,7 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['configService', 'ssFilter', 'demoService'])
+mainApp = angular.module("MainApp", ['configService', 'saltFilter', 'demoService'])
 
 
 mainApp.constant 'MainConstants', 
