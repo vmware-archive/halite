@@ -2,34 +2,44 @@
 #  Can also used to avoid circular dependencies
 
 # inject these from config.json
-base = "/halide"
 
 configuration =
-    baseUrl: "#{base}"
+    baseUrl: "/halide"
     date: "20130709"
     views:
         otherwise: 
             label: "home"
-            route: "#{base}/app/home"
-            url: "#{base}/app/home"
-            template: "#{base}/static/app/view/home.html"
+            route: "/app/home"
+            url: "/app/home"
+            template: "/static/app/view/home.html"
             controller: "HomeCtlr"
         tabs:
             [
                 label: "watch"
-                route: "#{base}/app/watch/:id"
-                url: "#{base}/app/watch/"
-                template: "#{base}/static/app/view/watch.html"
+                route: "/app/watch/:id"
+                url: "/app/watch/"
+                template: "/static/app/view/watch.html"
                 controller: "WatchCtlr"
             ,
                 label: "test"
-                route: "#{base}/app/test"
-                url: "#{base}/app/test"
-                template: "#{base}/static/app/view/test.html"
+                route: "/app/test"
+                url: "/app/test"
+                template: "/static/app/view/test.html"
                 controller: "TestCtlr"
             ]
 
-
+prefixify = (views, base) ->
+    for name, item of views
+        if item.label? # item is a view
+            item.route = base + item.route
+            item.url = base + item.url
+            item.template = base + item.template
+        else # item is a list of views
+            for view in item
+                view.route = base + view.route
+                view.url = base + view.url
+                view.template = base + view.template
+    return views
 
 buildMatcher = (route) ->
     chunks = route.split("/")
@@ -48,6 +58,7 @@ matcherify = (views) ->
                 view.matcher = buildMatcher(view.route)
     return views
 
+configuration.views = prefixify(configuration.views, configuration.baseUrl)
 configuration.views = matcherify(configuration.views)
 
 configService = angular.module( "configService",[])
