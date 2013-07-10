@@ -1,5 +1,5 @@
 {
-    "base": "/halide"
+    "baseUrl": "#{base}"
     "date": "2013/07/09"
     "views":
     {

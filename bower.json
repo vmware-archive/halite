@@ -1,7 +1,7 @@
 {
   "name": "halide",
   "version": "0.0.1",
-  "main": "src/app/main.html",
+  "main": "halide/app/main.html",
   "ignore": [
     "**/.*",
     "node_modules",
