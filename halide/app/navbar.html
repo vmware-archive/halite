@@ -1,20 +1,42 @@
 <div ng-controller="NavbarCtlr">
-  <div class="navbar" >
-    <div class="navbar-inner">
+  <div class="navbar navbar-fixed-top" >
+    <div class="navbar-inner ">
       <div class="container">
+        <button type="button" class="btn btn-navbar" ng-click="isCollapsed = !isCollapsed">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
         <a class="brand" ng-href="{{views.otherwise.url}}">
-          <img ng-src="{{baseUrl}}/static/app/SaltStack-Logo.png" />
+          <img ng-src="{{baseUrl}}/static/app/SaltStackLogoBlackHoriz18.png" />
         </a>
-        <ul class="nav">
-          <li ng-repeat="view in views.tabs" ng-class="navery.navs[view.label].state">
-            <a ng-href="{{view.url}}">{{view.label | capitalcase}}</a>
-          </li>
-        </ul>
-      </div>
+        <div class="nav-collapse" collapse="isCollapsed" style="height: 0px;">
+          <ul class="nav">
+            <li ng-repeat="view in views.tabs" ng-class="navery.navs[view.label].state">
+              <a ng-href="{{view.url}}">{{view.label | capitalcase}}</a>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle">Actions<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li class="nav-header">Run</li>
+                <li><a ng-href="/">Start</a></li>
+                <li><a ng-href="/">Monitor</a></li>
+                <li><a ng-href="/">Display</a></li>
+                <li class="divider"></li>
+                <li class="nav-header">Debug</li>
+                <li><a ng-href="/">Trace</a></li>
+                <li><a ng-href="/">Edit</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form pull-right">
+            <input class="span2" type="text" placeholder="User">
+            <input class="span2" type="password" placeholder="Password">
+            <button type="submit" class="btn" >Login</button>
+          </form>
+        </div><!-- /nav collapse -->
+      </div><!-- /containter -->
     </div><!-- /navbar-inner -->
   </div><!-- /navbar -->
-  <pre ng-show="false">
-  views = {{views}}
-  navery.navs = {{navery.navs}}
-  </pre>
 </div>
+

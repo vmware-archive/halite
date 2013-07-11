@@ -52,6 +52,8 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         $scope.baseUrl = Configuration.baseUrl
         $scope.errorMsg = ''
         
+        $scope.isCollapsed = true;
+        
         $scope.views = Configuration.views
         
         $scope.navery =
