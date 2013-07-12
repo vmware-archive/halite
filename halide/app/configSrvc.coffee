@@ -6,6 +6,7 @@
 configuration =
     baseUrl: "/halide"
     date: "20130709"
+    debug: false
     views:
         otherwise: 
             label: "home"
@@ -61,9 +62,9 @@ matcherify = (views) ->
 configuration.views = prefixify(configuration.views, configuration.baseUrl)
 configuration.views = matcherify(configuration.views)
 
-configService = angular.module( "configService",[])
+configSrvc = angular.module( "configSrvc",[])
 
-configService.constant 'Configuration', configuration
+configSrvc.constant 'Configuration', configuration
 
 
 

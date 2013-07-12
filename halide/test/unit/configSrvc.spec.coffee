@@ -1,9 +1,9 @@
 # jasmine
 
-describe "ConfigService suite", () ->
+describe "ConfigSrvc suite", () ->
   Configuration = null
 
-  beforeEach module('configService')
+  beforeEach module('configSrvc')
   
   beforeEach inject (_Configuration_) ->
     Configuration = _Configuration_

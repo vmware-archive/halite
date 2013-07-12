@@ -1,6 +1,6 @@
 ###
 usage:
-$scope.demoPromise = DemoService.call $scope, 'doit', {'name':'John'}
+$scope.demoPromise = DemoSrvc.call $scope, 'doit', {'name':'John'}
 $scope.demoPromise.success (data, status, headers, config) ->
     console.log("Demo success")
     $scope.demo = data
@@ -9,7 +9,7 @@ $scope.demoPromise.success (data, status, headers, config) ->
 ###
 
 
-angular.module("demoService", ['configService']).factory "DemoService", 
+angular.module("demoSrvc", ['configSrvc']).factory "DemoSrvc", 
     ['$http', 'Configuration', ($http, Configuration) -> 
         { #object literal
             call: ($scope, action, query) -> 
@@ -17,7 +17,7 @@ angular.module("demoService", ['configService']).factory "DemoService",
                 url = if action? then "#{base}/demo/#{action}" else "#{base}/demo"
                 $http.get( url, {params: query}  )
                 .success((data, status, headers, config) ->
-                    console.log("DemoService #{action} success")
+                    console.log("DemoSrvc #{action} success")
                     console.log(config)
                     console.log(status)
                     console.log(headers())
@@ -25,7 +25,7 @@ angular.module("demoService", ['configService']).factory "DemoService",
                     return true
                 )
                 .error((data, status, headers, config) -> 
-                    console.log("DemoService #{action} failure")
+                    console.log("DemoSrvc #{action} failure")
                     console.log(config)
                     console.log(status)
                     console.log(headers())

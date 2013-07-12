@@ -1,4 +1,4 @@
-<pre class="pre-scrollable" ng-show="true" ng-controller="RouteCtlr">
+<pre class="pre-scrollable" ng-show="debug" ng-controller="RouteCtlr">
   window.location.href = {{winLoc.href}}
   window.location.pathname = {{winLoc.pathname}}
   $location.absUrl() = {{location.absUrl()}}
@@ -16,7 +16,7 @@
   $route.current.pathParams = {{route.current.pathParams}}
   $route.routes = {{route.routes}}
   
-  <span ng-repeat="(name, data) in route.routes" ng-show="true">
+  <span ng-repeat="(name, data) in route.routes" ng-show="debug">
     {{name}}  {{data.redirectTo}} {{data.templateUrl}} {{data.controller}}</span>
 </pre>
 

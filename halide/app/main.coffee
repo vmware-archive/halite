@@ -9,7 +9,8 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['configService', 'saltFilter', 'demoService','ui.bootstrap'])
+mainApp = angular.module("MainApp", ['configSrvc', 'saltFltr', 
+    'saltApiSrvc', 'demoSrvc', 'ui.bootstrap'])
 
 
 mainApp.constant 'MainConstants', 
@@ -43,13 +44,15 @@ mainApp.config ["Configuration", "MainConstants","$locationProvider", "$routePro
         return true
 ]
 
-mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams','Configuration',
-    ($scope, $location, $route, $routeParams, Configuration) ->
+mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams',
+    'Configuration', 'SaltApiSrvc',
+    ($scope, $location, $route, $routeParams, Configuration, SaltApiSrvc) ->
         console.log("NavbarCtlr")
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
         $scope.baseUrl = Configuration.baseUrl
+        $scope.debug = Configuration.debug
         $scope.errorMsg = ''
         
         $scope.isCollapsed = true;
@@ -92,6 +95,31 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
             $scope.navery.update(newPath, oldPath)
             return true
         )
+        
+        $scope.login = 
+            username: ""
+            password: ""
+            
+        
+        
+        $scope.loginUser = () ->
+            console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
+            
+            return true
+            
+        
+        $scope.loginError = () ->
+            requiredFields = ["username", "password"]
+            
+            erroredFields = 
+                for name in requiredFields when $scope.loginForm[name].$error.required
+                    $scope.loginForm[name].$name.substring(0,1).toUpperCase() + $scope.loginForm[name].$name.substring(1)
+            
+            msg = erroredFields.join(" & ") + " missing!"
+            
+                
+            return msg
+
 
         return true
 ]
@@ -100,12 +128,14 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
 mainApp.controller 'RouteCtlr', ['$scope', '$location', '$route', '$routeParams',
         'Configuration',
     ($scope, $location, $route, $$routeParams, Configuration) ->
-        console.log("RouteCtlr")
+        console.log "RouteCtlr"
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
         $scope.baseUrl = Configuration.baseUrl
+        $scope.debug = Configuration.debug
         $scope.errorMsg = ''
-
+        
+        
         return true
 ]
