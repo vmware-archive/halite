@@ -4,7 +4,7 @@
 # inject these from config.json
 
 configuration =
-    baseUrl: "/halide"
+    baseUrl: ""
     date: "20130709"
     debug: false
     views:
@@ -12,20 +12,20 @@ configuration =
             label: "home"
             route: "/app/home"
             url: "/app/home"
-            template: "/static/app/view/home.html"
+            template: "/app/view/home.html"
             controller: "HomeCtlr"
         tabs:
             [
                 label: "watch"
                 route: "/app/watch/:id"
                 url: "/app/watch/"
-                template: "/static/app/view/watch.html"
+                template: "/app/view/watch.html"
                 controller: "WatchCtlr"
             ,
                 label: "test"
                 route: "/app/test"
                 url: "/app/test"
-                template: "/static/app/view/test.html"
+                template: "/app/view/test.html"
                 controller: "TestCtlr"
             ]
 

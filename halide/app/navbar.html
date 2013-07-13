@@ -8,7 +8,7 @@
           <span class="icon-bar"></span>
         </button>
         <a class="brand" ng-href="{{views.otherwise.url}}">
-          <img ng-src="{{baseUrl}}/static/app/SaltStackLogoBlackHoriz18.png" />
+          <img ng-src="{{baseUrl}}/app/SaltStackLogoBlackHoriz18.png" />
         </a>
         <div class="nav-collapse" collapse="isCollapsed" style="height: 0px;">
           <ul class="nav">
@@ -30,8 +30,10 @@
             </li>
           </ul>
           <form class="navbar-form pull-right" name="loginForm">
+            
             <div>
-              <span ng-style="{color:'red'}" ng-cloak ng-show="loginForm.$dirty && loginForm.$invalid">{{loginError()}}  </span>
+              <span ng-style="{color:'red'}" ng-cloak ng-show="errorMsg">{{errorMsg}}  </span>
+              <span ng-style="{color:'red'}" ng-cloak ng-show="loginFormError()">{{loginFormError()}}  </span>
             </div>
             <input class="span2" type="text" placeholder="Username" ng-model="login.username" name="username" required>
             <input class="span2" type="password" placeholder="Password" ng-model="login.password" name="password" required>

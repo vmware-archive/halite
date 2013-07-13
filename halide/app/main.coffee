@@ -9,7 +9,7 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['configSrvc', 'saltFltr', 
+mainApp = angular.module("MainApp", ['ngCookies','configSrvc', 'saltFltr', 
     'saltApiSrvc', 'demoSrvc', 'ui.bootstrap'])
 
 
@@ -17,8 +17,9 @@ mainApp.constant 'MainConstants',
     name: 'Halide'
     owner: 'SaltStack'
 
-mainApp.config ["Configuration", "MainConstants","$locationProvider", "$routeProvider", 
-    (Configuration, MainConstants, $locationProvider, $routeProvider) ->
+mainApp.config ["Configuration", "MainConstants","$locationProvider", 
+    "$routeProvider", "$httpProvider",
+    (Configuration, MainConstants, $locationProvider, $routeProvider, $httpProvider) ->
         $locationProvider.html5Mode(true)
         console.log("Configuration")
         console.log(Configuration)
@@ -26,6 +27,9 @@ mainApp.config ["Configuration", "MainConstants","$locationProvider", "$routePro
         console.log(MainConstants)
         #using absolute urls here in html5 mode
         base = Configuration.baseUrl # for use in coffeescript string interpolation #{base}
+        
+        #$httpProvider.defaults.useXDomain = true;
+        #delete $httpProvider.defaults.headers.common['X-Requested-With']
         
         for name, item of Configuration.views
             if item.label? # item is a view
@@ -103,21 +107,27 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         
         
         $scope.loginUser = () ->
+            $scope.errorMsg = ""
             console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
-            
+            $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, $scope.login.username, $scope.login.password
+            $scope.saltApiLoginPromise.success (data, status, headers, config) ->
+                console.log("SaltApi success")
+                $scope.result = data
             return true
             
         
-        $scope.loginError = () ->
-            requiredFields = ["username", "password"]
-            
-            erroredFields = 
-                for name in requiredFields when $scope.loginForm[name].$error.required
-                    $scope.loginForm[name].$name.substring(0,1).toUpperCase() + $scope.loginForm[name].$name.substring(1)
-            
-            msg = erroredFields.join(" & ") + " missing!"
-            
+        $scope.loginFormError = () ->
+            msg = ""
+            if $scope.loginForm.$dirty and $scope.loginForm.$invalid
+                requiredFields = ["username", "password"]
                 
+                erroredFields = 
+                    for name in requiredFields when $scope.loginForm[name].$error.required
+                        $scope.loginForm[name].$name.substring(0,1).toUpperCase() + $scope.loginForm[name].$name.substring(1)
+                
+                if erroredFields
+                    msg = erroredFields.join(" & ") + " missing!"
+            
             return msg
 
 
