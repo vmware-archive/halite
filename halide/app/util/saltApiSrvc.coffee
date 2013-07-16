@@ -56,7 +56,7 @@ angular.module("saltApiSrvc", ['appConfigSrvc']).factory "SaltApiSrvc",
                     "password": password
                     "eauth": "pam"
                     
-                url = "https://localhost:8100/login"
+                url = "http://localhost:8100/login"
                 $http.post( url, reqData)
                 .success((data, status, headers, config) ->
                     console.log "SaltApi login success" 
