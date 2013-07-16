@@ -12,20 +12,20 @@ configuration =
             label: "home"
             route: "/app/home"
             url: "/app/home"
-            template: "/app/view/home.html"
+            template: "/static/app/view/home.html"
             controller: "HomeCtlr"
         tabs:
             [
                 label: "watch"
                 route: "/app/watch/:id"
                 url: "/app/watch/"
-                template: "/app/view/watch.html"
+                template: "/static/app/view/watch.html"
                 controller: "WatchCtlr"
             ,
                 label: "test"
                 route: "/app/test"
                 url: "/app/test"
-                template: "/app/view/test.html"
+                template: "/static/app/view/test.html"
                 controller: "TestCtlr"
             ]
 
