@@ -4,12 +4,13 @@
       <div class="row-fluid">
         <form class="navbar-search  pull-left">
           <input type="text" class="search-query input-large" placeholder="Search">
-          <button class="btn btn-mini" type="submit"> <i class="icon-search"></i></button>
+          <button class="btn btn-mini" type="submit" ng-click="fetchMinionGrains()"><i class="icon-search"></i></button>
         </form>
       </div>
       <div class="row-fluid">
         <ul class="nav nav-list">
           <li class="nav-header">Minions</li>
+          <li ng-repeat="(name, grains) in minions">{{name}}</li>
           <li class="active"><a href="#">Link</a></li>
           <li><a href="#">Link</a></li>
           <li><a href="#">Link</a></li>

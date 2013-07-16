@@ -28,6 +28,12 @@ configuration =
                 template: "/static/app/view/test.html"
                 controller: "TestCtlr"
             ]
+    saltApi:
+        scheme: "http"
+        host: "localhost"
+        port: 8100
+        prefix: ""
+        
 
 prefixify = (views, base) ->
     for name, item of views

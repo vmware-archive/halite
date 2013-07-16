@@ -41,7 +41,7 @@ angular.module("appStoreSrvc", [])
             clear: () ->
                 return localStorage.clear()
             len: () ->
-                return localStorage.length()
+                return localStorage.length
             key: (index) ->
                 return localStorage.key(index)
             get: (key) ->
@@ -61,7 +61,7 @@ angular.module("appStoreSrvc", [])
             clear: () ->
                 return sessionStorage.clear()
             len: () ->
-                return sessionStorage.length()
+                return sessionStorage.length
             key: (index) ->
                 return sessionStorage.key(index)
             get: (key) ->

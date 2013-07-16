@@ -115,11 +115,18 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
             $scope.username = null
             
             $scope.loggedIn = false
-            SessionStore.set('loggedIn',$scope.loggedIn)
-            SessionStore.remove('saltApiAuth')
             
-            console.log SessionStore.get('loggedIn')    
-            console.log SessionStore.get('saltApiAuth')
+            
+            $scope.saltApiLogoutPromise = SaltApiSrvc.logout $scope
+            $scope.saltApiLogoutPromise.success (data, status, headers, config) ->
+                console.log("SaltApi Logout success")
+                console.log data
+                if data?.return?[0]?
+                    SessionStore.set('loggedIn',$scope.loggedIn)
+                    SessionStore.remove('saltApiAuth')
+                    console.log SessionStore.get('loggedIn')    
+                    console.log SessionStore.get('saltApiAuth')
+                return true
             
             return true    
         
@@ -128,7 +135,7 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
             console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
             $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, $scope.login.username, $scope.login.password
             $scope.saltApiLoginPromise.success (data, status, headers, config) ->
-                console.log("SaltApi success")
+                console.log("SaltApi Login success")
                 console.log data
                 if data?.return?[0]?
                     auth = data.return[0]
@@ -146,7 +153,9 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
                     SessionStore.set('saltApiAuth', saltApiAuth )
                     
                     console.log SessionStore.get('loggedIn')    
-                    console.log SessionStore.get('saltApiAuth')        
+                    console.log SessionStore.get('saltApiAuth')  
+                return true
+                
             return true
         
         $scope.loginFormError = () ->
