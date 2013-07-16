@@ -6,15 +6,15 @@
     <meta name="description" content="Main app entry point">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="/"></base>
-    <link rel="stylesheet" href="/halide/static/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
     <style type="text/css">
       body { padding-top: 60px; padding-bottom: 40px;} <!-- Needed for fixed navbar-->
     </style>
-    <link rel="stylesheet" href="/halide/static/lib/bootstrap/css/bootstrap-responsive.css" >
-    <link rel="shortcut icon" type="image/x-icon" href="/halide/static/app/favicon.ico">
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap-responsive.css" >
+    <link rel="shortcut icon" type="image/x-icon" href="/app/favicon.ico">
 
     
-    <link rel="stylesheet" href="/halide/static/app/main.css">
+    <link rel="stylesheet" href="/app/main.css">
 
     <title>Halide Salt UI</title>
   </head>
@@ -25,7 +25,7 @@
         <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
       <![endif]-->
 
-    <div ng-include="'/halide/static/app/navbar.html'" ></div>
+    <div ng-include="'/app/navbar.html'" ></div>
 
     <div class="container-fluid">
       <div class="row-fluid">
@@ -33,29 +33,29 @@
       </div><!-- /row-fluid -->
     </div><!-- /container-fluid -->
 
-    <div ng-include="'/halide/static/app/route.html'" ></div>
+    <div ng-include="'/app/route.html'" ></div>
 
-    <script src="/halide/static/lib/angular-unstable/angular.js"></script>
-    <script src="/halide/static/lib/angular-unstable/angular-resource.js"></script>
-    <script src="/halide/static/lib/angular-unstable/angular-cookies.js"></script>
-    <script src="/halide/static/lib/angular-unstable/angular-sanitize.js"></script>
+    <script src="/lib/angular-unstable/angular.js"></script>
+    <script src="/lib/angular-unstable/angular-resource.js"></script>
+    <script src="/lib/angular-unstable/angular-cookies.js"></script>
+    <script src="/lib/angular-unstable/angular-sanitize.js"></script>
 
-    <!--<script src="/halide/static/lib/angular-unstable/angular-mocks.js"></script>-->
-    <!--<script src="/halide/static/lib/angular-unstable/angular-scenario.js"></script>-->
+    <!--<script src="/lib/angular-unstable/angular-mocks.js"></script>-->
+    <!--<script src="/lib/angular-unstable/angular-scenario.js"></script>-->
 
-    <script src="/halide/static/lib/angular-ui/bootstrap/bootstrap-tpls.js"></script>
-    <script src="/halide/static/lib/angular-ui/router/router.js"></script>
+    <script src="/lib/angular-ui/bootstrap/bootstrap-tpls.js"></script>
+    <script src="/lib/angular-ui/router/router.js"></script>
 
     
-    <script src="/halide/static/app/configSrvc.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/main.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/util/demoDrtv.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/util/demoSrvc.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/util/saltApiSrvc.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/util/saltFltr.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/view/home.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/view/test.coffee" type="text/coffeescript"></script>
-    <script src="/halide/static/app/view/watch.coffee" type="text/coffeescript"></script>
+    <script src="/app/configSrvc.coffee" type="text/coffeescript"></script>
+    <script src="/app/main.coffee" type="text/coffeescript"></script>
+    <script src="/app/util/demoDrtv.coffee" type="text/coffeescript"></script>
+    <script src="/app/util/demoSrvc.coffee" type="text/coffeescript"></script>
+    <script src="/app/util/saltApiSrvc.coffee" type="text/coffeescript"></script>
+    <script src="/app/util/saltFltr.coffee" type="text/coffeescript"></script>
+    <script src="/app/view/home.coffee" type="text/coffeescript"></script>
+    <script src="/app/view/test.coffee" type="text/coffeescript"></script>
+    <script src="/app/view/watch.coffee" type="text/coffeescript"></script>
 
     
     <script type="text/coffeescript">
@@ -63,7 +63,7 @@
             body = angular.element(document).find("body")[0]
             angular.bootstrap(body, ['MainApp'])
     </script>
-    <script src="/halide/static/lib/coffeescript/coffee-script.js"></script>
+    <script src="/lib/coffeescript/coffee-script.js"></script>
     
   </body>
 </html>

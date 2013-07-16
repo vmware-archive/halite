@@ -62,9 +62,9 @@ matcherify = (views) ->
 configuration.views = prefixify(configuration.views, configuration.baseUrl)
 configuration.views = matcherify(configuration.views)
 
-configSrvc = angular.module( "configSrvc",[])
+appConfigSrvc = angular.module( "appConfigSrvc",[])
 
-configSrvc.constant 'Configuration', configuration
+appConfigSrvc.constant 'Configuration', configuration
 
 
 

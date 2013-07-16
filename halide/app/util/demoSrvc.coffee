@@ -9,7 +9,7 @@ $scope.demoPromise.success (data, status, headers, config) ->
 ###
 
 
-angular.module("demoSrvc", ['configSrvc']).factory "DemoSrvc", 
+angular.module("demoSrvc", ['appConfigSrvc']).factory "DemoSrvc", 
     ['$http', 'Configuration', ($http, Configuration) -> 
         { #object literal
             call: ($scope, action, query) -> 

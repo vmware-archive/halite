@@ -3,7 +3,7 @@
 describe "ConfigSrvc suite", () ->
   Configuration = null
 
-  beforeEach module('configSrvc')
+  beforeEach module('appConfigSrvc')
   
   beforeEach inject (_Configuration_) ->
     Configuration = _Configuration_

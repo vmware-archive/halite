@@ -9,8 +9,8 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['ngCookies','configSrvc', 'saltFltr', 
-    'saltApiSrvc', 'demoSrvc', 'ui.bootstrap'])
+mainApp = angular.module("MainApp", ['ngCookies','appConfigSrvc', 'appDataSrvc', 
+        'appStoreSrvc', 'appFltr', 'saltApiSrvc', 'demoSrvc', 'ui.bootstrap'])
 
 
 mainApp.constant 'MainConstants', 
@@ -49,8 +49,9 @@ mainApp.config ["Configuration", "MainConstants","$locationProvider",
 ]
 
 mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams',
-    'Configuration', 'SaltApiSrvc',
-    ($scope, $location, $route, $routeParams, Configuration, SaltApiSrvc) ->
+    'Configuration', 'AppData', 'LocalStore', 'SessionStore', 'SaltApiSrvc',
+    ($scope, $location, $route, $routeParams, Configuration, AppData, LocalStore,
+            SessionStore, SaltApiSrvc) ->
         console.log("NavbarCtlr")
         $scope.location = $location
         $scope.route = $route
@@ -60,6 +61,8 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         $scope.errorMsg = ''
         
         $scope.isCollapsed = true;
+        $scope.loggedIn = SessionStore.get('loggedIn')?
+        $scope.username = SessionStore.get('saltApiAuth')?.user
         
         $scope.views = Configuration.views
         
@@ -105,6 +108,20 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
             password: ""
             
         
+        $scope.logoutUser = () ->
+            $scope.errorMsg = ""
+            console.log "Logging out #{$scope.username}"
+            
+            $scope.username = null
+            
+            $scope.loggedIn = false
+            SessionStore.set('loggedIn',$scope.loggedIn)
+            SessionStore.remove('saltApiAuth')
+            
+            console.log SessionStore.get('loggedIn')    
+            console.log SessionStore.get('saltApiAuth')
+            
+            return true    
         
         $scope.loginUser = () ->
             $scope.errorMsg = ""
@@ -112,9 +129,25 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
             $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, $scope.login.username, $scope.login.password
             $scope.saltApiLoginPromise.success (data, status, headers, config) ->
                 console.log("SaltApi success")
-                $scope.result = data
+                console.log data
+                if data?.return?[0]?
+                    auth = data.return[0]
+                    saltApiAuth =
+                        user: auth.user
+                        token: auth.token
+                        eauth: auth.eauth
+                        start: auth.start
+                        expire: auth.expire
+                        perms: auth.perms[0]
+                    
+                    $scope.loggedIn = true
+                    SessionStore.set('loggedIn', $scope.loggedIn)
+                    $scope.username = saltApiAuth.user
+                    SessionStore.set('saltApiAuth', saltApiAuth )
+                    
+                    console.log SessionStore.get('loggedIn')    
+                    console.log SessionStore.get('saltApiAuth')        
             return true
-            
         
         $scope.loginFormError = () ->
             msg = ""

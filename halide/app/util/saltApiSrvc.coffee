@@ -22,7 +22,7 @@ mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiSrvc',
 ###
 
 
-angular.module("saltApiSrvc", ['configSrvc']).factory "SaltApiSrvc", 
+angular.module("saltApiSrvc", ['appConfigSrvc']).factory "SaltApiSrvc", 
     ['$http', 'Configuration', ($http, Configuration) -> 
         base = Configuration.baseUrl
         delete $http.defaults.headers.common['X-Requested-With']
