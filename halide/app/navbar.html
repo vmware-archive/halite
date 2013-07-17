@@ -38,7 +38,7 @@
             <input class="span2" type="password" placeholder="Password" ng-model="login.password" name="password" required>
             <button type="submit" class="btn" ng-click="loginUser()" ng-disabled="loginForm.$invalid">Login</button>
           </form>
-          <form class="navbar-form pull-right" name="logoutForm" ng-cloak ng-show="loggedIn">
+          <form class="navbar-form pull-right" name="logoutForm" ng-cloak ng-show="!!loggedIn">
             <div>
               <span ng-style="{color:'red'}" ng-cloak ng-show="errorMsg">{{errorMsg}}  </span>
             </div>

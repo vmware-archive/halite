@@ -9,15 +9,16 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['ngCookies','appConfigSrvc', 'appDataSrvc', 
-        'appStoreSrvc', 'appFltr', 'saltApiSrvc', 'demoSrvc', 'ui.bootstrap'])
+mainApp = angular.module("MainApp", ['ngCookies','appConfigSrvc', 'appPrefSrvc',
+        'appDataSrvc', 'appStoreSrvc', 'appFltr', 'saltApiSrvc', 'demoSrvc', 
+        'ui.bootstrap'])
 
 
 mainApp.constant 'MainConstants', 
     name: 'Halide'
     owner: 'SaltStack'
 
-mainApp.config ["Configuration", "MainConstants","$locationProvider", 
+mainApp.config ["Configuration", "MainConstants", "$locationProvider", 
     "$routeProvider", "$httpProvider",
     (Configuration, MainConstants, $locationProvider, $routeProvider, $httpProvider) ->
         $locationProvider.html5Mode(true)
@@ -49,9 +50,9 @@ mainApp.config ["Configuration", "MainConstants","$locationProvider",
 ]
 
 mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams',
-    'Configuration', 'AppData', 'LocalStore', 'SessionStore', 'SaltApiSrvc',
-    ($scope, $location, $route, $routeParams, Configuration, AppData, LocalStore,
-            SessionStore, SaltApiSrvc) ->
+    'Configuration', 'AppPref', 'AppData', 'LocalStore', 'SessionStore', 'SaltApiSrvc',
+    ($scope, $location, $route, $routeParams, Configuration, AppPref, 
+            AppData, LocalStore, SessionStore, SaltApiSrvc) ->
         console.log("NavbarCtlr")
         $scope.location = $location
         $scope.route = $route
@@ -61,7 +62,7 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         $scope.errorMsg = ''
         
         $scope.isCollapsed = true;
-        $scope.loggedIn = SessionStore.get('loggedIn')?
+        $scope.loggedIn = if SessionStore.get('loggedIn')? then SessionStore.get('loggedIn') else false
         $scope.username = SessionStore.get('saltApiAuth')?.user
         
         $scope.views = Configuration.views

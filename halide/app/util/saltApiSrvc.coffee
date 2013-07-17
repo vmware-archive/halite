@@ -22,10 +22,11 @@ mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiSrvc',
 ###
 
 
-angular.module("saltApiSrvc", ['appConfigSrvc', 'appStoreSrvc']).factory "SaltApiSrvc", 
-    ['$http', 'Configuration', 'SessionStore', 
-    ($http, Configuration, SessionStore) -> 
-        saltApi = angular.copy Configuration.saltApi
+saltApiSrvc = angular.module("saltApiSrvc", ['appConfigSrvc', 'appPrefSrvc', 'appStoreSrvc'])
+
+saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'SessionStore', 
+    ($http, Configuration, AppPref, SessionStore) -> 
+        saltApi = AppPref.get('saltApi')
         if saltApi.scheme or saltApi.host or saltApi.port # absolute
             if not saltApi.scheme
                 saltApi.scheme = "http"

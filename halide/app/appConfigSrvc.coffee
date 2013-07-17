@@ -16,15 +16,21 @@ configuration =
             controller: "HomeCtlr"
         tabs:
             [
-                label: "watch"
-                route: "/app/watch/:id"
-                url: "/app/watch/"
-                template: "/static/app/view/watch.html"
-                controller: "WatchCtlr"
+                label: "minion"
+                route: "/app/minion"
+                url: "/app/minion/"
+                template: "/static/app/view/minion.html"
+                controller: "MinionCtlr"
+            ,
+                label: "command"
+                route: "/app/command"
+                url: "/app/command/"
+                template: "/static/app/view/command.html"
+                controller: "CommandCtlr"
             ,
                 label: "test"
-                route: "/app/test"
-                url: "/app/test"
+                route: "/app/test/:id"
+                url: "/app/test/"
                 template: "/static/app/view/test.html"
                 controller: "TestCtlr"
             ]
