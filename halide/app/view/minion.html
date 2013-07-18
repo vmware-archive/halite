@@ -1,7 +1,38 @@
+
 <div class="row-fluid">
   <div class="span12">
-    <p>{{errorMsg}}</p>
-  <p>Minion View</p>
+    <div class="alert alert-error" ng-cloak ng-show="!!errorMsg">
+      <strong>Error!</strong> {{errorMsg}}
+    </div>
+    <form class="form-inline pull-left">
+      <div class="btn-toolbar">
+        <div class="btn-group">
+          <div class="input-append">
+            <input type="text" class="input-large" placeholder="Search Master" ng-model="searchTarget">
+            <button class="btn" type="submit" ng-click="fetchMinions(searchTarget)"><i class="icon-refresh"></i></button>
+          </div>
+        </div>
+        <div class="btn-group">
+          <div class="input-append">
+            <input type="text" class="input-medium" placeholder="Filter Minions" ngModel="filterTarget">
+            <button class="btn" ng-click="filterMinions(filterTarget)"><i class="icon-filter"></i></button>
+          </div>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn" ng-click="testPing()"><i class="icon-bullhorn"></i></button>
+          <button class="btn" ng-click=""><i class="icon-fire"></i></button>
+        </div>
+      </div>
+    </form>
+  </div><!--/span-->
+</div><!--/row-->
+
+<div class="row-fluid">
+  <div class="span12">
+    <div ng-repeat="minion in minions">
+      <span>{{minion.grains.id}}.{{minion.grains.fqdn}}</span><span>  SaltVersion: {{minion.grains.saltversion}}</span>
+    </div>
   </div><!--/span-->
 </div><!--/row-->
 
