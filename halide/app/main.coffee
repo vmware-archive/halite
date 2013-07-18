@@ -58,7 +58,7 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         $scope.route = $route
         $scope.winLoc = window.location
         $scope.baseUrl = Configuration.baseUrl
-        $scope.debug = Configuration.debug
+        $scope.debug = AppPref.get('debug')
         $scope.errorMsg = ''
         
         $scope.isCollapsed = true;
@@ -179,14 +179,14 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
 
 
 mainApp.controller 'RouteCtlr', ['$scope', '$location', '$route', '$routeParams',
-        'Configuration',
-    ($scope, $location, $route, $$routeParams, Configuration) ->
+        'Configuration', 'AppPref',
+    ($scope, $location, $route, $$routeParams, Configuration, AppPref) ->
         console.log "RouteCtlr"
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
         $scope.baseUrl = Configuration.baseUrl
-        $scope.debug = Configuration.debug
+        $scope.debug = AppPref.get('debug')
         $scope.errorMsg = ''
         
         

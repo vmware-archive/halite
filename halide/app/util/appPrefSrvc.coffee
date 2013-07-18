@@ -29,8 +29,12 @@ angular.module("appPrefSrvc", ['appConfigSrvc', 'appStoreSrvc']).factory "AppPre
         
         servicer =
             getAll: () ->
-                prefs = LocalStore.get('Preferences')
+                prefs = LocalStore.get('preferences')
                 return if prefs then prefs else {}
+            
+            setAll: (prefs) ->
+                LocalStore.set('preferences', prefs)
+                return prefs
                 
             get: (key) ->
                 prefs = this.getAll()
@@ -39,16 +43,29 @@ angular.module("appPrefSrvc", ['appConfigSrvc', 'appStoreSrvc']).factory "AppPre
             set: (key, val) ->
                 prefs = this.getAll()
                 prefs[key] = val
-                LocalStore.set('Preferences', prefs)
+                this.setAll(prefs)
                 return prefs
+            
+            load: (prefs, config) ->
+                for key, val of config
+                    if not prefs?[key]?
+                        prefs[key] = val
+                    else if angular.isObject(val)
+                        this.load(prefs[key],val)
+                this.setAll(prefs)
+                return prefs
+            
+            reload: () ->
+                this.load(this.getAll(), Configuration.preferences)
+                return this.getAll()
+            
+            clear: () ->
+                LocalStore.set('preferences', {})
+        
         
         
         # initialize preferences from configuration
-        prefs = servicer.getAll()
-        if not prefs?.saltApi?
-            servicer.set('saltApi', Configuration.saltApi)
-        if not prefs?.debug?
-            servicer.set('debug', Configuration.debug)
+        servicer.reload()
         
             
         return servicer

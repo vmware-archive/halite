@@ -6,7 +6,7 @@
 configuration =
     baseUrl: ""
     date: "20130709"
-    debug: false
+    version: "0.0.1"
     views:
         otherwise: 
             label: "home"
@@ -34,12 +34,15 @@ configuration =
                 template: "/static/app/view/test.html"
                 controller: "TestCtlr"
             ]
-    saltApi:
-        scheme: "http"
-        host: "localhost"
-        port: 8100
-        prefix: ""
-        
+    preferences:
+        debug: false
+        verbose: false
+        saltApi:
+            scheme: "http"
+            host: "localhost"
+            port: 8100
+            prefix: ""
+            
 
 prefixify = (views, base) ->
     for name, item of views
