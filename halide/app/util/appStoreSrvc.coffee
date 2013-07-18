@@ -45,9 +45,9 @@ angular.module("appStoreSrvc", [])
             key: (index) ->
                 return localStorage.key(index)
             get: (key) ->
-                return JSON.parse localStorage.getItem(key)
+                return angular.fromJson localStorage.getItem(key)
             set: (key,val) ->
-                return localStorage.setItem key, JSON.stringify(val)
+                return localStorage.setItem key, angular.toJson(val)
             remove: (key) ->
                 return localStorage.removeItem(key)
         return servicer
@@ -65,9 +65,9 @@ angular.module("appStoreSrvc", [])
             key: (index) ->
                 return sessionStorage.key(index)
             get: (key) ->
-                return JSON.parse sessionStorage.getItem(key)
+                return angular.fromJson sessionStorage.getItem(key)
             set: (key,val) ->
-                return sessionStorage.setItem key, JSON.stringify(val)
+                return sessionStorage.setItem key, angular.toJson(val)
             remove: (key) ->
                 return sessionStorage.removeItem(key)
         return servicer

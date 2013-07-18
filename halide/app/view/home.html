@@ -3,24 +3,65 @@
     <div class="alert alert-error" ng-cloak ng-show="!!errorMsg">
       <strong>Error!</strong> {{errorMsg}}
     </div>
-    <h1>About</h1>
+    <h3>About</h3>
     <p>Version:</p>
   </div><!--/span-->
 </div><!--/row-->
 <div class="row-fluid">
   <div class="span12">
-    <form name="prefForm" class="">
-      <legend>Preferences</legend>
-      <div class="controls controls-row" ng-repeat="(key, val) in prefs">
-        <label class="control-label">{{key}}<bf/>
-          <input type="text" placeholder="Enter {{key}}" ng-model="prefs[key]">
-        </label>
-      </div>
-      <button class='btn btn-mini' href="" title="Update" 
-        ng-click="updatePrefs()" >Update
-      </button>
-    </form>
     
+    <ng-form name="prefForm" class="form-horizontal">
+      <legend>Preferences</legend>
+      <div ng-repeat="(key, val) in prefs">
+        <div ng-if="!prefIsObject(val)">
+          <div class="control-group">
+            <label class="control-label">{{key}}</label>
+            <div class="controls">
+              <input type="text"  placeholder="{{key}}" ss-input-name="{{key}}" ng-model="prefs[key]">
+            </div>
+          </div>
+        </div>
+        <div ng-if="prefIsObject(val)" >
+          <ng-form ss-form-name="{{key}}Form" ss-outer-form="prefForm" class="form-horizontal">
+            <span>{{key}}</span>
+        
+            <div ng-repeat="(key1, val1) in val">
+              <div class="control-group">
+                <label class="control-label">{{key1}}</label>
+                <div class="controls">
+                  <input type="text"  placeholder="{{key1}}" ss-input-name="{{key1}}" ng-model="prefs[key][key1]">
+                </div>
+              </div>
+            </div>
+          </ng-form>
+        </div>
+      </div>
+      <div class="controls controls-row">
+        <button class="btn" ng-click="resetPrefs()">Reset</button>
+        <button  class="btn" type="submit" ng-click="updatePrefs()">Update</button>
+      </div>
+    </ng-form>
+    
+    <ng-form name="prefForm" class="form-horizontal">
+      <legend>Preferences</legend>
+      <div ng-repeat="item in prefs">
+        <div ng-if="!prefIsObject(item.value)">
+          <div class="control-group">
+            <label class="control-label">{{item.name}}</label>
+            <div class="controls">
+              <input type="text"  placeholder="{{item.name}}"  ng-model="listPrefs[$index].value">
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="controls controls-row">
+        <button class="btn" ng-click="resetPrefs()">Reset</button>
+        <button  class="btn" type="submit" ng-click="updatePrefs()">Update</button>
+      </div>
+    </ng-form>
+    
+
   </div><!--/span-->
 </div><!--/row-->
 
