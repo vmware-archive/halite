@@ -30,8 +30,8 @@
 
 <div class="row-fluid">
   <div class="span12">
-    <div ng-repeat="minion in minions">
-      <span>{{minion.grains.id}}.{{minion.grains.fqdn}}</span><span>  SaltVersion: {{minion.grains.saltversion}}</span>
+    <div ng-repeat="minion in minions.items()">
+      <span>{{minion.val.id}}.{{minion.val.fqdn}}</span><span>  SaltVersion: {{minion.val.saltversion}}</span>
     </div>
   </div><!--/span-->
 </div><!--/row-->
