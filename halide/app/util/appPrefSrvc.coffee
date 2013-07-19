@@ -37,13 +37,13 @@ angular.module("appPrefSrvc", ['appConfigSrvc', 'appStoreSrvc']).factory "AppPre
                 return prefs
                 
             get: (key) ->
-                prefs = this.getAll()
+                prefs = @getAll()
                 return prefs?[key]
             
             set: (key, val) ->
-                prefs = this.getAll()
+                prefs = @getAll()
                 prefs[key] = val
-                this.setAll(prefs)
+                @setAll(prefs)
                 return prefs
             
             load: (prefs, config) ->
@@ -51,13 +51,13 @@ angular.module("appPrefSrvc", ['appConfigSrvc', 'appStoreSrvc']).factory "AppPre
                     if not prefs?[key]?
                         prefs[key] = val
                     else if angular.isObject(val)
-                        this.load(prefs[key],val)
-                this.setAll(prefs)
+                        @load(prefs[key],val)
+                @setAll(prefs)
                 return prefs
             
             reload: () ->
-                this.load(this.getAll(), Configuration.preferences)
-                return this.getAll()
+                @load(@getAll(), Configuration.preferences)
+                return @getAll()
             
             clear: () ->
                 LocalStore.set('preferences', {})

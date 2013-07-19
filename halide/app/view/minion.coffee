@@ -9,6 +9,8 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
 
         console.log("MinionCtlr")
         $scope.errorMsg = ""
+        $scope.closeAlert = () ->
+            $scope.errorMsg = ""
         
         $scope.searchTarget = ""
         $scope.filterTarget = ""

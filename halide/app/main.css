@@ -1,0 +1,53 @@
+
+
+/* Additional sizes for bootstrap labels and badges not in default bootstrap*/
+.label-mini,
+.badge-mini {
+  font-size: 11px;
+  font-weight: bold;
+}
+.label-mini {
+  padding: 1px 3px 2px;
+}
+.badge-mini {
+  padding: 1px 8px 2px;
+}
+.label-small,
+.badge-small {
+  font-size: 11px;
+  font-weight: bold;
+}
+.label-small {
+  padding: 2px 8px 4px;
+}
+.badge-small {
+  padding: 2px 13px 4px;
+}
+.label-big,
+.badge-big {
+  font-size: 12px;
+  font-weight: bold;
+}
+.label-big {
+  padding: 5px 10px 6px;
+}
+.badge-big {
+  padding: 5px 15px 6px;
+  -webkit-border-radius: 14px 14px 14px 14px;
+  -moz-border-radius: 14px 14px 14px 14px;
+  border-radius: 14px 14px 14px 14px;
+}
+.label-ultra,
+.badge-ultra {
+  font-size: 14px;
+  font-weight: bold;
+}
+.label-ultra {
+  padding: 8px 14px 9px;
+}
+.badge-ultra {
+  padding: 8px 19px 9px;
+  -webkit-border-radius: 18px 18px 18px 18px;
+  -moz-border-radius: 18px 18px 18px 18px;
+  border-radius: 18px 18px 18px 18px;
+}
