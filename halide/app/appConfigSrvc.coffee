@@ -40,7 +40,7 @@ configuration =
         saltApi:
             scheme: "http"
             host: "localhost"
-            port: 8100
+            port: 8000
             prefix: ""
             
 
