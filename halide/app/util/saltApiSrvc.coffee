@@ -54,19 +54,9 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 url = "#{base}/"
                 $http.post( url, reqData, config  )
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi act success"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    console.log "SaltApi act failure"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     $scope.errorMsg = "Call Failed!"
                     return true
                 )
@@ -79,19 +69,9 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 url = "#{base}/login"
                 $http.post( url, reqData)
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi login success"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    console.log "SaltApi login failure"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     $scope.errorMsg = "Login Failed!"
                     return true
                 )
@@ -103,19 +83,9 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 url = "#{base}/logout"
                 $http.post( url, {}, config)
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi logout success"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    console.log "SaltApi logout failure"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     $scope.errorMsg = "Logout Failed!"
                     return true
                 )
