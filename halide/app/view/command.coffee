@@ -5,9 +5,9 @@ mainApp.controller 'CommandCtlr', ['$scope', '$location', '$route','Configuratio
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
-        
+
         console.log("CommandCtlr")
         $scope.errorMsg = ""
-        
+
         return true
 ]
