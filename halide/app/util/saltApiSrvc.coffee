@@ -47,8 +47,6 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
             act: ($scope, reqData) ->
                 headers =
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
-                    "Content-Type": "application/json"
-                    "Accept": "application/json"
 
                 config =
                     headers: headers
