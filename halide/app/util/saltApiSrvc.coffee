@@ -39,7 +39,8 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
             base = "#{saltApi.prefix}"
 
 
-        delete $http.defaults.headers.common['X-Requested-With'] # enable cors
+        # Remove noise header; not used by salt-api
+        delete $http.defaults.headers.common['X-Requested-With']
         $http.defaults.useXDomain = true # enable cors on IE
 
         servicer =
