@@ -1,14 +1,15 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppPref',
-    ($scope, $location, $route, Configuration, AppPref) ->
+    'AppPref', 'OrderedData',
+    ($scope, $location, $route, Configuration, AppPref, OrderedData) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
 
         console.log("HomeCtlr")
         $scope.errorMsg = ""
+        $scope.config = Configuration
         
         $scope.isArray = angular.isArray
         $scope.isObject = angular.isObject
@@ -24,32 +25,8 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
                 return 0
             return obj
                 
-        #ng-repeat on forms messes up iterating on object need list
-        # recursivley convert objects to lists
-        $scope.listify = (prefs) ->  
-            prefsList = []
-            for own key, val of prefs
-                if angular.isObject(val)
-                    prefsList.push 
-                        key: key
-                        val: $scope.listify(val)
-                else
-                    prefsList.push 
-                        key: key
-                        val: val
-            return prefsList
-        
-        $scope.delistify = (prefsList) ->  
-            prefs = {}
-            for item in prefsList
-                if angular.isArray(item.val)
-                    prefs[item.key] = $scope.delistify(item.val)
-                else
-                    prefs[item.key] = item.val
-            return prefs
-            
         $scope.updatePrefs = () ->
-            prefs = $scope.delistify($scope.prefs)
+            prefs = $scope.prefs.unitemize()
             for own key, val of prefs
                 AppPref.set(key, val)
             console.log AppPref.getAll()
@@ -57,12 +34,10 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
         $scope.resetPrefs = () ->
             AppPref.clear()
             AppPref.reload()
-            $scope.prefs = $scope.listify AppPref.getAll()
+            $scope.prefs = (new OrderedData()).deepUpdate AppPref.getAll()
             console.log AppPref.getAll()
         
-        $scope.config = Configuration
-        
-        $scope.prefs = $scope.listify AppPref.getAll()
+        $scope.prefs = (new OrderedData()).deepUpdate AppPref.getAll()
         console.log $scope.prefs
         
                 

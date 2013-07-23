@@ -7,23 +7,24 @@
     <p>Version: {{config.version}}</p>
   </div><!--/span-->
 </div><!--/row-->
+
 <div class="row-fluid">
   <div class="span12">
-    
     <ng-form name="prefForm" class="form-inline">
       <legend>Preferences</legend>
-      <div class="controls controls-row" ng-repeat="item in prefs">
+      <div class="controls controls-row" ng-repeat="item in prefs.items()">
         <div ng-if="!isObject(item.val)">
           <label class="checkbox" ng-if="isBoolean(item.val)">
-            <input type="checkbox"  ng-model="item.val">{{item.key}}
+            <input type="checkbox"  ng-model="item.val" ss-input-name="{{item.key}}">{{item.key}}
           </label>
           <label class="control-label" ng-if="isNumber(item.val)">{{item.key}}<br/>
             <input class="input-small" type="number" ng-model="item.val"
-              ng-change="item.val=fixNumber(item.val)">
+              ng-change="item.val=fixNumber(item.val)" ss-input-name="{{item.key}}">
           </label>
           <label class="control-label" ng-if="!(isBoolean(item.val)||isNumber(item.val))">
             {{item.key}}<br/>
-            <input type="text" class="input-medium" placeholder="{{item.key}}" ng-model="item.val">
+            <input type="text" class="input-medium" placeholder="{{item.key}}" 
+              ng-model="item.val" ss-input-name="{{item.key}}">
           </label>
         </div>
         <div ng-if="isObject(item.val)" >
@@ -31,7 +32,7 @@
               class="form-inline">
             <p></p><label><strong>{{item.key}}</strong></label>
             <div class="controls controls-row">
-              <span ng-repeat="item1 in item.val">
+              <span ng-repeat="item1 in item.val.items()">
                 <label class="checkbos" ng-if="isBoolean(item1.val)">
                   <input type="checkbox" placeholder="{{item1.key}}" 
                     ss-input-name="{{item1.key}}" ng-model="item1.val">
@@ -58,12 +59,8 @@
         <button  class="btn" type="submit" ng-click="updatePrefs()">Update</button>
       </div>
     </ng-form>
-    
-
   </div><!--/span-->
 </div><!--/row-->
-
-
 
 
 
