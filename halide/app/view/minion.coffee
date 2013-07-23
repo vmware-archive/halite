@@ -1,8 +1,8 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppPref', 'OrderedData', 'SaltApiSrvc',
-    ($scope, $location, $route, Configuration, AppPref, OrderedData, SaltApiSrvc) ->
+    'AppData', 'AppPref', 'OrderedData', 'SaltApiSrvc',
+    ($scope, $location, $route, Configuration, AppData, AppPref, OrderedData, SaltApiSrvc) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -12,10 +12,53 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
         
+        $scope.collapsedA = true
         
         $scope.searchTarget = ""
         $scope.filterTarget = ""
+        
         $scope.minions = new OrderedData()
+        
+        if !AppData.get('minions')?
+            AppData.set('minions',{})
+            
+        $scope.reloadMinionFieldFromData = (field, data) ->
+            minions = AppData.get('minions')
+            if !minions
+                minions = AppData.set('minions', {})
+            
+            #remove any minions from AppData that are not in data
+            keys = (key for own key of minons)
+            for key in keys
+                if key not of data
+                    delete minions[key]
+            
+            #update minions with new field values
+            for key, val of data
+                if !minions[key]?
+                    minions[key] = {}
+                minions[key][field] = val
+            
+            $scope.minions.reload(minions)
+            
+            console.log $scope.minions
+            
+        
+        $scope.updateMinionFieldFromData = (field, data) ->
+            minions = AppData.get('minions')
+            if !minions
+                minions = AppData.set('minions', {})
+            
+            #update minions with new field values
+            for key, val of data
+                if !minions[key]?
+                    minions[key] = {}
+                minions[key][field] = val
+            
+            $scope.minions.update(minions)
+            
+            console.log $scope.minions
+            
         
         $scope.testPing = () ->
             console.log "Pinging Minions"

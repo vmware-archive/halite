@@ -6,11 +6,14 @@
     <meta name="description" content="Main app entry point">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="/"></base>
-    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap{{mini}}.css">
     <style type="text/css">
       body { padding-top: 60px; padding-bottom: 40px;} <!-- Needed for fixed navbar-->
     </style>
-    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive.css" >
+    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive{{mini}}.css" >
+    
+    <link rel="stylesheet" href="{{baseUrl}}/static/lib/font-awesome/css/font-awesome-fa{{mini}}.css">
+    
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
 
     {% for css in stylesheets %}

@@ -22,21 +22,100 @@
         <div class="btn-group">
           <button class="btn" ng-click="testPing()"><i class="icon-bullhorn"></i></button>
           <button class="btn" ng-click=""><i class="icon-fire"></i></button>
+          
         </div>
       </div>
     </form>
   </div><!--/span-->
 </div><!--/row-->
 
-<div class="row-fluid">
-  <div class="span12">
-    <div ng-repeat="minion in minions.items()">
-      <span>{{minion.val.id}}.{{minion.val.fqdn}}</span><span>  SaltVersion: {{minion.val.saltversion}}</span>
-    </div>
-  </div><!--/span-->
-</div><!--/row-->
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span4">
+      <div class="widget">
+        <!-- Widget title -->
+        <div class="widget-head">
+          <div class="pull-left">Server Status</div>
+          <div class="widget-icons pull-right">
+            <a href="" ng-click="collapsedA = !collapsedA"><i class="icon-chevron-up"></i></a> 
+          </div>  
+          <div class="clearfix"></div>
+        </div>
+        <div class="widget-content" collapse="collapsedA">
+          <!-- Widget content -->
+          <tabset>
+            <tab heading="Tab 1">
+              <table class="table table-striped table-bordered table-hover">
+                <tr>
+                  <td>Domain</td>
+                  <td>sitedomain.com</td>
+                </tr> 
+                <tr>
+                  <td>IP Address</td>
+                  <td>192.425.2.4</td>
+                </tr> 
+                <tr>
+                  <td>Disk Space</td>
+                  <td>600GB / 60000GB</td>
+                </tr> 
+                <tr>
+                  <td>Bandwidth</td>
+                  <td>1000GB / 2000GB</td>
+                </tr> 
+                <tr>
+                  <td>PHP Version</td>
+                  <td>5.1.1</td>
+                </tr> 
+                <tr>
+                  <td>MySQL Databases</td>
+                  <td>10</td>
+                </tr>                                                                                                     
+              </table>
+            </tab>
+            <tab heading="Tab 2">
+              <table class="table table-striped table-bordered table-hover">
+                <tr>
+                  <td>Who</td>
+                  <td>Salt</td>
+                </tr> 
+                <tr>
+                  <td>What</td>
+                  <td>Configuration</td>
+                </tr> 
+                <tr>
+                  <td>Where</td>
+                  <td>Server</td>
+                </tr> 
+                <tr>
+                  <td>How</td>
+                  <td>Quickly</td>
+                </tr> 
+                <tr>
+                  <td>When</td>
+                  <td>Now</td>
+                </tr>                                                                                                 
+              </table>
+            </tab>
+            <tab heading="Tab 3">Content 3</tab>
+          </tabset>
+          
+    
+          <!--<div class="widget-foot">Salt Minion-->
+          <!--</div>-->
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+</div><!--/container-->
 
 
-
-
-
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span4">
+      <div ng-repeat="minion in minions.items()">
+        <span>{{minion.val.id}}.{{minion.val.fqdn}}</span><span>  SaltVersion: {{minion.val.saltversion}}</span>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+</div><!--/container-->

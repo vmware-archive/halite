@@ -45,14 +45,12 @@ class OData
         if key of @_data
             @_items = (item for item in @_items when key != item.key)
             delete @_data[key]
-            return true
-        else
-            return false
+        return @_items
     
     clear: () ->
         @_data = {}
         @_items = []
-        return true
+        return @_items
     
     items: () ->
         return @_items
@@ -76,9 +74,14 @@ class OData
             else if angular.isObject(stuff) #not array 
                 for key, val of stuff
                     @set(key,val)
-            
         
         return @_items 
+    
+    reload: (stuff) ->
+        @clear()
+        @update(stuff)
+        
+        return @_items
         
 
 appUtilSrvc.factory "OrderedData", 
