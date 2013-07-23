@@ -23,7 +23,7 @@ mainApp.controller 'TestCtlr', ['$scope', '$location', '$route','Configuration',
             tgt: "*"
             arg: ""
             
-        $scope.saltApiCallPromise = SaltApiSrvc.call $scope, [lowState]
+        $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
         $scope.saltApiCallPromise.success (data, status, headers, config) ->
             console.log("SaltApi Call success")
             console.log data
@@ -38,7 +38,7 @@ mainApp.controller 'TestCtlr', ['$scope', '$location', '$route','Configuration',
             tgt: if target then target else "*"
             arg: ""
             
-        $scope.saltApiCallPromise = SaltApiSrvc.call $scope, [lowState]
+        $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
         $scope.saltApiCallPromise.success (data, status, headers, config) ->
             console.log("SaltApi Call success")
             console.log data
@@ -48,7 +48,7 @@ mainApp.controller 'TestCtlr', ['$scope', '$location', '$route','Configuration',
         return true
         
     $scope.testDemo = () ->    
-        $scope.demoPromise = DemoSrvc.call $scope, 'doit', 'name': 'John'
+        $scope.demoPromise = DemoSrvc.act $scope, 'doit', 'name': 'John'
         $scope.demoPromise.success (data, status, headers, config) ->
             console.log("Demo success")
             $scope.demo = data

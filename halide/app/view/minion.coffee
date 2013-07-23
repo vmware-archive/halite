@@ -68,7 +68,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 tgt: "*"
                 arg: ""
                 
-            $scope.saltApiCallPromise = SaltApiSrvc.call $scope, [lowState]
+            $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
             $scope.saltApiCallPromise.success (data, status, headers, config) ->
                 console.log("SaltApi Call success")
                 console.log data
@@ -84,7 +84,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 tgt: target
                 arg: ""
                 
-            $scope.saltApiCallPromise = SaltApiSrvc.call $scope, [lowState]
+            $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
             $scope.saltApiCallPromise.success (data, status, headers, config) ->
                 console.log("SaltApi Call success")
                 console.log data

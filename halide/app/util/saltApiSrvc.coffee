@@ -7,7 +7,7 @@ mainApp = angular.module("MainApp", [... 'saltApiSrvc'])
 mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiSrvc',
     ($scope,...,SaltApiSrvc) ->
     
-    $scope.saltApiCallPromise = SaltApiSrvc.call $scope, [{'name':'John'}]
+    $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [{'name':'John'}]
     $scope.saltApiCallPromise.success (data, status, headers, config) ->
         console.log("SaltApi call success")
         $scope.result = data
@@ -43,7 +43,7 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
         $http.defaults.useXDomain = true # enable cors on IE
         
         servicer = 
-            call: ($scope, reqData) -> 
+            act: ($scope, reqData) -> 
                 headers = 
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
                     "Content-Type": "application/json"
@@ -54,7 +54,7 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 url = "#{base}/"
                 $http.post( url, reqData, config  )
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi call success"
+                    console.log "SaltApi act success"
                     console.log config
                     console.log status
                     console.log headers()
@@ -62,7 +62,7 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                     return true
                 )
                 .error((data, status, headers, config) -> 
-                    console.log "SaltApi call failure"
+                    console.log "SaltApi act failure"
                     console.log config
                     console.log status
                     console.log headers()

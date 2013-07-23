@@ -1,6 +1,6 @@
 ###
 usage:
-$scope.demoPromise = DemoSrvc.call $scope, 'doit', {'name':'John'}
+$scope.demoPromise = DemoSrvc.act $scope, 'doit', {'name':'John'}
 $scope.demoPromise.success (data, status, headers, config) ->
     console.log("Demo success")
     $scope.demo = data
