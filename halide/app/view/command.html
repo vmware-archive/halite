@@ -9,37 +9,39 @@
   <div class="row-fluid">
 
     <div class="span12">
-      <select ng-model="lowstate.client" class="input-small">
-        <option value="local">local</option>
-        <option value="wheel">wheel</option>
-        <option value="runner">runner</option>
-      </select>
+      <form class="form-search" data-on-submit="vm.submit">
 
-      <input type="text" class="input-mini"
-        placeholder="tgt"
-        ng-model="lowstate.tgt">
+        <select ng-model="lowstate.client" class="input-small">
+          <option value="local">local</option>
+          <option value="wheel">wheel</option>
+          <option value="runner">runner</option>
+        </select>
 
-      <input type="text" class="input-medium"
-        placeholder="module.function"
-        ng-model="lowstate.fun">
+        <input type="text" class="input-mini"
+          placeholder="tgt"
+          ng-model="lowstate.tgt">
 
-      <div class="input-append">
         <input type="text" class="input-medium"
-          placeholder="arg=val"
-          ng-repeat="arg in tmpArg track by $index"
-          ng-model="lowstate.arg[$index]">
+          placeholder="module.function"
+          ng-model="lowstate.fun">
 
-        <button class="btn" type="button"
-          ng-click="addArg()"><i class="icon-plus"></i></button>
-      </div>
+        <div class="input-append">
+          <input type="text" class="input-medium"
+            placeholder="arg=val"
+            ng-repeat="arg in tmpArg track by $index"
+            ng-model="lowstate.arg[$index]">
 
-      <button type="submit" class="btn btn-primary"
-        ng-click="act()"
-        data-class-disabled="vm.inprogress"
-        data-disabled="vm.inprogress">
-        <i class="icon-magic" data-class-icon-spin="vm.inprogress"></i>
-        Execute
-      </button>
+          <button class="btn" type="button"
+            ng-click="addArg()"><i class="icon-plus"></i></button>
+        </div>
+
+        <button type="submit" class="btn btn-primary"
+            ng-click="act()">
+          <i class="fa-icon-magic"></i>
+          Execute
+        </button>
+
+      </form>
 
       <ul>
         <li ng-repeat="(mid, ret) in ret track by $index">
