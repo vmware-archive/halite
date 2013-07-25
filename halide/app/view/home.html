@@ -33,7 +33,7 @@
             <p></p><label><strong>{{item.key}}</strong></label>
             <div class="controls controls-row">
               <span ng-repeat="item1 in item.val.items()">
-                <label class="checkbos" ng-if="isBoolean(item1.val)">
+                <label class="checkbox" ng-if="isBoolean(item1.val)">
                   <input type="checkbox" placeholder="{{item1.key}}" 
                     ss-input-name="{{item1.key}}" ng-model="item1.val">
                     {{item.key+'.'+item1.key}}
@@ -61,6 +61,4 @@
     </ng-form>
   </div><!--/span-->
 </div><!--/row-->
-
-
 

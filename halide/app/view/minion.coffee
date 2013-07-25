@@ -1,8 +1,9 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppData', 'AppPref', 'OData', 'SaltApiSrvc',
-    ($scope, $location, $route, Configuration, AppData, AppPref, OData, SaltApiSrvc) ->
+    'AppData', 'AppPref', 'Itemizer', 'Orderer', 'SaltApiSrvc',
+    ($scope, $location, $route, Configuration, AppData, AppPref, Itemizer, 
+    Orderer, SaltApiSrvc) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -21,7 +22,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         if !AppData.get('minions')?
             AppData.set('minions',{})
         
-        $scope.minions = new OData(AppData.get('minions'),true)
+        $scope.minions = new Orderer(AppData.get('minions'),true)
             
         $scope.reloadMinions = (data, field) ->
             keys = ( key for key, val of data)
@@ -32,10 +33,11 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.updateMinions = (data, field) ->
             for key, val of data
                 if not $scope.minions.get(key)?
-                    $scope.minions.set(key, new OData())
+                    $scope.minions.set(key, new Orderer())
                 $scope.minions.get(key).deepSet(field, val)
             $scope.minions.sort(null, true)
-            AppData.set('minions', $scope.minions.unitemize())
+            AppData.set('minions', $scope.minions.unorder())
+            
             return true
         
         $scope.fetchPings = () ->
@@ -52,7 +54,6 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 console.log data
                 if data.return?[0]
                     $scope.reloadMinions(data.return[0], "ping")
-                    console.log $scope.minions
                 return true
             return true
             
@@ -78,6 +79,6 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.filterMinions = (target) ->
             console.log "Filtering Minions with '#{target}'"
             return true
-        
+
         return true
     ]

@@ -1,8 +1,8 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppPref', 'OrderedData', 
-    ($scope, $location, $route, Configuration, AppPref, OrderedData) ->
+    'AppPref', 'Itemizer', 
+    ($scope, $location, $route, Configuration, AppPref, Itemizer) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -35,12 +35,14 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
         $scope.resetPrefs = () ->
             AppPref.clear()
             AppPref.reload()
-            #$scope.prefs = new OrderedData(AppPref.getAll(), true)
+            #$scope.prefs = new Itemizer(AppPref.getAll(), true)
             $scope.prefs.reload(AppPref.getAll(), true)
             console.log AppPref.getAll()
         
-        $scope.prefs = new OrderedData(AppPref.getAll(), true)
+        $scope.prefs = new Itemizer(AppPref.getAll(), true)
         console.log $scope.prefs
+        
+        
         
         return true
     ]

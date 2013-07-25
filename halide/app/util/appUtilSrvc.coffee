@@ -11,7 +11,7 @@ appUtilSrvc = angular.module("appUtilSrvc", [])
 
 
 ###
-Item class used as item for OrderedData
+Item class used as item for Itemizer
 Creates object of form { key: key, val: val}
 ###
 
@@ -19,19 +19,20 @@ class Item
     constructor: (@key, @val) ->
 
 ###
-OData class  used to provide ordered data object with keyed lookup
-where the store value is not polluted by the lookup key 
-and also provides item list that is suitable for angular ng-repeat.
-Each item in an OData instance is an Item object of the form:
+Itemizer class  used to provide ordered data object with keyed lookup
+and also provides item list that is suitable for angular ng-repeat scoping.
+Each item in an Itemizer instance is an Item object of the form:
 { "key": key, "val": val}
 Items can be accessed by item key but the order of entry or sort is preserved.
 
 Since each item is not a primitive type but an object, ng-repeat will be
-able to reference it as a model target 
+able to reference it as a model target.
 
+Angular 1.15+ provides the ng-repeat track by which means one does not
+need the itemizations but version 1.0X of angular do not have this functionality
 ###
 
-class OData
+class Itemizer
     constructor: (stuff, deep) ->
         @_data = {} # data object maps keys to values that are item objects
         @_keys = [] # list of keys
@@ -83,15 +84,15 @@ class OData
     
     deepSet: (key, val) ->
         if @_isItemList(val)
-            odata = new OData
+            itemizer = new Itemizer
             for item in val
-                odata.deepSet(item.key, item.val)
-            @set key, odata
+                itemizer.deepSet(item.key, item.val)
+            @set key, itemizer
         else if angular.isObject(val) and not angular.isArray(val) # not array object
-            odata = new OData()
+            itemizer = new Itemizer()
             for own k, v of val
-               odata.deepSet(k,v)
-            @set key, odata
+               itemizer.deepSet(k,v)
+            @set key, itemizer
         else
             @set key, val
         return @
@@ -113,7 +114,7 @@ class OData
     items: (deep) ->
         items = []
         for key in @_keys
-            if deep and (@_data[key].val instanceof OData)
+            if deep and (@_data[key].val instanceof Itemizer)
                 items.push (new Item(key, @_data[key].val.items(deep)))
             else
                 items.push @_data[key]
@@ -129,7 +130,7 @@ class OData
         @_keys.sort sorter
         if deep
             for key in @_keys
-                if @_data[key].val instanceof OData
+                if @_data[key].val instanceof Itemizer
                     @_data[key].val.sort(sorter, deep)
         return @_keys
     
@@ -157,7 +158,7 @@ class OData
     unitemize: () ->  
         data = {}
         for item in @items()
-            if item.val instanceof OData
+            if item.val instanceof Itemizer
                 data[item.key] = item.val.unitemize()
             else
                 data[item.key] = item.val
@@ -172,11 +173,163 @@ class OData
         return @
         
 
-appUtilSrvc.factory "OrderedData", 
-    () -> 
-        return OData
 
-appUtilSrvc.value "OData", OData
+appUtilSrvc.value "Itemizer", Itemizer
 
+
+###
+Orderer class  used to provide ordered data object with keyed lookup
+Entries can be accessed by key but the order of entry or sort is preserved.
+
+Orderer instances  can by used with Angular 1.15+  ng-repeat track by 
+functions to guarantee display order when iterating over object properties
+such as
+<div ng-repeat="key in orderer.keys "
+    ng-model="orderer.data[key]">
+    
+or if values are objects
+
+<div ng-repeat="value in orderer.values() track by index"
+    ng-model="value">
+
+###
+
+class Orderer
+    constructor: (stuff, deep) ->
+        @data = {} # data object maps keys to values
+        @keys = [] # list of keys
+        @update(stuff, deep)
         
+    get: (key, tag) ->
+        if tag
+            return @data[key]?[tag]
+        else
+            return @data[key]
+        
+    set: (key, val, tag) ->
+        if key in @keys
+            if tag
+                @data[key][tag] = val
+            else
+                @data[key] = val
+        else
+            @keys.push key
+            if tag
+                @data[key] = {}
+                @data[key][tag] = val
+            else
+                @data[key] = val
+        return @
+    
+    _isItem: (item) ->
+        if item instanceof Item
+            return true
+        if angular.isObject(item) and 
+            not angular.isArray(item) and
+            "key" of item and 
+            "val" of item
+                return true
+        return false
+        
+    _isItemList: (items) ->
+        if not angular.isArray(items)
+            return false
+        if not items.length
+            return false
+        for item in items
+            if not @_isItem(item)
+                return false
+        return true
+    
+    deepSet: (key, val) ->
+        if @_isItemList(val)
+            orderer = new Orderer
+            for item in val
+                orderer.deepSet(item.key, item.val)
+            @set key, orderer
+        else if angular.isObject(val) and not angular.isArray(val) # not array object
+            orderer = new Orderer()
+            for own k, v of val
+               orderer.deepSet(k,v)
+            @set key, orderer
+        else
+            @set key, val
+        return @
+            
+    del: (key, tag) ->
+        if key in @keys
+            if tag
+                delete @data[key].val[tag]
+            else
+                @keys = (_key for _key in @keys when _key != key)
+                delete @data[key]
+        return @
+    
+    clear: () ->
+        @data = {}
+        @keys = []
+        return @
+    
+    items: (deep) ->
+        items = []
+        for key in @keys
+            if deep and (@data[key] instanceof Orderer)
+                items.push (new Item(key, @data[key].items(deep)))
+            else
+                items.push ( new Item(key, @data[key]))
+        return items
+        
+
+    values: () ->
+        return (@data[key] for key in @keys)
+        
+    sort: (sorter, deep) ->
+        @keys.sort sorter
+        if deep
+            for key in @keys
+                if @data[key] instanceof Orderer
+                    @data[key].sort(sorter, deep)
+        return @keys
+    
+    update: (stuff, deep) ->
+        if stuff?
+            if @_isItemList(stuff)
+                for item in stuff
+                    if deep
+                        @deepSet item.key, item.val
+                    else
+                        @set item.key, item.val
+            else if angular.isObject(stuff) and not angular.isArray(stuff) 
+                for own key, val of stuff
+                    if deep
+                        @deepSet key, val
+                    else
+                        @set key, val 
+        return @
+    
+    reload: (stuff, deep) ->
+        @clear()
+        @update(stuff, deep)
+        return @
+    
+    unorder: () ->  
+        data = {}
+        for key in @keys
+            if @data[key] instanceof Orderer
+                data[key] = @data[key].unorder()
+            else
+                data[key] = @data[key]
+        return data
+    
+    filter: (keys) ->
+        for key in @keys
+            if key not in keys
+                delete @data[key]
+        @keys = (_key for _key in @keys when _key in keys)
+                
+        return @
+        
+
+
+appUtilSrvc.value "Orderer", Orderer
 
