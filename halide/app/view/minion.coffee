@@ -1,8 +1,8 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppData', 'AppPref', 'OrderedData', 'SaltApiSrvc',
-    ($scope, $location, $route, Configuration, AppData, AppPref, OrderedData, SaltApiSrvc) ->
+    'AppData', 'AppPref', 'OData', 'SaltApiSrvc',
+    ($scope, $location, $route, Configuration, AppData, AppPref, OData, SaltApiSrvc) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -17,50 +17,28 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.searchTarget = ""
         $scope.filterTarget = ""
         
-        $scope.minions = new OrderedData()
-        
+
         if !AppData.get('minions')?
             AppData.set('minions',{})
-            
-        $scope.reloadMinionFieldFromData = (field, data) ->
-            minions = AppData.get('minions')
-            if !minions
-                minions = AppData.set('minions', {})
-            
-            #remove any minions from AppData that are not in data
-            keys = (key for own key of minons)
-            for key in keys
-                if key not of data
-                    delete minions[key]
-            
-            #update minions with new field values
-            for key, val of data
-                if !minions[key]?
-                    minions[key] = {}
-                minions[key][field] = val
-            
-            $scope.minions.reload(minions)
-            
-            console.log $scope.minions
-            
         
-        $scope.updateMinionFieldFromData = (field, data) ->
-            minions = AppData.get('minions')
-            if !minions
-                minions = AppData.set('minions', {})
+        $scope.minions = new OData(AppData.get('minions'),true)
             
-            #update minions with new field values
+        $scope.reloadMinions = (data, field) ->
+            keys = ( key for key, val of data)
+            $scope.minions?.filter(keys)
+            $scope.updateMinions(data, field)
+            return true
+            
+        $scope.updateMinions = (data, field) ->
             for key, val of data
-                if !minions[key]?
-                    minions[key] = {}
-                minions[key][field] = val
-            
-            $scope.minions.update(minions)
-            
-            console.log $scope.minions
-            
+                if not $scope.minions.get(key)?
+                    $scope.minions.set(key, new OData())
+                $scope.minions.get(key).deepSet(field, val)
+            $scope.minions.sort(null, true)
+            AppData.set('minions', $scope.minions.unitemize())
+            return true
         
-        $scope.testPing = () ->
+        $scope.fetchPings = () ->
             console.log "Pinging Minions"
             lowState =
                 fun: "test.ping"
@@ -72,6 +50,9 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             $scope.saltApiCallPromise.success (data, status, headers, config) ->
                 console.log("SaltApi Call success")
                 console.log data
+                if data.return?[0]
+                    $scope.reloadMinions(data.return[0], "ping")
+                    console.log $scope.minions
                 return true
             return true
             
@@ -89,16 +70,14 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 console.log("SaltApi Call success")
                 console.log data
                 if data.return?[0]
-                    $scope.minions.update(data.return[0])
+                    $scope.reloadMinions(data.return[0], "grains")
                     console.log $scope.minions
                 return true
             return true
         
         $scope.filterMinions = (target) ->
             console.log "Filtering Minions with '#{target}'"
-            
             return true
         
-                
         return true
     ]

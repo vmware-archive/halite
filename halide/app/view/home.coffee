@@ -1,7 +1,7 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppPref', 'OrderedData',
+    'AppPref', 'OrderedData', 
     ($scope, $location, $route, Configuration, AppPref, OrderedData) ->
         $scope.location = $location
         $scope.route = $route
@@ -12,7 +12,8 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
         $scope.config = Configuration
         
         $scope.isArray = angular.isArray
-        $scope.isObject = angular.isObject
+        $scope.isObject = (obj) ->
+            return (angular.isObject(obj) and not angular.isArray(obj))
         $scope.isNumber = angular.isNumber
         $scope.isBoolean = (obj) ->
             if obj? and
@@ -34,12 +35,12 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
         $scope.resetPrefs = () ->
             AppPref.clear()
             AppPref.reload()
-            $scope.prefs = (new OrderedData()).deepUpdate AppPref.getAll()
+            #$scope.prefs = new OrderedData(AppPref.getAll(), true)
+            $scope.prefs.reload(AppPref.getAll(), true)
             console.log AppPref.getAll()
         
-        $scope.prefs = (new OrderedData()).deepUpdate AppPref.getAll()
+        $scope.prefs = new OrderedData(AppPref.getAll(), true)
         console.log $scope.prefs
         
-                
         return true
     ]

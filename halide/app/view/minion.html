@@ -20,7 +20,7 @@
         </div>
         
         <div class="btn-group">
-          <button class="btn" ng-click="testPing()"><i class="icon-bullhorn"></i></button>
+          <button class="btn" ng-click="fetchPings()"><i class="icon-bullhorn"></i></button>
           <button class="btn" ng-click=""><i class="icon-fire"></i></button>
           
         </div>
@@ -114,7 +114,9 @@
   <div class="row-fluid">
     <div class="span4">
       <div ng-repeat="minion in minions.items()">
-        <span>{{minion.val.id}}.{{minion.val.fqdn}}</span><span>  SaltVersion: {{minion.val.saltversion}}</span>
+        <span>{{minion.val.get("grains").get("id")}}.{{minion.val.get("grains").get("fqdn")}}</span>
+        <span>SaltVersion: {{minion.val.get("grains").get("saltversion")}}</span>
+        <span>Ping: {{minion.val.get("ping")}}</span>
       </div>
     </div><!--/span-->
   </div><!--/row-->
