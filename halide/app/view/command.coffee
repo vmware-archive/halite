@@ -12,17 +12,8 @@ mainApp.controller 'CommandCtlr', [
             arg: [''],
         }
 
-        # Hack to workaround angular not reusing existing <input> elements;
-        # when model changes element is destroyed and replaced. this decouples
-        # the array used to build the DOM elements from the array in the model
-        $scope.tmpArg = []
-        updateTmpArgs = () ->
-            $scope.tmpArg = (arg for arg in $scope.lowstate.arg)
-        updateTmpArgs() # initial populate
-
         $scope.addArg = () ->
             $scope.lowstate.arg.push('')
-            updateTmpArgs()
 
         getLowstate = (obj) ->
             return [{
