@@ -6,13 +6,13 @@ mainApp = angular.module("MainApp", [... 'saltApiSrvc'])
 
 mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiSrvc',
     ($scope,...,SaltApiSrvc) ->
-    
+
     $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [{'name':'John'}]
     $scope.saltApiCallPromise.success (data, status, headers, config) ->
         console.log("SaltApi call success")
         $scope.result = data
         return true
-    
+
     $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, 'usernamestring', 'passwordstring'
     $scope.saltApiLoginPromise.success (data, status, headers, config) ->
         console.log("SaltApi login success")
@@ -24,8 +24,8 @@ mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiSrvc',
 
 saltApiSrvc = angular.module("saltApiSrvc", ['appConfigSrvc', 'appPrefSrvc', 'appStoreSrvc'])
 
-saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'SessionStore', 
-    ($http, Configuration, AppPref, SessionStore) -> 
+saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'SessionStore',
+    ($http, Configuration, AppPref, SessionStore) ->
         saltApi = AppPref.get('saltApi')
         if saltApi.scheme or saltApi.host or saltApi.port # absolute
             if not saltApi.scheme
@@ -37,89 +37,58 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
             base = "#{saltApi.scheme}://#{saltApi.host}#{saltApi.port}#{saltApi.prefix}"
         else # relative
             base = "#{saltApi.prefix}"
-            
-        
-        delete $http.defaults.headers.common['X-Requested-With'] # enable cors
+
+
+        # Remove noise header; not used by salt-api
+        delete $http.defaults.headers.common['X-Requested-With']
         $http.defaults.useXDomain = true # enable cors on IE
-        
-        servicer = 
-            act: ($scope, reqData) -> 
-                headers = 
+
+        servicer =
+            act: ($scope, reqData) ->
+                headers =
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
-                    "Content-Type": "application/json"
-                    "Accept": "application/json"
-                    
+
                 config =
                     headers: headers
                 url = "#{base}/"
                 $http.post( url, reqData, config  )
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi act success"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     return true
                 )
-                .error((data, status, headers, config) -> 
-                    console.log "SaltApi act failure"
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data 
+                .error((data, status, headers, config) ->
                     $scope.errorMsg = "Call Failed!"
                     return true
                 )
-            login: ($scope, username, password) -> 
-                reqData = 
+            login: ($scope, username, password) ->
+                reqData =
                     "username": username
                     "password": password
                     "eauth": "pam"
-                    
+
                 url = "#{base}/login"
                 $http.post( url, reqData)
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi login success" 
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     return true
                 )
-                .error((data, status, headers, config) -> 
-                    console.log "SaltApi login failure" 
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data 
+                .error((data, status, headers, config) ->
                     $scope.errorMsg = "Login Failed!"
                     return true
                 )
-            logout: ($scope) -> 
-                headers = 
+            logout: ($scope) ->
+                headers =
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
                 config =
                     headers: headers
                 url = "#{base}/logout"
                 $http.post( url, {}, config)
                 .success((data, status, headers, config) ->
-                    console.log "SaltApi logout success" 
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data
                     return true
                 )
-                .error((data, status, headers, config) -> 
-                    console.log "SaltApi logout failure" 
-                    console.log config
-                    console.log status
-                    console.log headers()
-                    console.log data 
+                .error((data, status, headers, config) ->
                     $scope.errorMsg = "Logout Failed!"
                     return true
                 )
-            
+
         return servicer
-        
-    ] 
+
+    ]
