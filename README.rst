@@ -1,15 +1,15 @@
 ======
-Halide
+Halite
 ======
 
-(Code-name) Halide is a Salt GUI. Status is pre-alpha. Contributions are
+(Code-name) Halite is a Salt GUI. Status is pre-alpha. Contributions are
 very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
 list.
 
 Installation quickstart
 =======================
 
-1.  Clone the Halide repository::
+1.  Clone the Halite repository::
 
         git clone https://github.com/saltstack/halite
 

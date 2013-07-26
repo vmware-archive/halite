@@ -15,7 +15,7 @@ mainApp = angular.module("MainApp", ['ngCookies','appConfigSrvc', 'appPrefSrvc',
 
 
 mainApp.constant 'MainConstants', 
-    name: 'Halide'
+    name: 'Halite'
     owner: 'SaltStack'
 
 mainApp.config ["Configuration", "MainConstants", "$locationProvider", 
