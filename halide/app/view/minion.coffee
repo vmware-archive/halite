@@ -41,8 +41,34 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             
             return true
         
+        
+        $scope.fetchStatae = () ->
+            lowState =
+                fun: "manage.status"
+                client: "runner"
+                tgt: ""
+                arg: ""
+                
+            SaltApiSrvc.act($scope, [lowState])
+            .success (data, status, headers, config) ->
+                result = data.return?[0]
+                if result
+                    console.log result
+                    if angular.isString(result)
+                        $scope.errorMsg = result
+                        return false
+                    statae = {}
+                    for name in result.up
+                        statae[name]=true
+                    for name in result.down
+                        statae[name]=false
+                    $scope.reloadMinions(statae, "status")
+                return true
+                    
+            return true
+        
+        
         $scope.fetchPings = () ->
-            console.log "Pinging Minions"
             lowState =
                 fun: "test.ping"
                 client: "local"
@@ -51,16 +77,18 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 
             $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
             $scope.saltApiCallPromise.success (data, status, headers, config) ->
-                console.log("SaltApi Call success")
-                console.log data
-                if data.return?[0]
-                    $scope.reloadMinions(data.return[0], "ping")
+                result = data.return?[0]
+                if result
+                    console.log result
+                    if angular.isString(result)
+                        $scope.errorMsg = result
+                        return false
+                    $scope.updateMinions(result, "ping")
                 return true
             return true
             
         $scope.fetchMinions = (target) ->
             target = if target then target else "*"
-            console.log "Fetching Minions with '#{target}'"
             lowState =
                 fun: "grains.items"
                 client: "local"
@@ -70,10 +98,14 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
             $scope.saltApiCallPromise.success (data, status, headers, config) ->
                 console.log("SaltApi Call success")
-                console.log data
-                if data.return?[0]
-                    $scope.reloadMinions(data.return[0], "grains")
-                    console.log $scope.minions
+                result = data.return?[0]
+                if result
+                    console.log result
+                    if angular.isString(result)
+                        $scope.errorMsg = result
+                        return false
+                    
+                    $scope.updateMinions(result, "grains")
                 return true
             return true
         
@@ -83,9 +115,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         
         $scope.sortMinions = (minion) ->
             return minion?.get("grains")?.get("id")
-            
-        $scope.testStuff = () ->
-            $scope.minions.del($scope.minions.keys[0])
+        
             
         $scope.fetchMinions()
         
