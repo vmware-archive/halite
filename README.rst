@@ -19,7 +19,8 @@ Installation quickstart
         ./genindex.py -C
 
 3.  Install `salt-api`_ 0.8.2 or greater.
-4.  Follow the instructions for configuring the `rest_cherrypy`_ module.
+4.  Follow the instructions for installing CherryPy and configuring the
+    `rest_cherrypy`_ module.
 5.  Configure the ``app`` and ``static`` settings to point at the files in your
     crystalline clone. For example::
 
