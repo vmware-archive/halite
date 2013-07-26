@@ -10,7 +10,9 @@
         <div class="btn-group">
           <div class="input-append">
             <input type="text" class="input-large" placeholder="Search Master" ng-model="searchTarget">
-            <button class="btn" type="submit" ng-click="fetchMinions(searchTarget)"><i class="icon-refresh"></i></button>
+            <button class="btn" type="submit" ng-click="fetchMinions(searchTarget)">
+              <i class="icon-refresh" ng-class="refreshing ? 'fa-icon-spinner fa-icon-spin' : 'icon-refresh';"></i>
+            </button>
           </div>
         </div>
         <div class="btn-group">
@@ -21,8 +23,12 @@
         </div>
 
         <div class="btn-group">
-          <button class="btn" ng-click="fetchPings()"><i class="icon-bullhorn"></i></button>
-          <button class="btn" ng-click="fetchStatae()"><i class="icon-fire"></i></button>
+          <button class="btn" ng-click="fetchPings()">
+            <i class="icon-bullhorn" ng-class="pinging ? 'fa-icon-spinner fa-icon-spin' : 'icon-refresh';"></i>
+          </button>
+          <button class="btn" ng-click="fetchStatae()">
+            <i class="icon-fire" ng-class="statusing ? 'fa-icon-spinner fa-icon-spin' : 'icon-refresh';"></i>
+          </button>
         </div>
       </div>
     </form>
@@ -44,8 +50,15 @@
     <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed">
       <div class="pull-left"><bold  style="font-size: larger">{{minion.get("grains").get("id")}}</bold></div>
       <div class="widget-icons pull-right">
-        <span class="badge" ng-class="minion.get('ping') ? 'badge-success' : 'badge-important'"><i class="icon-bullhorn icon-white"></i></span>
-        <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();"><i class="icon-chevron-up"></i></a> 
+        <span class="badge" ng-class="minion.get('ping') ? 'badge-success' : 'badge-important'">
+          <i class="icon-bullhorn icon-white"></i>
+        </span>
+        <span class="badge" ng-class="minion.get('status') ? 'badge-success' : 'badge-important'">
+          <i class="icon-fire icon-white"></i>
+        </span>
+        <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
+          <i class="icon-chevron-up"></i>
+        </a> 
       </div>  
       <div class="clearfix"></div>
     </div>

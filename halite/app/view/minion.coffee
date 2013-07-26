@@ -13,6 +13,9 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
         
+        $scope.statusing = false
+        $scope.pinging = false
+        $scope.refreshing = false
         $scope.searchTarget = ""
         $scope.filterTarget = ""
         $scope.filterPattern = 
@@ -48,9 +51,11 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 client: "runner"
                 tgt: ""
                 arg: ""
-                
+            
+            $scope.statusing = true   
             SaltApiSrvc.act($scope, [lowState])
             .success (data, status, headers, config) ->
+                $scope.statusing = false 
                 result = data.return?[0]
                 if result
                     console.log result
@@ -64,7 +69,8 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                         statae[name]=false
                     $scope.reloadMinions(statae, "status")
                 return true
-                    
+            .error (data, status, headers, config) ->
+                $scope.statusing = false        
             return true
         
         
@@ -74,9 +80,11 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 client: "local"
                 tgt: "*"
                 arg: ""
-                
-            $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
-            $scope.saltApiCallPromise.success (data, status, headers, config) ->
+            
+            $scope.pinging = true
+            SaltApiSrvc.act($scope, [lowState])
+            .success (data, status, headers, config) ->
+                $scope.pinging = false
                 result = data.return?[0]
                 if result
                     console.log result
@@ -85,6 +93,9 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                         return false
                     $scope.updateMinions(result, "ping")
                 return true
+            .error (data, status, headers, config) ->
+                $scope.pinging = false
+                
             return true
             
         $scope.fetchMinions = (target) ->
@@ -94,10 +105,11 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 client: "local"
                 tgt: target
                 arg: ""
-                
-            $scope.saltApiCallPromise = SaltApiSrvc.act $scope, [lowState]
-            $scope.saltApiCallPromise.success (data, status, headers, config) ->
-                console.log("SaltApi Call success")
+            
+            $scope.refreshing = true
+            SaltApiSrvc.act($scope, [lowState])
+            .success (data, status, headers, config) ->
+                $scope.refreshing = false
                 result = data.return?[0]
                 if result
                     console.log result
@@ -107,6 +119,8 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     
                     $scope.updateMinions(result, "grains")
                 return true
+            .error (data, status, headers, config) ->
+                $scope.refreshing = false
             return true
         
         $scope.filterMinions = (target) ->
