@@ -12,7 +12,7 @@ import logging
 LOGGING_LEVELS = dict(debug=logging.DEBUG, info=logging.INFO, warning=logging.WARNING,
                   error=logging.ERROR, critical=logging.CRITICAL)    
 
-LOGGER_NAME = "Halide" # default logger name
+LOGGER_NAME = "Halite" # default logger name
 LOGGER_LEVEL = logging.INFO # default logger level
 LOGGER_FORMAT = '%(asctime)s %(name)s: %(message)s'
 LOGGER_DATE_FORMAT ='%Y%m%d_%H%M%S.%f'

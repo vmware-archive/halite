@@ -12,17 +12,17 @@ app.configure(function(){
   app.all('/', function(req,res){
     res.sendfile(__dirname + '/app/main.html', 100)
   });
-  app.all('/halide', function(req,res){
+  app.all('/halite', function(req,res){
     res.sendfile(__dirname + '/app/main.html', 100)
   });
-  app.all('/halide/', function(req,res){
+  app.all('/halite/', function(req,res){
     res.sendfile(__dirname + '/app/main.html', 100)
   });
-  app.all('/halide/app*', function(req,res){
+  app.all('/halite/app*', function(req,res){
     res.sendfile(__dirname + '/app/main.html', 100)
   });
-  app.use("/halide/static/lib", express.static( __dirname + '/lib'));
-  app.use("/halide/static/app", express.static( __dirname + '/app'));
+  app.use("/halite/static/lib", express.static( __dirname + '/lib'));
+  app.use("/halite/static/app", express.static( __dirname + '/app'));
   app.use(app.router);
 });
 

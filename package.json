@@ -1,5 +1,5 @@
 {
-  "name": "halide",
+  "name": "halite",
   "version": "0.0.1",
   "description": "Salt UI",
   "main": "index.html",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://saltstack@bitbucket.org/halide.git"
+    "url": "https://saltstack@bitbucket.org/halite.git"
   },
   "author": "SaltStack",
   "license": "BSD",
