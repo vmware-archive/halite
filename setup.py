@@ -10,10 +10,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'halide',
+    name = 'halite',
     version = '0.0.1',
     description = 'SaltStack Web UI',
-    url = 'https://github.com/saltstack/halide',
+    url = 'https://github.com/saltstack/halite',
     packages = find_packages(exclude=[]),
     package_data={'': ['*.txt',  '*.ico',  '*.json', '*.md', '*.conf', ''
                        '*.js', '*.html', '*.css', '*.png',]},

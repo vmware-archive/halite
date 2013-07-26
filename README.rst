@@ -11,24 +11,24 @@ Installation quickstart
 
 1.  Clone the Halide repository::
 
-        git clone https://github.com/saltstack/halide
+        git clone https://github.com/saltstack/halite
 
 2.  Generate an ``index.html`` file::
 
-        cd halide/halide
+        cd halite/halite
         ./genindex.py -C
 
 3.  Install `salt-api`_ 0.8.2 or greater.
 4.  Follow the instructions for installing CherryPy and configuring the
     `rest_cherrypy`_ module.
 5.  Configure the ``app`` and ``static`` settings to point at the files in your
-    halide clone. For example::
+    halite clone. For example::
 
         rest_cherrypy:
           port: 8000
           debug: True
-          static: /path/to/halide/halide
-          app: /path/to/halide/halide/index.html
+          static: /path/to/halite/halite
+          app: /path/to/halite/halite/index.html
 
     .. note::
 
@@ -84,11 +84,11 @@ Client side web application requirements:
 ``genindex.py``
 ---------------
 
-The ``halide/genindex.py`` script is used to generate an HTML file that will
+The ``halite/genindex.py`` script is used to generate an HTML file that will
 bootstrap the app containing configurable paths to all required static JS/CSS
 assets. See the output of ``genindex.py --help`` for available options.
 
-.. note:: Updating your halide clone
+.. note:: Updating your halite clone
 
     ``genindex.py`` should be run and the ``index.html`` file regnerated any
     time any static assets are added or removed.
@@ -98,7 +98,7 @@ referencing the ``.coffee`` files which will be transpiled directly by the
 browser.
 
 For production builds, JavaScript files should first be generated via ``coffee
--c halide/app``, then ``genindex.py`` will produce a production-ready build of
+-c halite/app``, then ``genindex.py`` will produce a production-ready build of
 ``index.html``.
 
 Testing
@@ -108,7 +108,7 @@ To run the karma jasmine unit test runner
 
 .. code-block:: bash
 
-  $ cd halide
+  $ cd halite
   $ karma start karma_unit.conf.js
 
 To run the karma angular scenario e2e test runner first start up a web server.
@@ -117,11 +117,11 @@ tested at once.
 
 .. code-block:: bash
 
-  $ cd halide
+  $ cd halite
   $ karma start karma_e2e.conf.js
 
 .. ............................................................................
 
-.. _`halide`: https://github.com/saltstack/halide
+.. _`halite`: https://github.com/saltstack/halite
 .. _`salt-api`: https://github.com/saltstack/salt-api
 .. _`rest_cherrypy`: http://salt-api.readthedocs.org/en/latest/ref/netapis/all/saltapi.netapi.rest_cherrypy.html

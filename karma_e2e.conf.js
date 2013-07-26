@@ -3,7 +3,7 @@
 
 
 // base path, that will be used to resolve files and exclude
-basePath = 'halide/';
+basePath = 'halite/';
 
 
 // list of files / patterns to load in the browser
