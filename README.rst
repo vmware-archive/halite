@@ -16,7 +16,7 @@ Installation quickstart
 2.  Generate an ``index.html`` file::
 
         cd crystalline/halide
-        ./genindex.py
+        ./genindex.py -C
 
 3.  Install `salt-api`_ 0.8.2 or greater.
 4.  Follow the instructions for configuring the `rest_cherrypy`_ module.
