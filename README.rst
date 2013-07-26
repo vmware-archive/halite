@@ -2,7 +2,9 @@
 Crystalline
 ===========
 
-(Code-name) Crystalline is a Salt GUI.
+(Code-name) Crystalline is a Salt GUI. Status is pre-alpha. Contributions are
+very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
+list.
 
 Installation quickstart
 =======================
