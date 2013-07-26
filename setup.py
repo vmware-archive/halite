@@ -13,7 +13,7 @@ setup(
     name = 'halide',
     version = '0.0.1',
     description = 'SaltStack Web UI',
-    url = 'https://bitbucket.org/saltstack/crystalline',
+    url = 'https://github.com/saltstack/halide',
     packages = find_packages(exclude=[]),
     package_data={'': ['*.txt',  '*.ico',  '*.json', '*.md', '*.conf', ''
                        '*.js', '*.html', '*.css', '*.png',]},

@@ -1,34 +1,34 @@
-===========
-Crystalline
-===========
+======
+Halide
+======
 
-(Code-name) Crystalline is a Salt GUI. Status is pre-alpha. Contributions are
+(Code-name) Halide is a Salt GUI. Status is pre-alpha. Contributions are
 very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
 list.
 
 Installation quickstart
 =======================
 
-1.  Clone the Crystalline repository::
+1.  Clone the Halide repository::
 
-        git clone https://github.com/saltstack/crystalline
+        git clone https://github.com/saltstack/halide
 
 2.  Generate an ``index.html`` file::
 
-        cd crystalline/halide
+        cd halide/halide
         ./genindex.py -C
 
 3.  Install `salt-api`_ 0.8.2 or greater.
 4.  Follow the instructions for installing CherryPy and configuring the
     `rest_cherrypy`_ module.
 5.  Configure the ``app`` and ``static`` settings to point at the files in your
-    crystalline clone. For example::
+    halide clone. For example::
 
         rest_cherrypy:
           port: 8000
           debug: True
-          static: /path/to/crystalline/halide
-          app: /path/to/crystalline/halide/index.html
+          static: /path/to/halide/halide
+          app: /path/to/halide/halide/index.html
 
     .. note::
 
@@ -88,7 +88,7 @@ The ``halide/genindex.py`` script is used to generate an HTML file that will
 bootstrap the app containing configurable paths to all required static JS/CSS
 assets. See the output of ``genindex.py --help`` for available options.
 
-.. note:: Updating your crystalline clone
+.. note:: Updating your halide clone
 
     ``genindex.py`` should be run and the ``index.html`` file regnerated any
     time any static assets are added or removed.
@@ -108,7 +108,7 @@ To run the karma jasmine unit test runner
 
 .. code-block:: bash
 
-  $ cd crystalline
+  $ cd halide
   $ karma start karma_unit.conf.js
 
 To run the karma angular scenario e2e test runner first start up a web server.
@@ -117,11 +117,11 @@ tested at once.
 
 .. code-block:: bash
 
-  $ cd crystalline
+  $ cd halide
   $ karma start karma_e2e.conf.js
 
 .. ............................................................................
 
-.. _`crystalline`: https://github.com/saltstack/crystalline
+.. _`halide`: https://github.com/saltstack/halide
 .. _`salt-api`: https://github.com/saltstack/salt-api
 .. _`rest_cherrypy`: http://salt-api.readthedocs.org/en/latest/ref/netapis/all/saltapi.netapi.rest_cherrypy.html
