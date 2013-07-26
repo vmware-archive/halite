@@ -31,16 +31,16 @@ def parse_args():
                     help="Development mode.")
     p.add_option('-c', '--create',
                     action='store',
-                    default='app/main.html',
-                    help="Create app/main.html (default) or given file and quit.")
+                    default='index.html',
+                    help="Create index.html (default) or given file and quit.")
     p.add_option('-b', '--base',
                     action='store',
-                    default='/halide/static',
-                    help="Base URL for client side web application.")
+                    default='',
+                    help="URL prefix for the app and static media.")
     p.add_option('-a', '--app',
                     action='store',
                     default='app',
-                    help="Directory containing the app (JS/CSS) files.")
+                    help="Directory containing the source (Coffee/CSS) files.")
     p.add_option('-t', '--tmpl',
                     action='store',
                     default='mold/main.html',
