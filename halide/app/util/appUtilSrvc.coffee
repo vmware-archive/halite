@@ -121,7 +121,7 @@ class Itemizer
         return items
         
     keys: () ->
-        return @_keys
+        return (key for key in @_keys)
         
     values: () ->
         return (@_data[key].val for key in @_keys)

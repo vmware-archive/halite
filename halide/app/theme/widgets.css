@@ -6,8 +6,8 @@
 .widget {
     border: 1px solid #c9c9c9;
     border-radius: 3px;
-    margin-top: 10px;
-    margin-bottom: 20px; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
     background: #fafafa;
 }
 
@@ -25,6 +25,7 @@
 .widget .table{
     margin: 0px;
     width: 100%;
+    background: white;
 }
 
 .widget .table .btn{
@@ -33,7 +34,7 @@
 
 .widget .table-bordered{
     border-radius: 0px;
-    border: 0px;
+    border: 1px solid #ddd;
 }
 
 .widget .table-bordered th{
@@ -79,7 +80,7 @@
 }
 
 .widget .widget-head,.modal-header{
-    background-color: #f8f8f8;
+    background-color: #fcfcfc;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
     text-shadow:0px 1px #fff;

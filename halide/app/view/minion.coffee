@@ -13,11 +13,12 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
         
-        $scope.collapsedA = true
-        
         $scope.searchTarget = ""
         $scope.filterTarget = ""
-        
+        $scope.filterPattern = 
+            $: ""
+        $scope.sortTarget = "id"
+        $scope.reverse = false
 
         if !AppData.get('minions')?
             AppData.set('minions',{})
@@ -77,8 +78,16 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             return true
         
         $scope.filterMinions = (target) ->
-            console.log "Filtering Minions with '#{target}'"
+            $scope.filterPattern.$ = target
             return true
-
+        
+        $scope.sortMinions = (minion) ->
+            return minion?.get("grains")?.get("id")
+            
+        $scope.testStuff = () ->
+            $scope.minions.del($scope.minions.keys[0])
+            
+        $scope.fetchMinions()
+        
         return true
     ]
