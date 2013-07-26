@@ -281,5 +281,6 @@ tested at once.
 
 .. ............................................................................
 
+.. _`crystalline`: https://github.com/saltstack/crystalline
 .. _`salt-api`: https://github.com/saltstack/salt-api
 .. _`rest_cherrypy`: http://salt-api.readthedocs.org/en/latest/ref/netapis/all/saltapi.netapi.rest_cherrypy.html
