@@ -1,38 +1,70 @@
+===========
 Crystalline
 ===========
 
-(Code-name) Crystalline Project Directory is a Salt GUI.
+(Code-name) Crystalline is a Salt GUI.
 
-Requirements
-============
+Installation quickstart
+=======================
 
-Web browser requirements.
+1.  Clone the Crystalline repository::
 
-- Support for ES5 and HTML5 is required. This means any modern browser or >
-  IE9.
+        git clone https://github.com/saltstack/crystalline
 
-Client side web application requirements:
+2.  Generate an ``index.html`` file::
 
-- AngularJS framework (http://angularjs.org/)
-- Twitter Bootstrap Layout CSS (http://twitter.github.io/bootstrap/)
-- AngularUI framwork (http://angular-ui.github.io/)
-- Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
-- Jasmine unit test framework (http://pivotal.github.io/jasmine/)
-- CoffeeScript Python/Ruby like javascript transpiler
-  (http://coffeescript.org/)
-- Express javascript web server
-- Less css compiler
+        cd crystalline/halide
+        ./genindex.py
 
-Local test web server
+3.  Install `salt-api`_ 0.8.2 or greater.
+4.  Follow the instructions for configuring the `rest_cherrypy`_ module.
+5.  Configure the ``app`` and ``static`` settings to point at the files in your
+    crystalline clone. For example::
 
-- Uses bottle.py which is included. The default server is wsgiref which is
-  single threaded. For multi-threaded support other web servers can be used if
-  installed. Tested ones include paste, gevent, and cherrypy. For karma end to
-  end testing of multiple browsers a multi-threaded or asynchronous server is
-  required.
+        rest_cherrypy:
+          port: 8000
+          debug: True
+          static: /path/to/crystalline/halide
+          app: /path/to/crystalline/halide/index.html
 
-Installation Instructions
---------------------------
+    .. note::
+
+        The above configuration is for local use only and does not use HTTPS.
+        Your Salt authentication credentials will be sent in the clear.
+
+        Follow the `rest_cherrypy`_ module installation instructions to disable
+        ``debug`` and generate self-signed SSL certiifcates, or use existing
+        SSL certificates, for non-local usage.
+
+6.  Start ``salt-api``::
+
+        salt-api
+
+7.  Open a browser and navigate to http://localhost:8000/app (substitute
+    whatever ``port`` and ``app`` prefix you configured).
+
+Documentation
+=============
+
+Browser requirements
+--------------------
+
+Support for ES5 and HTML5 is required. This means any modern browser or IE9+.
+
+Server requirements
+-------------------
+
+* This app requires the `rest_cherrypy`_ module in ``salt-api`` to
+  communicate with a running Salt installation via a REST API.
+* The static media for this app is server-agnostic and may be served from any
+  web server at a configurable URL prefix.
+* This app uses the HTML5 history API and so the ``index.html`` should
+  should be served from a base URL that otherwise ignores the rest of the URL
+  path. In other words, if the base URL that serves the ``index.html`` file
+  is ``/app``, then ``/app/some/path`` should also serve that same file.
+
+Library requirements
+--------------------
 
 The development version uses Coffeescript, Karma, Jasmine, and others which are
 all dependent on node.js.
@@ -128,6 +160,24 @@ folows::
       test/  # unit and end to end (e2e) tests for the web application
         unit/ # jasmine unit test spec files
         e2e/ # angular scenario runner test spec files
+
+Documentation
+=============
+
+Libraries Used
+--------------
+
+Client side web application requirements:
+
+- AngularJS framework (http://angularjs.org/)
+- Twitter Bootstrap Layout CSS (http://twitter.github.io/bootstrap/)
+- AngularUI framwork (http://angular-ui.github.io/)
+- Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
+- Jasmine unit test framework (http://pivotal.github.io/jasmine/)
+- CoffeeScript Python/Ruby like javascript transpiler
+  (http://coffeescript.org/)
+- Express javascript web server
+- Less css compiler
 
 Running Application
 -------------------
@@ -228,3 +278,8 @@ tested at once.
   $ cd crystalline
   $ python serving.py -d -g -s cherrypy
   $ karma start karma_e2e.conf.js
+
+.. ............................................................................
+
+.. _`salt-api`: https://github.com/saltstack/salt-api
+.. _`rest_cherrypy`: http://salt-api.readthedocs.org/en/latest/ref/netapis/all/saltapi.netapi.rest_cherrypy.html
