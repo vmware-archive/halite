@@ -13,6 +13,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
         
+        $scope.minioning = false
         $scope.statusing = false
         $scope.pinging = false
         $scope.refreshing = false
@@ -26,7 +27,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         if !AppData.get('minions')?
             AppData.set('minions',{})
         
-        $scope.minions = new Orderer(AppData.get('minions'),true)
+        $scope.minions = new Itemizer(AppData.get('minions'),true)
             
         $scope.reloadMinions = (data, field) ->
             keys = ( key for key, val of data)
@@ -37,10 +38,10 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.updateMinions = (data, field) ->
             for key, val of data
                 if not $scope.minions.get(key)?
-                    $scope.minions.set(key, new Orderer())
+                    $scope.minions.set(key, new Itemizer())
                 $scope.minions.get(key).deepSet(field, val)
             $scope.minions.sort(null, true)
-            AppData.set('minions', $scope.minions.unorder())
+            AppData.set('minions', $scope.minions.unitemize())
             
             return true
         
@@ -62,23 +63,26 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
-                    statae = {}
-                    for name in result.up
-                        statae[name]=true
-                    for name in result.down
-                        statae[name]=false
-                    $scope.reloadMinions(statae, "status")
+                    $scope.reloadMinions($scope.buildStatae(result), "status")
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
             return true
         
+        $scope.buildStatae = (result) ->
+            statae = {}
+            for name in result.up
+                statae[name]=true
+            for name in result.down
+                statae[name]=false
+            return statae
         
-        $scope.fetchPings = () ->
+        $scope.fetchPings = (target) ->
+            target = if target then target else "*"
             lowState =
                 fun: "test.ping"
                 client: "local"
-                tgt: "*"
+                tgt: target
                 arg: ""
             
             $scope.pinging = true
@@ -91,14 +95,20 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
-                    $scope.updateMinions(result, "ping")
+                    $scope.updateMinions($scope.buildPings(result), "ping")
                 return true
             .error (data, status, headers, config) ->
                 $scope.pinging = false
                 
             return true
+        
+        $scope.buildPings = (result) ->
+            for key in $scope.minions.keys()
+                if key not of result
+                    result[key] = false
+            return result
             
-        $scope.fetchMinions = (target) ->
+        $scope.fetchGrains = (target) ->
             target = if target then target else "*"
             lowState =
                 fun: "grains.items"
@@ -123,14 +133,56 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.refreshing = false
             return true
         
+        $scope.fetchMinions = () ->
+            lowStates =
+            [
+                fun: "manage.status"
+                client: "runner"
+                tgt: ""
+                arg: ""
+            ,
+                fun: "grains.items"
+                client: "local"
+                tgt: "*"
+                arg: ""
+            ,
+                fun: "test.ping"
+                client: "local"
+                tgt: "*"
+                arg: ""
+            ]
+            fields = ['status', 'grains', 'ping']
+            console.log lowStates
+            
+            $scope.minioning = true
+            SaltApiSrvc.act($scope, lowStates)
+            .success (data, status, headers, config) ->
+                $scope.minioning = false
+                results = data.return
+                for result, i in results
+                    console.log result
+                    if angular.isString(result)
+                        $scope.errorMsg = result
+                        return false
+                    if fields[i] is "status"
+                        result = $scope.buildStatae(result)
+                        $scope.reloadMinions(result, fields[i])
+                    else
+                        if fields[i] is "ping"
+                            result = $scope.buildPings(result)
+                        $scope.updateMinions(result, fields[i])
+                return true
+            .error (data, status, headers, config) ->
+                $scope.minioning = false
+            return true
+        
         $scope.filterMinions = (target) ->
             $scope.filterPattern.$ = target
             return true
         
         $scope.sortMinions = (minion) ->
-            return minion?.get("grains")?.get("id")
+            return minion?.val?.get("grains")?.val?.get("id")
         
-            
         $scope.fetchMinions()
         
         return true

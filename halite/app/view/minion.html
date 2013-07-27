@@ -9,25 +9,37 @@
         
         <div class="btn-group">
           <div class="input-append">
-            <input type="text" class="input-large" placeholder="Search Master" ng-model="searchTarget">
-            <button class="btn" type="submit" ng-click="fetchMinions(searchTarget)">
-              <i class="icon-refresh" ng-class="refreshing ? 'fa-icon-spinner fa-icon-spin' : 'icon-refresh';"></i>
-            </button>
+            <input type="text" class="input-large" placeholder="Enter minion search pattern" 
+              ng-model="searchTarget" title="Target Pattern">
+            <div class="btn-group">
+              <button class="btn" type="submit" ng-click="fetchGrains(searchTarget)" 
+                title="Search for minions that match target">
+                <i class="icon-refresh" ng-class="refreshing?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
+              </button>
+              <button class="btn" ng-click="fetchPings(searchTarget)" 
+                title="Ping minions that match target">
+                <i class="icon-bullhorn" ng-class="pinging?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
+              </button>
+            </div>
           </div>
         </div>
         <div class="btn-group">
           <div class="input-append">
-            <input type="text" class="input-medium" placeholder="Filter Minions" ng-model="filterTarget" ng-change="filterMinions(filterTarget)">
-            <button class="btn" ng-click="filterMinions(filterTarget)"><i class="icon-filter"></i></button>
+            <input type="text" class="input-large" placeholder="Enter minion filter string" 
+            ng-model="filterTarget" ng-change="filterMinions(filterTarget)" title="Filter String">
+            <button class="btn" ng-click="filterMinions(filterTarget)" 
+              title="Select grain to filter on"><i class="icon-filter"></i>
+            </button>
           </div>
         </div>
 
         <div class="btn-group">
-          <button class="btn" ng-click="fetchPings()">
-            <i class="icon-bullhorn" ng-class="pinging ? 'fa-icon-spinner fa-icon-spin' : 'icon-refresh';"></i>
+          
+          <button class="btn" ng-click="fetchStatae()" title="Fetch up/down status of all minions">
+            <i class="icon-fire" ng-class="statusing?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
           </button>
-          <button class="btn" ng-click="fetchStatae()">
-            <i class="icon-fire" ng-class="statusing ? 'fa-icon-spinner fa-icon-spin' : 'icon-refresh';"></i>
+          <button class="btn" ng-click="fetchMinions()" title="Fetch up/down status and grains of all minions">
+            <i class="icon-repeat" ng-class="minioning?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
           </button>
         </div>
       </div>
@@ -45,19 +57,25 @@
 
   <div class="span12" >
 
-  <div class="widget" ng-repeat="minion in minions.values() | filter:filterPattern | orderBy:sortMinions:reverse">
+  <div class="widget" ng-repeat="minion in minions.items() | filter:filterPattern | orderBy:sortMinions:reverse">
     <!-- Widget title -->
-    <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed">
-      <div class="pull-left"><bold  style="font-size: larger">{{minion.get("grains").get("id")}}</bold></div>
+    <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+      title="Click to toggle grains display">
+      <span class="label label-info pull-left" title="Minion Id">
+        <bold  style="font-size: larger">{{minion.key}}</bold>
+      </span>
       <div class="widget-icons pull-right">
-        <span class="badge" ng-class="minion.get('ping') ? 'badge-success' : 'badge-important'">
+        <span class="badge" title="Latest ping: Green=success, Red=failure" 
+          ng-class="minion.val.get('ping')?'badge-success':'badge-important'">
           <i class="icon-bullhorn icon-white"></i>
         </span>
-        <span class="badge" ng-class="minion.get('status') ? 'badge-success' : 'badge-important'">
+        <span class="badge" title="Latest status: Green=up, Red=down"
+          ng-class="minion.val.get('status')?'badge-success':'badge-important'">
           <i class="icon-fire icon-white"></i>
         </span>
         <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
-          <i class="icon-chevron-up"></i>
+          <i class="icon-chevron-down" title="Click to toggle grains disoplay" 
+            ng-class="collapsed?'icon-chevron-down':'icon-chevron-up'"></i>
         </a> 
       </div>  
       <div class="clearfix"></div>
@@ -70,39 +88,39 @@
             <table class="table table-striped table-bordered table-hover table-condensed">
               <tr>
                 <td>id</td>
-                <td>{{minion.get("grains").get("id")}}</td>
+                <td>{{minion.val.get("grains").get("id")}}</td>
               </tr> 
               <tr>
                 <td>host</td>
-                <td>{{minion.get("grains").get("host")}}</td>
+                <td>{{minion.val.get("grains").get("host")}}</td>
               </tr> 
               <tr>
                 <td>domain</td>
-                <td>{{minion.get("grains").get("domain")}}</td>
+                <td>{{minion.val.get("grains").get("domain")}}</td>
               </tr> 
               <tr>
                 <td>fqdn</td>
-                <td>{{minion.get("grains").get("fqdn")}}</td>
+                <td>{{minion.val.get("grains").get("fqdn")}}</td>
               </tr> 
               <tr>
                 <td>nodename</td>
-                <td>{{minion.get("grains").get("nodename")}}</td>
+                <td>{{minion.val.get("grains").get("nodename")}}</td>
               </tr> 
               <tr>
                 <td>localhost</td>
-                <td>{{minion.get("grains").get("id")}}</td>
+                <td>{{minion.val.get("grains").get("id")}}</td>
               </tr>    
               <tr>
                 <td>server_id</td>
-                <td>{{minion.get("grains").get("server_id")}}</td>
+                <td>{{minion.val.get("grains").get("server_id")}}</td>
               </tr>
               <tr>
                 <td>master</td>
-                <td>{{minion.get("grains").get("master")}}</td>
+                <td>{{minion.val.get("grains").get("master")}}</td>
               </tr> 
               <tr>
                 <td>ipv4</td>
-                <td>{{minion.get("grains").get("ipv4")[0]}}</td>
+                <td>{{minion.val.get("grains").get("ipv4")[0]}}</td>
               </tr> 
             </table>
           </div>
@@ -110,39 +128,39 @@
             <table class="table table-striped table-bordered table-hover table-condensed">
               <tr>
                 <td>saltversion</td>
-                <td>{{minion.get("grains").get("saltversion")}}</td>
+                <td>{{minion.val.get("grains").get("saltversion")}}</td>
               </tr> 
               <tr>
                 <td>pythonversion</td>
-                <td>{{minion.get("grains").get("pythonversion").join(".")}}</td>
+                <td>{{minion.val.get("grains").get("pythonversion").join(".")}}</td>
               </tr> 
               <tr>
                 <td>shell</td>
-                <td>{{minion.get("grains").get("shell")}}</td>
+                <td>{{minion.val.get("grains").get("shell")}}</td>
               </tr> 
               <tr>
                 <td>defaultencoding</td>
-                <td>{{minion.get("grains").get("defaultencoding")}}</td>
+                <td>{{minion.val.get("grains").get("defaultencoding")}}</td>
               </tr> 
               <tr>
                 <td>defaultlanguage</td>
-                <td>{{minion.get("grains").get("defaultlanguage")}}</td>
+                <td>{{minion.val.get("grains").get("defaultlanguage")}}</td>
               </tr> 
               <tr>
                 <td>os</td>
-                <td>{{minion.get("grains").get("os")}}</td>
+                <td>{{minion.val.get("grains").get("os")}}</td>
               </tr> 
               <tr>
                 <td>os_family</td>
-                <td>{{minion.get("grains").get("os_family")}}</td>
+                <td>{{minion.val.get("grains").get("os_family")}}</td>
               </tr>    
               <tr>
                 <td>kernel</td>
-                <td>{{minion.get("grains").get("kernel")}}</td>
+                <td>{{minion.val.get("grains").get("kernel")}}</td>
               </tr>
               <tr>
                 <td>kernelrelease</td>
-                <td>{{minion.get("grains").get("kernelrelease")}}</td>
+                <td>{{minion.val.get("grains").get("kernelrelease")}}</td>
               </tr> 
             </table>
           </div>
@@ -150,39 +168,39 @@
             <table class="table table-striped table-bordered table-hover table-condensed">
               <tr>
                 <td>ps</td>
-                <td>{{minion.get("grains").get("ps")}}</td>
+                <td>{{minion.val.get("grains").get("ps")}}</td>
               </tr> 
               <tr>
                 <td>virtual</td>
-                <td>{{minion.get("grains").get("virtual")}}</td>
+                <td>{{minion.val.get("grains").get("virtual")}}</td>
               </tr> 
               <tr>
                 <td>cpu_model</td>
-                <td>{{minion.get("grains").get("cpu_model")}}</td>
+                <td>{{minion.val.get("grains").get("cpu_model")}}</td>
               </tr> 
               <tr>
                 <td>cpuarch</td>
-                <td>{{minion.get("grains").get("cpuarch")}}</td>
+                <td>{{minion.val.get("grains").get("cpuarch")}}</td>
               </tr> 
               <tr>
                 <td>num_cpus</td>
-                <td>{{minion.get("grains").get("num_cpus")}}</td>
+                <td>{{minion.val.get("grains").get("num_cpus")}}</td>
               </tr> 
               <tr>
                 <td>cpu_flags</td>
-                <td>{{minion.get("grains").get("cpu_flags").join()}}</td>
+                <td>{{minion.val.get("grains").get("cpu_flags").join()}}</td>
               </tr>    
               <tr>
                 <td>num_gpus</td>
-                <td>{{minion.get("grains").get("num_gpus")}}</td>
+                <td>{{minion.val.get("grains").get("num_gpus")}}</td>
               </tr>
               <tr>
                 <td>gpus</td>
-                <td>{{minion.get("grains").get("gpus").join()}}</td>
+                <td>{{minion.val.get("grains").get("gpus").join()}}</td>
               </tr> 
               <tr>
                 <td>mem_total</td>
-                <td>{{minion.get("grains").get("mem_total")}}</td>
+                <td>{{minion.val.get("grains").get("mem_total")}}</td>
               </tr> 
             </table>
           </div>
@@ -190,15 +208,15 @@
         <tab heading="IP">
           <div class="span6">
             <table class="table table-striped table-bordered table-hover table-condensed">
-              <tr ng-repeat="key in minion.get('grains').get('ip_interfaces').keys">
-                <td>{{key}}</td>
-                <td>{{minion.get('grains').get('ip_interfaces').get(key).join(', ')}}</td>
+              <tr ng-repeat="ip in minion.val.get('grains').get('ip_interfaces').items()">
+                <td>{{ip.key}}</td>
+                <td>{{ip.val.join(', ')}}</td>
               </tr> 
             </table>
           </div>
           <div class="span6">
             <table class="table table-striped table-bordered table-hover table-condensed">
-              <tr ng-repeat="ip in minion.get('grains').get('ipv4')">
+              <tr ng-repeat="ip in minion.val.get('grains').get('ipv4')">
                 <td>ipv4 {{$index}}</td>
                 <td>{{ip}}</td>
               </tr> 
@@ -210,17 +228,17 @@
             <table class="table table-striped table-bordered table-hover table-condensed">
               <tr>
                 <td>path</td>
-                <td>{{minion.get("grains").get("path")}}</td>
+                <td>{{minion.val.get("grains").get("path")}}</td>
               </tr> 
               <tr>
                 <td>saltpath</td>
-                <td>{{minion.get("grains").get("saltpath")}}</td>
+                <td>{{minion.val.get("grains").get("saltpath")}}</td>
               </tr> 
               <tr>
                 <td>pythonpath</td>
                 <td>
                   <table class="table table-striped table-bordered table-hover table-condensed">
-                    <tr ng-repeat="path in minion.get('grains').get('pythonpath')">
+                    <tr ng-repeat="path in minion.val.get('grains').get('pythonpath')">
                       <td>{{path}}</td>
                     </tr> 
                   </table>
