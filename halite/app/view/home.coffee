@@ -7,7 +7,7 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
         $scope.route = $route
         $scope.winLoc = window.location
 
-        console.log("HomeCtlr")
+        #console.log("HomeCtlr")
         $scope.errorMsg = ""
         $scope.config = Configuration
         
@@ -30,17 +30,17 @@ mainApp.controller 'HomeCtlr', ['$scope', '$location', '$route','Configuration',
             prefs = $scope.prefs.unitemize()
             for own key, val of prefs
                 AppPref.set(key, val)
-            console.log AppPref.getAll()
+            #console.log AppPref.getAll()
             
         $scope.resetPrefs = () ->
             AppPref.clear()
             AppPref.reload()
             #$scope.prefs = new Itemizer(AppPref.getAll(), true)
             $scope.prefs.reload(AppPref.getAll(), true)
-            console.log AppPref.getAll()
+            #console.log AppPref.getAll()
         
         $scope.prefs = new Itemizer(AppPref.getAll(), true)
-        console.log $scope.prefs
+        #console.log $scope.prefs
         
         
         

@@ -22,10 +22,10 @@ mainApp.config ["Configuration", "MainConstants", "$locationProvider",
     "$routeProvider", "$httpProvider",
     (Configuration, MainConstants, $locationProvider, $routeProvider, $httpProvider) ->
         $locationProvider.html5Mode(true)
-        console.log("Configuration")
-        console.log(Configuration)
-        console.log("MainConstants")
-        console.log(MainConstants)
+        #console.log("Configuration")
+        #console.log(Configuration)
+        #console.log("MainConstants")
+        #console.log(MainConstants)
         #using absolute urls here in html5 mode
         base = Configuration.baseUrl # for use in coffeescript string interpolation #{base}
         
@@ -53,7 +53,7 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
     'Configuration', 'AppPref', 'AppData', 'LocalStore', 'SessionStore', 'SaltApiSrvc',
     ($scope, $location, $route, $routeParams, Configuration, AppPref, 
             AppData, LocalStore, SessionStore, SaltApiSrvc) ->
-        console.log("NavbarCtlr")
+        #console.log("NavbarCtlr")
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -111,7 +111,7 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
         
         $scope.logoutUser = () ->
             $scope.errorMsg = ""
-            console.log "Logging out #{$scope.username}"
+            #console.log "Logging out #{$scope.username}"
             
             $scope.username = null
             
@@ -120,24 +120,24 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
             
             $scope.saltApiLogoutPromise = SaltApiSrvc.logout $scope
             $scope.saltApiLogoutPromise.success (data, status, headers, config) ->
-                console.log("SaltApi Logout success")
-                console.log data
+                #console.log("SaltApi Logout success")
+                #console.log data
                 if data?.return?[0]?
                     SessionStore.set('loggedIn',$scope.loggedIn)
                     SessionStore.remove('saltApiAuth')
-                    console.log SessionStore.get('loggedIn')    
-                    console.log SessionStore.get('saltApiAuth')
+                    #console.log SessionStore.get('loggedIn')    
+                    #console.log SessionStore.get('saltApiAuth')
                 return true
             
             return true    
         
         $scope.loginUser = () ->
             $scope.errorMsg = ""
-            console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
+            #console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
             $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, $scope.login.username, $scope.login.password
             $scope.saltApiLoginPromise.success (data, status, headers, config) ->
-                console.log("SaltApi Login success")
-                console.log data
+                #console.log("SaltApi Login success")
+                #console.log data
                 if data?.return?[0]?
                     auth = data.return[0]
                     saltApiAuth =
@@ -153,8 +153,8 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
                     $scope.username = saltApiAuth.user
                     SessionStore.set('saltApiAuth', saltApiAuth )
                     
-                    console.log SessionStore.get('loggedIn')    
-                    console.log SessionStore.get('saltApiAuth')  
+                    #console.log SessionStore.get('loggedIn')    
+                    #console.log SessionStore.get('saltApiAuth')  
                 return true
                 
             return true
@@ -181,7 +181,7 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
 mainApp.controller 'RouteCtlr', ['$scope', '$location', '$route', '$routeParams',
         'Configuration', 'AppPref',
     ($scope, $location, $route, $$routeParams, Configuration, AppPref) ->
-        console.log "RouteCtlr"
+        #console.log "RouteCtlr"
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location

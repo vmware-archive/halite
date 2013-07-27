@@ -8,7 +8,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.route = $route
         $scope.winLoc = window.location
 
-        console.log("MinionCtlr")
+        #console.log("MinionCtlr")
         $scope.errorMsg = ""
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
@@ -59,7 +59,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.statusing = false 
                 result = data.return?[0]
                 if result
-                    console.log result
+                    #console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
@@ -91,7 +91,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.pinging = false
                 result = data.return?[0]
                 if result
-                    console.log result
+                    #console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
@@ -122,7 +122,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.refreshing = false
                 result = data.return?[0]
                 if result
-                    console.log result
+                    #console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
@@ -152,7 +152,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 arg: ""
             ]
             fields = ['status', 'grains', 'ping']
-            console.log lowStates
+            #console.log lowStates
             
             $scope.minioning = true
             SaltApiSrvc.act($scope, lowStates)
@@ -160,7 +160,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.minioning = false
                 results = data.return
                 for result, i in results
-                    console.log result
+                    #console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
