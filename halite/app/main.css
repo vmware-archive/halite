@@ -1,4 +1,11 @@
 
+/* extra icon colors for font icons */
+.icon-white {color: white;}
+.icon-blue { color: blue;}
+.icon-green {color: green;}
+.icon-red { color: red; }
+
+.icon-white {color: white;}
 
 /* Additional sizes for bootstrap labels and badges not in default bootstrap*/
 .label-mini,

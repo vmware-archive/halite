@@ -14,11 +14,15 @@
             <div class="btn-group">
               <button class="btn" type="submit" ng-click="fetchGrains(searchTarget)" 
                 title="Search for minions that match target">
-                <i class="icon-refresh" ng-class="refreshing?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
+                <i class="icon-briefcase" 
+                  ng-class="refreshing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
+                </i>
               </button>
               <button class="btn" ng-click="fetchPings(searchTarget)" 
                 title="Ping minions that match target">
-                <i class="icon-bullhorn" ng-class="pinging?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
+                <i class="icon-bullhorn" 
+                  ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
+                </i>
               </button>
             </div>
           </div>
@@ -34,12 +38,17 @@
         </div>
 
         <div class="btn-group">
-          
-          <button class="btn" ng-click="fetchStatae()" title="Fetch up/down status of all minions">
-            <i class="icon-fire" ng-class="statusing?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
+          <button class="btn" ng-click="fetchStatae()" 
+            title="Fetch up/down status of all minions">
+            <i class="icon-fire" 
+              ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
+            </i>
           </button>
-          <button class="btn" ng-click="fetchMinions()" title="Fetch up/down status and grains of all minions">
-            <i class="icon-repeat" ng-class="minioning?'fa-icon-spinner fa-icon-spin':'icon-refresh';"></i>
+          <button class="btn" ng-click="fetchMinions()" 
+            title="Fetch up/down status and grains of all minions">
+            <i class="icon-refresh" 
+              ng-class="minioning?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
+            </i>
           </button>
         </div>
       </div>
@@ -49,7 +58,7 @@
 </div><!--/row-->
 
 <div class="row-fluid">
-<h4>Minions</h4>
+<h4><em>Minions</em></h4>
 <div>
 
 <!--<div class="container-fluid">-->
@@ -61,7 +70,8 @@
     <!-- Widget title -->
     <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
       title="Click to toggle grains display">
-      <span class="label label-info pull-left" title="Minion Id">
+      <span class="label pull-left" title="Minion Id: Green=grains, Orange=no grains" 
+        ng-class="minion.val.get('grains')?'label-info':'label-warning'">
         <bold  style="font-size: larger">{{minion.key}}</bold>
       </span>
       <div class="widget-icons pull-right">
