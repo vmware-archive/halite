@@ -9,9 +9,9 @@ configuration =
     version: "0.0.1"
     views:
         otherwise: 
-            label: "home"
+            label: "Home"
             route: "/app/home"
-            url: "/app/home"
+            url: "/app/home/"
             template: "/static/app/view/home.html"
             controller: "HomeCtlr"
         tabs:
