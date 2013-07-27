@@ -8,6 +8,12 @@ configuration =
     date: "20130709"
     version: "0.0.1"
     views:
+        home: 
+            label: "Home"
+            route: "/app/home"
+            url: "/app/home/"
+            template: "/static/app/view/home.html"
+            controller: "HomeCtlr"
         otherwise: 
             label: "Home"
             route: "/app/home"

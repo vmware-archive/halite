@@ -183,7 +183,8 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.sortMinions = (minion) ->
             return minion?.val?.get("grains")?.val?.get("id")
         
-        $scope.fetchMinions()
+        if not $scope.minions.keys().length
+            $scope.fetchMinions()
         
         return true
     ]
