@@ -27,12 +27,6 @@ configuration =
                 url: "/app/command/"
                 template: "/static/app/view/command.html"
                 controller: "CommandCtlr"
-            ,
-                label: "test"
-                route: "/app/test/:id"
-                url: "/app/test/"
-                template: "/static/app/view/test.html"
-                controller: "TestCtlr"
             ]
     preferences:
         debug: false

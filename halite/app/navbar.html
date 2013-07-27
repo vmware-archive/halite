@@ -15,19 +15,7 @@
             <li ng-repeat="view in views.tabs" ng-class="navery.navs[view.label].state">
               <a ng-href="{{view.url}}">{{view.label | capitalcase}}</a>
             </li>
-            <li class="dropdown">
-              <a class="dropdown-toggle">Actions<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li class="nav-header">Run</li>
-                <li><a ng-href="/">Start</a></li>
-                <li><a ng-href="/">Monitor</a></li>
-                <li><a ng-href="/">Display</a></li>
-                <li class="divider"></li>
-                <li class="nav-header">Debug</li>
-                <li><a ng-href="/">Trace</a></li>
-                <li><a ng-href="/">Edit</a></li>
-              </ul>
-            </li>
+            
           </ul>
           <form class="navbar-form pull-right" name="loginForm" ng-cloak ng-show="!loggedIn">
             <div>
