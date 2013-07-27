@@ -9,17 +9,17 @@ configuration =
     version: "0.0.1"
     views:
         home: 
-            label: "Home"
+            label: "home"
             route: "/app/home"
             url: "/app/home/"
             template: "/static/app/view/home.html"
             controller: "HomeCtlr"
         otherwise: 
-            label: "Home"
-            route: "/app/home"
-            url: "/app/home/"
-            template: "/static/app/view/home.html"
-            controller: "HomeCtlr"
+            label: "minion"
+            route: "/app/minion"
+            url: "/app/minion/"
+            template: "/static/app/view/minion.html"
+            controller: "MinionCtlr"
         tabs:
             [
                 label: "minion"
