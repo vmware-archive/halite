@@ -49,6 +49,8 @@ Installation quickstart
 Documentation
 =============
 
+.. image:: screenshot.png
+
 Browser requirements
 --------------------
 
