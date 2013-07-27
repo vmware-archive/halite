@@ -17,6 +17,8 @@ Creates object of form { key: key, val: val}
 
 class Item
     constructor: (@key, @val) ->
+    
+appUtilSrvc.value "Item", Item
 
 ###
 Itemizer class  used to provide ordered data object with keyed lookup
@@ -121,7 +123,7 @@ class Itemizer
         return items
         
     keys: () ->
-        return (key for key in @_keys)
+        return @_keys
         
     values: () ->
         return (@_data[key].val for key in @_keys)

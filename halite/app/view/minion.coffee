@@ -25,9 +25,11 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.reverse = false
 
         if !AppData.get('minions')?
-            AppData.set('minions',{})
+            #AppData.set('minions',{})
+            AppData.set('minions', new Itemizer())
         
-        $scope.minions = new Itemizer(AppData.get('minions'),true)
+        #$scope.minions = new Itemizer(AppData.get('minions'),true)
+        $scope.minions = AppData.get('minions')
             
         $scope.reloadMinions = (data, field) ->
             keys = ( key for key, val of data)
@@ -41,7 +43,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     $scope.minions.set(key, new Itemizer())
                 $scope.minions.get(key).deepSet(field, val)
             $scope.minions.sort(null, true)
-            AppData.set('minions', $scope.minions.unitemize())
+            #AppData.set('minions', $scope.minions.unitemize())
             
             return true
         
