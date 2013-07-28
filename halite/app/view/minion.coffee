@@ -17,20 +17,59 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.statusing = false
         $scope.pinging = false
         $scope.refreshing = false
-        $scope.searchTarget = ""
-        $scope.filterTarget = ""
-        $scope.filterPattern = 
-            $: ""
-        $scope.sortTarget = "id"
-        $scope.reverse = false
-
-        if !AppData.get('minions')?
-            #AppData.set('minions',{})
-            AppData.set('minions', new Itemizer())
         
-        #$scope.minions = new Itemizer(AppData.get('minions'),true)
+        if !AppData.get('minions')?
+            AppData.set('minions', new Itemizer())
         $scope.minions = AppData.get('minions')
+        
+        $scope.searchTarget = ""
+        
+        $scope.filterage =
+            grains: ["any", "id", "host", "domain", "server_id"]
+            grain: "any"
+            target: ""
+            express: ""
+        
+        $scope.reverse = false
+        $scope.sortage =
+            targets: ["id", "grains", "ping", "status"]
+            target: "id"
+            reverse: false
+
+        $scope.setFilterGrain = (index) ->
+            $scope.filterage.grain = $scope.filterage.grains[index]
+            $scope.setFilterExpress()
+            return true
+        
+        $scope.setFilterTarget = (target) ->
+            $scope.filterage.target = target
+            $scope.setFilterExpress()
+            return true
+        
+        $scope.setFilterExpress = () ->
+            console.log "setFilterExpress"
+            if $scope.filterage.grain is "any"
+                $scope.filterage.express = $scope.filterage.target
+            else
+                regex = RegExp($scope.filterage.target,"i")
+                grain = $scope.filterage.grain
+                $scope.filterage.express = (minion) ->
+                    return minion.val.get("grains").get(grain).toString().match(regex)
+            return true
+        
+        $scope.setSortTarget = (index) ->
+            $scope.sortage.target = $scope.sortage.targets[index]
+            return true
             
+        $scope.sortMinions = (minion) ->
+            if $scope.sortage.target is "id"
+                result = minion.val.get("grains")?.get("id")
+            else if $scope.sortage.target is "grains"
+                result = minion.val.get($scope.sortage.target)?
+            else
+                result = minion.val.get($scope.sortage.target)
+            return result
+        
         $scope.reloadMinions = (data, field) ->
             keys = ( key for key, val of data)
             $scope.minions?.filter(keys)
@@ -43,10 +82,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     $scope.minions.set(key, new Itemizer())
                 $scope.minions.get(key).deepSet(field, val)
             $scope.minions.sort(null, true)
-            #AppData.set('minions', $scope.minions.unitemize())
-            
             return true
-        
         
         $scope.fetchStatae = () ->
             lowState =
@@ -177,13 +213,6 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             .error (data, status, headers, config) ->
                 $scope.minioning = false
             return true
-        
-        $scope.filterMinions = (target) ->
-            $scope.filterPattern.$ = target
-            return true
-        
-        $scope.sortMinions = (minion) ->
-            return minion?.val?.get("grains")?.val?.get("id")
         
         if not $scope.minions.keys().length
             $scope.fetchMinions()

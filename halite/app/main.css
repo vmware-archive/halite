@@ -1,4 +1,16 @@
 
+.filter-active {background: #ccc}
+
+.leftmost { 
+  border-top-right-radius: 0px !important; 
+  border-bottom-right-radius: 0px !important; 
+}
+
+.rightmost { 
+  border-top-left-radius: 0px !important; 
+  border-bottom-left-radius: 0px !important; 
+}
+
 /* extra icon colors for font icons */
 .icon-white {color: white;}
 .icon-blue { color: blue;}

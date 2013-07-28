@@ -6,14 +6,13 @@
   
     <form class="form-inline pull-left" style="margin: 0 0 0 0">
       <div class="btn-toolbar">
-        
         <div class="btn-group">
           <div class="input-append">
-            <input type="text" class="input-large" placeholder="Enter minion search pattern" 
-              ng-model="searchTarget" title="Target Pattern">
+            <input type="text" class="input-medium" placeholder="Enter target pattern" 
+              ng-model="searchTarget" title="Minion search target pattern">
             <div class="btn-group">
               <button class="btn" type="submit" ng-click="fetchGrains(searchTarget)" 
-                title="Search for minions that match target">
+                title="Fetch grains from minions that match target">
                 <i class="icon-briefcase" 
                   ng-class="refreshing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
                 </i>
@@ -27,14 +26,47 @@
             </div>
           </div>
         </div>
+        
         <div class="btn-group">
           <div class="input-append">
-            <input type="text" class="input-large" placeholder="Enter minion filter string" 
-            ng-model="filterTarget" ng-change="filterMinions(filterTarget)" title="Filter String">
-            <button class="btn" ng-click="filterMinions(filterTarget)" 
-              title="Select grain to filter on"><i class="icon-filter"></i>
-            </button>
+            <input type="text" class="input-medium" placeholder="Enter filter string" 
+            ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
+            <div class="btn-group">
+              <button class="btn dropdown-toggle leftmost" title="Select grain to filter against">
+                <i class="icon-filter"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li ng-repeat="grain in filterage.grains track by $index">
+                  <a ng-href="" ng-click="setFilterGrain($index)" 
+                    ng-class="filterage.grain==grain?'filter-active':''">
+                    {{grain}}
+                  </a>
+                </li>
+              </ul>
+              <button class="btn disabled" title="Filter against this grain">in {{filterage.grain}}
+              </button>
+            </div>
           </div>
+        </div>
+        
+        <div class="btn-group">
+          
+          <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
+            <i class="icon-list"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li ng-repeat="target in sortage.targets track by $index">
+              <a ng-href="" ng-click="setSortTarget($index)" 
+                ng-class="sortage.target==target?'filter-active':''">
+                {{target}}
+              </a>
+            </li>
+          </ul>
+          <button class="btn disabled" title="Sort by this trait">by {{sortage.target}}
+          </button>
+          <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
+            <i ng-class="sortage.reverse?'icon-arrow-up':'icon-arrow-down'"></i>
+          </button>
         </div>
 
         <div class="btn-group">
@@ -45,7 +77,7 @@
             </i>
           </button>
           <button class="btn" ng-click="fetchMinions()" 
-            title="Fetch up/down status and grains of all minions">
+            title="Fetch status and grains and ping all minions">
             <i class="icon-refresh" 
               ng-class="minioning?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
             </i>
@@ -66,7 +98,7 @@
 
   <div class="span12" >
 
-  <div class="widget" ng-repeat="minion in minions.items() | filter:filterPattern | orderBy:sortMinions:reverse">
+  <div class="widget" ng-repeat="minion in minions.items() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
     <!-- Widget title -->
     <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
       title="Click to toggle grains display">
