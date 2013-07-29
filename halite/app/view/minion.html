@@ -131,7 +131,8 @@
               <option value="runner">runner</option>
             </select>
           </label>
-          <label class="control-label">Target<br/>
+          <label class="control-label"
+              ng-show="command.lowstate.client == 'local'">Target<br/>
             <input type="text" class="input-medium" placeholder="Enter command target"
               ng-model="command.lowstate.tgt" title="Lowstate command target">
           </label>
