@@ -105,12 +105,21 @@
               ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-cog';">
             </i>
           </button>
-          <button class="btn" ng-click="" 
+          <button class="btn dropdown-toggle" 
+            ng-class="command.size(command.history)==0?'disabled':''"
             title="Execute saved lowstate command">
             <i class="icon-book" 
               ng-class="historing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-book';">
             </i>
+            <b class="caret"></b>
           </button>
+          <ul class="dropdown-menu">
+            <li ng-repeat="(name, cmd) in command.history track by $index">
+              <a ng-href="" ng-click="" >
+                {{name}}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
       
@@ -135,19 +144,21 @@
           <label class="control-label">Arguments<br/>
             <div class="input-append">
               <input type="text" class="input-medium"
-                placeholder="Enter arguement"
+                placeholder="Enter argument"
                 ng-repeat="arg in command.lowstate.args track by $index"
                 ng-model="command.lowstate.args[$index]">
     
-              <button class="btn " type="button"
+              <button class="btn" ng-class="command.lowstate.args.length==1?'disabled':''" 
+                type="button" title="Remove last argument"
                 ng-click="command.delArg()"><i class="icon-minus"></i></button>
-              <button class="btn " type="button"
+              <button class="btn " type="button" title="Add another argument"
                 ng-click="command.addArg()"><i class="icon-plus"></i></button>
             </div>
           </label>
           <button type="submit" class="btn" ng-click="act();collapsed=!collapsed">
             Execute
           </button>
+          
         </div>
 
         

@@ -156,10 +156,10 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 tgt: target
                 arg: ""
             
-            $scope.refreshing = true
+            $scope.graining = true
             SaltApiSrvc.act($scope, [lowState])
             .success (data, status, headers, config) ->
-                $scope.refreshing = false
+                $scope.graining = false
                 result = data.return?[0]
                 if result
                     #console.log result
@@ -170,7 +170,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     $scope.updateMinions(result, "grains")
                 return true
             .error (data, status, headers, config) ->
-                $scope.refreshing = false
+                $scope.graining = false
             return true
         
         $scope.fetchMinions = () ->
@@ -218,11 +218,16 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         
         $scope.command =
             result: {}
+            history: {}
+            lastCmd: null
             lowstate:
                 client: 'local'
                 tgt: '*'
                 fun: ''
                 args: ['']
+            
+            size: (obj) ->
+                return _.size(obj)
             
             addArg: () ->
                 @lowstate.args.push('')
@@ -232,22 +237,26 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     @lowstate.args = @lowstate.args[0..-2]
 
             getCmd: () ->
-                cmd =
+                @lastCmd =
                 [
-                    client: @client,
-                    tgt: @tgt,
-                    fun: @fun,
+                    client: @lowstate.client,
+                    tgt: @lowstate.tgt,
+                    fun: @lowstate.fun,
                     args: (arg for arg in @lowstate.args when arg isnt '')
                 ]
-                return cmd
+                return @lastCmd
 
         $scope.act = () ->
+            $scope.commanding = true
             SaltApiSrvc.act($scope, $scope.command.getCmd())
             .success (data, status, headers, config ) ->
+                $scope.commanding = false
+                $scope.command.history[JSON.stringify($scope.command.lastCmd)]= $scope.command.lastCmd
                 result = data.return[0]
                 console.log result
                 return true
-            
+            .error (data, status, headers, config) ->
+                $scope.commanding = false
 
         
         
