@@ -115,7 +115,7 @@
           </button>
           <ul class="dropdown-menu">
             <li ng-repeat="(name, cmd) in command.history track by $index">
-              <a ng-href="" ng-click="" >
+              <a ng-href="" ng-click="act(cmd)" >
                 {{name}}
               </a>
             </li>

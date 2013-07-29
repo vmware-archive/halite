@@ -237,18 +237,23 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     @lowstate.args = @lowstate.args[0..-2]
 
             getCmd: () ->
-                @lastCmd =
+                cmd =
                 [
                     client: @lowstate.client,
                     tgt: @lowstate.tgt,
                     fun: @lowstate.fun,
                     args: (arg for arg in @lowstate.args when arg isnt '')
                 ]
-                return @lastCmd
+                return cmd
+                
 
-        $scope.act = () ->
+        $scope.act = (cmd) ->
             $scope.commanding = true
-            SaltApiSrvc.act($scope, $scope.command.getCmd())
+            if not cmd
+                cmd = $scope.command.getCmd()
+            $scope.command.lastCmd = cmd
+                
+            SaltApiSrvc.act($scope, cmd )
             .success (data, status, headers, config ) ->
                 $scope.commanding = false
                 $scope.command.history[JSON.stringify($scope.command.lastCmd)]= $scope.command.lastCmd
