@@ -13,10 +13,12 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
         
-        $scope.minioning = false
-        $scope.statusing = false
+        $scope.graining = false
         $scope.pinging = false
-        $scope.refreshing = false
+        $scope.statusing = false
+        $scope.minioning = false
+        $scope.commanding = false
+        $scope.historing = false
         
         if !AppData.get('minions')?
             AppData.set('minions', new Itemizer())
@@ -71,9 +73,9 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             return result
         
         $scope.reloadMinions = (data, field) ->
+            $scope.updateMinions(data, field)
             keys = ( key for key, val of data)
             $scope.minions?.filter(keys)
-            $scope.updateMinions(data, field)
             return true
             
         $scope.updateMinions = (data, field) ->
@@ -213,6 +215,42 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             .error (data, status, headers, config) ->
                 $scope.minioning = false
             return true
+        
+        $scope.command =
+            result: {}
+            lowstate:
+                client: 'local'
+                tgt: '*'
+                fun: ''
+                args: ['']
+            
+            addArg: () ->
+                @lowstate.args.push('')
+                
+            delArg: () ->
+                if @lowstate.args.length > 1
+                    @lowstate.args = @lowstate.args[0..-2]
+
+            getCmd: () ->
+                cmd =
+                [
+                    client: @client,
+                    tgt: @tgt,
+                    fun: @fun,
+                    args: (arg for arg in @lowstate.args when arg isnt '')
+                ]
+                return cmd
+
+        $scope.act = () ->
+            SaltApiSrvc.act($scope, $scope.command.getCmd())
+            .success (data, status, headers, config ) ->
+                result = data.return[0]
+                console.log result
+                return true
+            
+
+        
+        
         
         if not $scope.minions.keys().length
             $scope.fetchMinions()
