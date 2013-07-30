@@ -75,7 +75,7 @@ Client side web application requirements:
 
 * AngularJS framework (http://angularjs.org/)
 * Twitter Bootstrap Layout CSS (http://twitter.github.io/bootstrap/)
-* AngularUI framwork (http://angular-ui.github.io/)
+* AngularUI framework (http://angular-ui.github.io/)
 * Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
 * Jasmine unit test framework (http://pivotal.github.io/jasmine/)
 * CoffeeScript Python/Ruby like javascript transpiler
