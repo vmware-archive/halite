@@ -105,8 +105,8 @@
               ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-cog';">
             </i>
           </button>
-          <button class="btn dropdown-toggle" 
-            ng-class="command.size(command.history)==0?'disabled':''"
+          <button class="btn" 
+            ng-class="command.size(command.history)==0?'disabled':'dropdown-toggle'"
             title="Execute saved lowstate command">
             <i class="icon-book" 
               ng-class="historing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-book';">

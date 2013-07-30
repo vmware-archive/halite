@@ -25,6 +25,27 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.minions = AppData.get('minions')
         
         $scope.searchTarget = ""
+        $scope.actions =
+            State:
+                highstate:
+                    client: 'local'
+                    tgt: '*'
+                    fun: 'state.highstate'
+                    arg: ['']
+                show_highstate:
+                    client: 'local'
+                    tgt: '*'
+                    fun: 'state.show_highstate'
+                    arg: ['']
+                running:
+                    client: 'local'
+                    tgt: '*'
+                    fun: 'state.running'
+                    arg: ['']
+        
+        $scope.runAction = (group, name) ->
+            cmd = $scope.actions[group][name]
+                
         
         $scope.filterage =
             grains: ["any", "id", "host", "domain", "server_id"]
@@ -242,16 +263,19 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                     client: @lowstate.client,
                     tgt: @lowstate.tgt,
                     fun: @lowstate.fun,
-                    args: (arg for arg in @lowstate.args when arg isnt '')
+                    arg: (arg for arg in @lowstate.args when arg isnt '')
                 ]
                 return cmd
-                
+        
+
 
         $scope.act = (cmd) ->
             $scope.commanding = true
             if not cmd
                 cmd = $scope.command.getCmd()
             $scope.command.lastCmd = cmd
+            if not angular.isArray(cmd)
+                cmd = [cmd]
                 
             SaltApiSrvc.act($scope, cmd )
             .success (data, status, headers, config ) ->
