@@ -1,9 +1,9 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppData', 'AppPref', 'Itemizer', 'Orderer', 'SaltApiSrvc',
+    'AppData', 'AppPref', 'Itemizer', 'Orderer', 'SaltApiSrvc', 'SaltApiEvtSrvc'
     ($scope, $location, $route, Configuration, AppData, AppPref, Itemizer, 
-    Orderer, SaltApiSrvc) ->
+    Orderer, SaltApiSrvc, SaltApiEvtSrvc) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -269,18 +269,14 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         
 
 
-        $scope.act = (cmd) ->
+        $scope.action = (cmd) ->
             $scope.commanding = true
             if not cmd
                 cmd = $scope.command.getCmd()
-            $scope.command.lastCmd = cmd
-            if not angular.isArray(cmd)
-                cmd = [cmd]
                 
-            SaltApiSrvc.act($scope, cmd )
+            SaltApiSrvc.action($scope, cmd )
             .success (data, status, headers, config ) ->
                 $scope.commanding = false
-                $scope.command.history[JSON.stringify($scope.command.lastCmd)]= $scope.command.lastCmd
                 result = data.return[0]
                 console.log result
                 return true
@@ -288,6 +284,12 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.commanding = false
 
         
+        $scope.testEventStream = () ->
+            $scope.eventPromise = SaltApiEvtSrvc.events()
+            .then (data) ->
+                console.log("Resolved: " + data)
+                return data
+            return true
         
         
         if not $scope.minions.keys().length
