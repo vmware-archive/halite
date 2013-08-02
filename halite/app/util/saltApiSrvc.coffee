@@ -63,7 +63,7 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 reqData =
                     "username": username
                     "password": password
-                    "eauth": "pam"
+                    "eauth": saltApi.eauth
 
                 url = "#{base}/login"
                 $http.post( url, reqData)
