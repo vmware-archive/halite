@@ -38,10 +38,11 @@ configuration =
         debug: false
         verbose: false
         saltApi:
-            scheme: "http"
-            host: "localhost"
-            port: 8000
+            scheme: ""
+            host: ""
+            port: 0
             prefix: ""
+            eauth: "pam"
             
 
 prefixify = (views, base) ->
