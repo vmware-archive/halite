@@ -267,8 +267,6 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 ]
                 return cmd
         
-
-
         $scope.action = (cmd) ->
             $scope.commanding = true
             if not cmd
