@@ -173,10 +173,7 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
         
         onMessage = (event) ->
             console.log "SSE Message:" 
-            console.log(event)
-            
-            #data = angular.fromJson(event.data)
-            data = event.data
+            data = angular.fromJson(event.data)
             console.log(data)
             if defer?
                 $rootScope.$apply(defer.resolve(data))
