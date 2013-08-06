@@ -48,7 +48,7 @@ def parse_args():
     p.add_option('-C', '--coffee',
                     action='store_true',
                     default=False,
-                    help="When -g or -c configure main.html to compile coffeescript.")
+                    help="Configure application html file to compile coffeescript.")
 
     return p.parse_args()
 
