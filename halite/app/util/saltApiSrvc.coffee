@@ -53,8 +53,8 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 url = "#{base}/"
                 $http.post( url, reqData, config  )
                 .success((data, status, headers, config) ->
-                    console.log "act token"
-                    console.log SessionStore.get('saltApiAuth')?.token
+                    #console.log "act token"
+                    #console.log SessionStore.get('saltApiAuth')?.token
                     return true
                 )
                 .error((data, status, headers, config) ->
@@ -76,8 +76,8 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 .success((data, status, headers, config) ->
                     $scope.command.history[JSON.stringify($scope.command.lastCmd)] = 
                         $scope.command.lastCmd
-                    console.log "act token"
-                    console.log SessionStore.get('saltApiAuth')?.token
+                    #console.log "act token"
+                    #console.log SessionStore.get('saltApiAuth')?.token
                     return true
                 )
                 .error((data, status, headers, config) ->
@@ -187,19 +187,14 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
             events: ($scope) ->
                 token = SessionStore.get('saltApiAuth')?.token
                 url = "#{base}/events/#{token}"
-                
-                console.log "event url"
-                console.log url
-                
+                #console.log "event url"
+                #console.log url
                 sse = new EventSource(url);
                 sse.onerror = onError
                 sse.onopen =onOpen
                 sse.onmessage = onMessage
-                
                 defer = $q.defer()
-                
                 return defer.promise
-                
 
         return servicer
 
