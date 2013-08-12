@@ -136,12 +136,14 @@ def tokenify(cmd, token=None):
     return cmd
 
 def loadSaltApi(app):
-    """ Load endpoint for Salt-API """
-    
+    '''
+    Load endpoint for Salt-API
+    '''
+    from salt.exceptions import EauthAuthenticationError
+    import salt.client.api
     import salt.auth
     import salt.config
     import salt.utils
-    from salt.exceptions import EauthAuthenticationError    
     import saltapi
     _opts = salt.config.client_config(
                     os.environ.get('SALT_MASTER_CONFIG', '/etc/salt/master'))
@@ -187,6 +189,8 @@ def loadSaltApi(app):
         try:
             creds = auth.mk_token(creds)
         except IOError as ex:
+            import  sys, traceback
+            print ''.join(traceback.format_exception(*sys.exc_info()))
             if ex.errno == 13:
                 bottle.abort(403, "Insufficient permissions.")
             else:
