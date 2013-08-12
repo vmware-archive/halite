@@ -224,6 +224,61 @@ def loadSaltApi(app):
             result = {}
         return result
     
+    @app.post('/signature')
+    @app.post('/signature/<token>')
+    def signaturePost(token = None):
+        """ Fetch module function signature(s) with either credentials in post data
+            or token from url or token from X-Auth-Token header
+        """
+        if not token:
+            token = bottle.request.get_header('X-Auth-Token')
+        
+        cmds = bottle.request.json
+        if not cmds:
+            bottle.abort(code=400, text='Missing command(s).')
+            
+        if hasattr(cmds, 'get'): #convert to array
+            cmds =  [cmds]
+        
+        client = salt.client.api.APIClient(_opts)
+        try:
+            results = [client.signature(tokenify(cmd, token)) for cmd in cmds]
+        except EauthAuthenticationError as ex:
+            bottle.abort(code=401, text=repr(ex))
+        except Exception as ex:
+            bottle.abort(code=400, text=repr(ex))            
+            
+        return {"return": results}
+    
+    @app.post('/') 
+    @app.post('/act')
+    @app.post('/act/<token>')
+    @app.post('/run')
+    @app.post('/run/<token>')
+    def runPost(token = None):
+        """ Execute salt command with either credentials in post data
+            or token from url or token from X-Auth-Token headertoken 
+        """
+        if not token:
+            token = bottle.request.get_header('X-Auth-Token')
+        
+        cmds = bottle.request.json
+        if not cmds:
+            bottle.abort(code=400, text='Missing command(s).')
+            
+        if hasattr(cmds, 'get'): #convert to array
+            cmds =  [cmds]
+        
+        client = salt.client.api.APIClient(_opts)
+        try:
+            results = [client.run(tokenify(cmd, token)) for cmd in cmds]
+        except EauthAuthenticationError as ex:
+            bottle.abort(code=401, text=repr(ex))
+        except Exception as ex:
+            bottle.abort(code=400, text=repr(ex))            
+            
+        return {"return": results}   
+    
     @app.post('/') 
     @app.post('/act')
     @app.post('/act/<token>')
