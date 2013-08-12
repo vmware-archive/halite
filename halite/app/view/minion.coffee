@@ -1,9 +1,10 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration',
-    'AppData', 'AppPref', 'Itemizer', 'Orderer', 'SaltApiSrvc', 'SaltApiEvtSrvc'
+    'AppData', 'AppPref', 'Itemizer', 'Orderer', 'SaltApiSrvc', 'SaltApiEvtSrvc',
+    'SessionStore',
     ($scope, $location, $route, Configuration, AppData, AppPref, Itemizer, 
-    Orderer, SaltApiSrvc, SaltApiEvtSrvc) ->
+    Orderer, SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -28,20 +29,17 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.actions =
             State:
                 highstate:
-                    client: 'local'
+                    mode: 'sync'
                     tgt: '*'
                     fun: 'state.highstate'
-                    arg: ['']
                 show_highstate:
-                    client: 'local'
+                    mode: 'sync'
                     tgt: '*'
                     fun: 'state.show_highstate'
-                    arg: ['']
                 running:
-                    client: 'local'
+                    mode: 'sync'
                     tgt: '*'
                     fun: 'state.running'
-                    arg: ['']
         
         $scope.runAction = (group, name) ->
             cmd = $scope.actions[group][name]
@@ -108,14 +106,12 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             return true
         
         $scope.fetchStatae = () ->
-            lowState =
-                fun: "manage.status"
-                client: "runner"
-                tgt: ""
-                arg: ""
-            
+            cmd =
+                mode: "sync"
+                fun: "runner.manage.status"
+
             $scope.statusing = true   
-            SaltApiSrvc.act($scope, [lowState])
+            SaltApiSrvc.act($scope, [cmd])
             .success (data, status, headers, config) ->
                 $scope.statusing = false 
                 result = data.return?[0]
@@ -140,14 +136,13 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         
         $scope.fetchPings = (target) ->
             target = if target then target else "*"
-            lowState =
+            cmd =
+                mode: "sync"
                 fun: "test.ping"
-                client: "local"
                 tgt: target
-                arg: ""
             
             $scope.pinging = true
-            SaltApiSrvc.act($scope, [lowState])
+            SaltApiSrvc.act($scope, [cmd])
             .success (data, status, headers, config) ->
                 $scope.pinging = false
                 result = data.return?[0]
@@ -171,14 +166,13 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             
         $scope.fetchGrains = (target) ->
             target = if target then target else "*"
-            lowState =
+            cmd =
+                mode: "sync"
                 fun: "grains.items"
-                client: "local"
                 tgt: target
-                arg: ""
             
             $scope.graining = true
-            SaltApiSrvc.act($scope, [lowState])
+            SaltApiSrvc.act($scope, [cmd])
             .success (data, status, headers, config) ->
                 $scope.graining = false
                 result = data.return?[0]
@@ -195,28 +189,23 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             return true
         
         $scope.fetchMinions = () ->
-            lowStates =
+            cmds =
             [
-                fun: "manage.status"
-                client: "runner"
-                tgt: ""
-                arg: ""
+                mode: "sync"
+                fun: "runner.manage.status"
             ,
+                mode: "sync"
                 fun: "grains.items"
-                client: "local"
                 tgt: "*"
-                arg: ""
             ,
+                mode: "sync"
                 fun: "test.ping"
-                client: "local"
                 tgt: "*"
-                arg: ""
             ]
             fields = ['status', 'grains', 'ping']
-            #console.log lowStates
             
             $scope.minioning = true
-            SaltApiSrvc.act($scope, lowStates)
+            SaltApiSrvc.act($scope, cmds)
             .success (data, status, headers, config) ->
                 $scope.minioning = false
                 results = data.return
@@ -241,29 +230,30 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             result: {}
             history: {}
             lastCmd: null
-            lowstate:
-                client: 'local'
-                tgt: '*'
+            cmd:
+                mode: 'async'
                 fun: ''
+                tgt: '*'
                 args: ['']
             
             size: (obj) ->
                 return _.size(obj)
             
             addArg: () ->
-                @lowstate.args.push('')
+                @cmd.args.push('')
                 
             delArg: () ->
-                if @lowstate.args.length > 1
-                    @lowstate.args = @lowstate.args[0..-2]
+                if @cmd.args.length > 1
+                    @cmd.args = @cmd.args[0..-2]
 
             getCmd: () ->
                 cmd =
                 [
-                    client: @lowstate.client,
-                    tgt: @lowstate.tgt,
-                    fun: @lowstate.fun,
-                    arg: (arg for arg in @lowstate.args when arg isnt '')
+                    fun: @cmd.fun,
+                    mode: @cmd.mode,
+                    tgt: @cmd.tgt,
+
+                    arg: (arg for arg in @cmd.args when arg isnt '')
                 ]
                 return cmd
         
@@ -290,8 +280,8 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             return true
         
         
-        if not $scope.minions.keys().length
-            $scope.fetchMinions()
+        #if not $scope.minions.keys().length and SessionStore.get('loggedIn') == true
+        #   $scope.fetchMinions()
         
         return true
     ]

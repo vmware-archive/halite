@@ -44,14 +44,14 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
         $http.defaults.useXDomain = true # enable cors on IE
 
         servicer =
-            act: ($scope, reqData) ->
+            run: ($scope, cmds) ->
                 headers =
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
 
                 config =
                     headers: headers
                 url = "#{base}/"
-                $http.post( url, reqData, config  )
+                $http.post( url, cmds, config  )
                 .success((data, status, headers, config) ->
                     #console.log "act token"
                     #console.log SessionStore.get('saltApiAuth')?.token
@@ -61,18 +61,35 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                     $scope.errorMsg = "Call Failed!"
                     return true
                 )
-            action: ($scope, cmd) ->
+            act: ($scope, cmds) ->
+                headers =
+                    "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
+
+                config =
+                    headers: headers
+                url = "#{base}/"
+                $http.post( url, cmds, config  )
+                .success((data, status, headers, config) ->
+                    #console.log "act token"
+                    #console.log SessionStore.get('saltApiAuth')?.token
+                    return true
+                )
+                .error((data, status, headers, config) ->
+                    $scope.errorMsg = "Call Failed!"
+                    return true
+                )
+            action: ($scope, cmds) ->
                 headers =
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
                 config =
                     headers: headers
                 url = "#{base}/"
                 
-                $scope.command.lastCmd = cmd
-                if not angular.isArray(cmd)
-                    cmd = [cmd]
+                $scope.command.lastCmd = cmds
+                if not angular.isArray(cmds)
+                    cmds = [cmds]
                 
-                $http.post( url, cmd, config  )
+                $http.post( url, cmds, config  )
                 .success((data, status, headers, config) ->
                     $scope.command.history[JSON.stringify($scope.command.lastCmd)] = 
                         $scope.command.lastCmd

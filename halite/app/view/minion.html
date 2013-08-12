@@ -129,31 +129,30 @@
       
         <div class="controls" collapse="collapsed">
           <label class="control-label">Client<br/>
-            <select ng-model="command.lowstate.client" class="input-small">
-              <option value="local">local</option>
-              <option value="wheel">wheel</option>
-              <option value="runner">runner</option>
+            <select ng-model="command.cmd.mode" class="input-small">
+              <option value="async">async</option>
+              <option value="sync">sync</option>
             </select>
-          </label>
-          <label class="control-label"
-              ng-show="command.lowstate.client == 'local'">Target<br/>
-            <input type="text" class="input-medium" placeholder="Enter command target"
-              ng-model="command.lowstate.tgt" title="Lowstate command target">
           </label>
           
           <label class="control-label">Function<br/>
             <input type="text" class="input-medium" placeholder="Enter module.function"
-              ng-model="command.lowstate.fun" title="Module function">
+              ng-model="command.cmd.fun" title="Module function">
           </label>
+          <label class="control-label">Target<br/>
+            <input type="text" class="input-medium" placeholder="Enter minion target pattern"
+              ng-model="command.cmd.tgt" title="Minion target pattern">
+          </label>
+          
           
           <label class="control-label">Arguments<br/>
             <div class="input-append">
               <input type="text" class="input-medium"
                 placeholder="Enter argument"
-                ng-repeat="arg in command.lowstate.args track by $index"
-                ng-model="command.lowstate.args[$index]">
+                ng-repeat="arg in command.cmd.args track by $index"
+                ng-model="command.cmd.args[$index]">
     
-              <button class="btn" ng-class="command.lowstate.args.length==1?'disabled':''" 
+              <button class="btn" ng-class="command.cmd.args.length==1?'disabled':''" 
                 type="button" title="Remove last argument"
                 ng-click="command.delArg()"><i class="icon-minus"></i></button>
               <button class="btn " type="button" title="Add another argument"

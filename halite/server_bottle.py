@@ -185,9 +185,9 @@ def loadSaltApi(app):
                      password=data.get("password"),
                      eauth=data.get("eauth"))
         
-        auth = salt.auth.LoadAuth(_opts)
+        client = salt.client.api.APIClient(_opts)
         try:
-            creds = auth.mk_token(creds)
+            creds = client.create_token(creds)
         except IOError as ex:
             import  sys, traceback
             print ''.join(traceback.format_exception(*sys.exc_info()))
@@ -229,16 +229,10 @@ def loadSaltApi(app):
     @app.post('/act/<token>')
     @app.post('/run')
     @app.post('/run/<token>')
-    def actPost(token = None):
+    def runPost(token = None):
         """ Execute salt command with token from X-Auth-Token header """
         if not token:
             token = bottle.request.get_header('X-Auth-Token')
-        #if not token:
-            #bottle.abort(401, "Missing token.")
-        
-        #auth = salt.auth.LoadAuth(_opts)
-        #if not auth.get_tok(token):
-            #bottle.abort(401, "Invalid token.")        
         
         cmds = bottle.request.json
         if not cmds:
@@ -247,8 +241,7 @@ def loadSaltApi(app):
         if hasattr(cmds, 'get'): #convert to array
             cmds =  [cmds]
         
-        client = saltapi.APIClient(_opts)
-        
+        client = salt.client.api.APIClient(_opts)
         try:
             results = [client.run(tokenify(cmd, token)) for cmd in cmds]
         except EauthAuthenticationError as ex:
@@ -258,18 +251,20 @@ def loadSaltApi(app):
             
         return {"return": results}     
         
-    
+    @app.get('/event/<token>')
     @app.get('/events/<token>')
-    def eventsGet(token):
-        """ Create server sent event stream from salt given token"""
+    def eventGet(token):
+        """
+            Create server sent event stream from salt
+            and authenticate with the given token
+        """
         if not token:
             bottle.abort(401, "Missing token.")
         
-        auth = salt.auth.LoadAuth(_opts)
-        if not auth.get_tok(token):
-            bottle.abort(401, "Invalid token.")
+        client = salt.client.api.APIClient(_opts)
         
-        event = salt.utils.event.SaltEvent('master', _opts['sock_dir'])
+        if not client.verify_token(token): #auth.get_tok(token):
+            bottle.abort(401, "Invalid token.")
         
         bottle.response.set_header('Content-Type',  'text/event-stream') #text
         bottle.response.set_header('Cache-Control',  'no-cache')
@@ -278,7 +273,7 @@ def loadSaltApi(app):
         yield 'retry: 100\n\n'
     
         while True:
-            data =  event.get_event(wait=0.025, full=True)
+            data =  client.get_next_event(wait=0.025, full=True)
             if data:
                 yield 'data: {0}\n\n'.format(json.dumps(data))
             else:
