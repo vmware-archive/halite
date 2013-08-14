@@ -188,24 +188,13 @@ def loadSaltApi(app):
         client = salt.client.api.APIClient()
         try:
             creds = client.create_token(creds)
-        except IOError as ex:
-            import  sys, traceback
-            print ''.join(traceback.format_exception(*sys.exc_info()))
-            if ex.errno == 13:
-                bottle.abort(403, "Insufficient permissions.")
-            else:
-                raise
-        except Exception as ex:
-            bottle.abort(400, text=repr(ex))
+        except EauthAuthenticationError as ex:
+            bottle.abort(401, text=repr(ex))
             
         if not 'token' in creds:
             bottle.abort(401, "Authentication failed with provided credentials.") 
             
         bottle.response.set_header('X-Auth-Token', creds['token'])
-        
-        
-        creds['user'] = creds['name']
-
         return {"return": [creds]} 
     
     @app.post('/logout') 
