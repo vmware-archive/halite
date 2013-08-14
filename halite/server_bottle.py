@@ -191,9 +191,6 @@ def loadSaltApi(app):
         except EauthAuthenticationError as ex:
             bottle.abort(401, text=repr(ex))
             
-        if not 'token' in creds:
-            bottle.abort(401, "Authentication failed with provided credentials.") 
-            
         bottle.response.set_header('X-Auth-Token', creds['token'])
         return {"return": [creds]} 
     
