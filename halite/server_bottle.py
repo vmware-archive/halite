@@ -185,7 +185,7 @@ def loadSaltApi(app):
                      password=data.get("password"),
                      eauth=data.get("eauth"))
         
-        client = salt.client.api.APIClient(_opts)
+        client = salt.client.api.APIClient()
         try:
             creds = client.create_token(creds)
         except IOError as ex:
@@ -240,7 +240,7 @@ def loadSaltApi(app):
         if hasattr(cmds, 'get'): #convert to array
             cmds =  [cmds]
         
-        client = salt.client.api.APIClient(_opts)
+        client = salt.client.api.APIClient()
         try:
             results = [client.signature(tokenify(cmd, token)) for cmd in cmds]
         except EauthAuthenticationError as ex:
@@ -269,7 +269,7 @@ def loadSaltApi(app):
         if hasattr(cmds, 'get'): #convert to array
             cmds =  [cmds]
         
-        client = salt.client.api.APIClient(_opts)
+        client = salt.client.api.APIClient()
         try:
             results = [client.run(tokenify(cmd, token)) for cmd in cmds]
         except EauthAuthenticationError as ex:
@@ -296,7 +296,7 @@ def loadSaltApi(app):
         if hasattr(cmds, 'get'): #convert to array
             cmds =  [cmds]
         
-        client = salt.client.api.APIClient(_opts)
+        client = salt.client.api.APIClient()
         try:
             results = [client.run(tokenify(cmd, token)) for cmd in cmds]
         except EauthAuthenticationError as ex:
@@ -316,7 +316,7 @@ def loadSaltApi(app):
         if not token:
             bottle.abort(401, "Missing token.")
         
-        client = salt.client.api.APIClient(_opts)
+        client = salt.client.api.APIClient()
         
         if not client.verify_token(token): #auth.get_tok(token):
             bottle.abort(401, "Invalid token.")
@@ -351,7 +351,7 @@ def loadSaltApi(app):
         if not token:
             bottle.abort(401, "Missing token.")
         
-        client = salt.client.api.APIClient(_opts)
+        client = salt.client.api.APIClient()
         
         if not client.verify_token(token): #auth.get_tok(token):
             bottle.abort(401, "Invalid token.")
