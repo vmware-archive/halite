@@ -141,12 +141,12 @@ def loadSaltApi(app):
     '''
     from salt.exceptions import EauthAuthenticationError
     import salt.client.api
-    import salt.auth
-    import salt.config
-    import salt.utils
-    import saltapi
-    _opts = salt.config.client_config(
-                    os.environ.get('SALT_MASTER_CONFIG', '/etc/salt/master'))
+    #import salt.auth
+    #import salt.config
+    #import salt.utils
+    #import saltapi
+    #_opts = salt.config.client_config(
+                    #os.environ.get('SALT_MASTER_CONFIG', '/etc/salt/master'))
     
     sleep = gevent.sleep if gevented else time.sleep
     
@@ -202,11 +202,7 @@ def loadSaltApi(app):
             bottle.abort(401, "Authentication failed with provided credentials.") 
             
         bottle.response.set_header('X-Auth-Token', creds['token'])
-        # Grab eauth config for the current backend for the current user
-        if creds['name'] in _opts['external_auth'][creds['eauth']]:
-            creds['perms'] = _opts['external_auth'][creds['eauth']][creds['name']]
-        else:
-            creds['perms'] = _opts['external_auth'][creds['eauth']]['*']
+        
         
         creds['user'] = creds['name']
 
