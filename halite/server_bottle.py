@@ -328,12 +328,48 @@ def loadSaltApi(app):
         yield 'retry: 100\n\n'
     
         while True:
-            data =  client.get_next_event(wait=0.025, full=True)
+            data =  client.get_event(wait=0.025, full=True)
             if data:
                 yield 'data: {0}\n\n'.format(json.dumps(data))
             else:
                 sleep(0.1)
-     
+    
+    @app.post('/fire')            
+    @app.post('/fire/<token>')
+    def firePost(token=None):
+        """
+            Fire event(s)
+            Each event is a dict of the form
+            {
+              tag: 'tagstring',
+              data: {datadict},
+            }
+            Post body is either list of events or single event
+        """
+        if not token:
+            token = bottle.request.get_header('X-Auth-Token')        
+        if not token:
+            bottle.abort(401, "Missing token.")
+        
+        client = salt.client.api.APIClient(_opts)
+        
+        if not client.verify_token(token): #auth.get_tok(token):
+            bottle.abort(401, "Invalid token.")
+        
+        events = bottle.request.json
+        if not events:
+            bottle.abort(code=400, text='Missing event(s).')
+        
+        if hasattr(events, 'get'): #convert to list if not
+            events = [events]
+        
+        results = [dict(tag=event['tag'],
+                        result=client.fire_event(event['data'], event['tag']))
+                   for event in events]
+        
+        bottle.response.set_header('Content-Type',  'application/json')
+        return json.dumps(results)
+        
     
     return app
 
