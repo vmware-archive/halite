@@ -260,33 +260,6 @@ def loadSaltApi(app):
             bottle.abort(code=400, text=repr(ex))            
             
         return {"return": results}   
-    
-    @app.post('/') 
-    @app.post('/act')
-    @app.post('/act/<token>')
-    @app.post('/run')
-    @app.post('/run/<token>')
-    def runPost(token = None):
-        """ Execute salt command with token from X-Auth-Token header """
-        if not token:
-            token = bottle.request.get_header('X-Auth-Token')
-        
-        cmds = bottle.request.json
-        if not cmds:
-            bottle.abort(code=400, text='Missing command(s).')
-            
-        if hasattr(cmds, 'get'): #convert to array
-            cmds =  [cmds]
-        
-        client = salt.client.api.APIClient()
-        try:
-            results = [client.run(tokenify(cmd, token)) for cmd in cmds]
-        except EauthAuthenticationError as ex:
-            bottle.abort(code=401, text=repr(ex))
-        except Exception as ex:
-            bottle.abort(code=400, text=repr(ex))            
-            
-        return {"return": results}     
         
     @app.get('/event/<token>')
     @app.get('/events/<token>')
