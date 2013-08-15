@@ -84,17 +84,20 @@ class Itemizer
                 return false
         return true
     
-    deepSet: (key, val) ->
+    deepSet: (key, val, update) ->
+        itemizer = @_data[key]?.val
         if @_isItemList(val)
-            itemizer = new Itemizer
+            if not (itemizer instanceof Itemizer) or not update
+                itemizer = new Itemizer
+                @set key, itemizer
             for item in val
-                itemizer.deepSet(item.key, item.val)
-            @set key, itemizer
+                itemizer.deepSet item.key, item.val, update
         else if angular.isObject(val) and not angular.isArray(val) # not array object
-            itemizer = new Itemizer()
+            if not (itemizer instanceof Itemizer) or not update
+                itemizer = new Itemizer()
+                @set key, itemizer
             for own k, v of val
-               itemizer.deepSet(k,v)
-            @set key, itemizer
+               itemizer.deepSet k, v, update
         else
             @set key, val
         return @
@@ -141,13 +144,13 @@ class Itemizer
             if @_isItemList(stuff)
                 for item in stuff
                     if deep
-                        @deepSet item.key, item.val
+                        @deepSet item.key, item.val, true
                     else
                         @set item.key, item.val
             else if angular.isObject(stuff) and not angular.isArray(stuff) 
                 for own key, val of stuff
                     if deep
-                        @deepSet key, val
+                        @deepSet key, val, true
                     else
                         @set key, val 
         return @
@@ -243,17 +246,20 @@ class Orderer
                 return false
         return true
     
-    deepSet: (key, val) ->
-        if @_isItemList(val)
-            orderer = new Orderer
+    deepSet: (key, val, update) ->
+        orderer = @data[key]
+        if @_isItemList val
+            if not (orderer instanceof Orderer) or not update
+                orderer = new Orderer
+                @set key, orderer
             for item in val
-                orderer.deepSet(item.key, item.val)
-            @set key, orderer
+                orderer.deepSet item.key, item.val, update
         else if angular.isObject(val) and not angular.isArray(val) # not array object
-            orderer = new Orderer()
+            if not (orderer instanceof Orderer) or not update
+                orderer = new Orderer()
+                @set key, orderer
             for own k, v of val
-               orderer.deepSet(k,v)
-            @set key, orderer
+               orderer.deepSet k, v, update
         else
             @set key, val
         return @
@@ -298,13 +304,13 @@ class Orderer
             if @_isItemList(stuff)
                 for item in stuff
                     if deep
-                        @deepSet item.key, item.val
+                        @deepSet item.key, item.val, true
                     else
                         @set item.key, item.val
             else if angular.isObject(stuff) and not angular.isArray(stuff) 
                 for own key, val of stuff
                     if deep
-                        @deepSet key, val
+                        @deepSet key, val, true
                     else
                         @set key, val 
         return @
