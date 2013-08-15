@@ -49,9 +49,10 @@ mainApp.config ["Configuration", "MainConstants", "$locationProvider",
         return true
 ]
 
-mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams',
-    'Configuration', 'AppPref', 'AppData', 'LocalStore', 'SessionStore', 'SaltApiSrvc',
-    ($scope, $location, $route, $routeParams, Configuration, AppPref, 
+mainApp.controller 'NavbarCtlr', ['$scope', '$rootScope', '$location', '$route', 
+    '$routeParams', 'Configuration', 'AppPref', 'AppData', 
+    'LocalStore', 'SessionStore', 'SaltApiSrvc',
+    ($scope, $rootScope, $location, $route, $routeParams, Configuration, AppPref, 
             AppData, LocalStore, SessionStore, SaltApiSrvc) ->
         #console.log("NavbarCtlr")
         $scope.location = $location
@@ -125,6 +126,8 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
                 if data?.return?[0]?
                     SessionStore.set('loggedIn',$scope.loggedIn)
                     SessionStore.remove('saltApiAuth')
+                    $rootScope.$broadcast('ToggleAuth', $scope.loggedIn)
+                    
                     #console.log SessionStore.get('loggedIn')    
                     #console.log SessionStore.get('saltApiAuth')
                 return true
@@ -152,6 +155,8 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$location', '$route', '$routeParams
                     SessionStore.set('loggedIn', $scope.loggedIn)
                     $scope.username = saltApiAuth.user
                     SessionStore.set('saltApiAuth', saltApiAuth )
+                    
+                    $rootScope.$broadcast('ToggleAuth', $scope.loggedIn)
                     
                     #console.log SessionStore.get('loggedIn')    
                     #console.log SessionStore.get('saltApiAuth')  

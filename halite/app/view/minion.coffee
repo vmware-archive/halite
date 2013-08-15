@@ -272,13 +272,28 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
                 $scope.commanding = false
 
         
-        $scope.testEventStream = () ->
+        $scope.openEventStream = () ->
             $scope.eventPromise = SaltApiEvtSrvc.events()
             .then (data) ->
-                console.log("Resolved: " + data)
+                console.log "Resolved: "
+                console.log data
                 return data
             return true
         
+        $scope.closeEventStream = () ->
+            SaltApiEvtSrvc.close()
+            return true
+        
+        $scope.authListener = (event, loggedIn) ->
+            console.log 'Received Event'
+            console.log event
+            if loggedIn
+                $scope.openEventStream()
+            else
+                $scope.closeEventStream()
+            
+        
+        $scope.$on('ToggleAuth', $scope.authListener)
         
         #if not $scope.minions.keys().length and SessionStore.get('loggedIn') == true
         #   $scope.fetchMinions()
