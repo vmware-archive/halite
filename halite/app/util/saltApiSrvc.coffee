@@ -178,30 +178,29 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
         sse = null
         
         onError = (event) ->
-            console.log "SSE Error:"
-            console.log event
-            defer.reject "SSE Errored: #{event}"
+            #console.log "SSE Error:"
+            #console.log event
+            defer?.reject "SSE Errored"
             return true
         
         onOpen = (event) ->
             console.log "SSE Open:" 
             console.log event 
+            $rootScope.$apply(defer?.resolve(event))
             return true
         
         onMessage = (event) ->
             console.log "SSE Message:" 
             data = angular.fromJson(event.data)
-            console.log(data)
-            if defer?
-                $rootScope.$apply(defer.resolve(data))
+            #console.log(data)
+            servicer.process?(data)
             return true
  
         servicer =
             close: ($scope) ->
-                if sse
-                    sse.close()
+                sse?.close()
             
-            events: ($scope) ->
+            events: ($scope, process) ->
                 token = SessionStore.get('saltApiAuth')?.token
                 url = "#{base}/events/#{token}"
                 #console.log "event url"
@@ -210,7 +209,8 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
                 sse.onerror = onError
                 sse.onopen =onOpen
                 sse.onmessage = onMessage
-                defer = $q.defer()
+                @process = process #callback to process an event with data
+                defer = $q.defer()  #on the creation of the stream
                 return defer.promise
 
         return servicer

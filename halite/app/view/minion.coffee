@@ -271,21 +271,32 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
             .error (data, status, headers, config) ->
                 $scope.commanding = false
 
+        $scope.processSaltEvent = (data) ->
+            console.log "Process Salt Event: "
+            console.log data
+            
+            return data
+        
         
         $scope.openEventStream = () ->
-            $scope.eventPromise = SaltApiEvtSrvc.events()
+            $scope.eventPromise = SaltApiEvtSrvc.events($scope,$scope.processSaltEvent)
             .then (data) ->
-                console.log "Resolved: "
+                console.log "Opened Event Stream: "
                 console.log data
+            , (data) ->
+                console.log "Error Opening Event Stream"
+                console.log data
+                
                 return data
             return true
         
         $scope.closeEventStream = () ->
+            console.log "Closing Event Stream"
             SaltApiEvtSrvc.close()
             return true
         
         $scope.authListener = (event, loggedIn) ->
-            console.log 'Received Event'
+            console.log "Received #{event.name}"
             console.log event
             if loggedIn
                 $scope.openEventStream()
