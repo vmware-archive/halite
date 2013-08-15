@@ -267,6 +267,8 @@ def loadSaltApi(app):
         """
             Create server sent event stream from salt
             and authenticate with the given token
+            Also optional query arg tag allows with
+            filter events based on tag
         """
         if not token:
             bottle.abort(401, "Missing token.")
@@ -275,6 +277,8 @@ def loadSaltApi(app):
         
         if not client.verify_token(token): #auth.get_tok(token):
             bottle.abort(401, "Invalid token.")
+            
+        tag = bottle.request.query.get('tag', '')
         
         bottle.response.set_header('Content-Type',  'text/event-stream') #text
         bottle.response.set_header('Cache-Control',  'no-cache')
@@ -283,7 +287,7 @@ def loadSaltApi(app):
         yield 'retry: 100\n\n'
     
         while True:
-            data =  client.get_event(wait=0.025, full=True)
+            data =  client.get_event(wait=0.025, tag=tag, full=True)
             if data:
                 yield 'data: {0}\n\n'.format(json.dumps(data))
             else:

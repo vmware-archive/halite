@@ -279,7 +279,8 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         
         
         $scope.openEventStream = () ->
-            $scope.eventPromise = SaltApiEvtSrvc.events($scope,$scope.processSaltEvent)
+            $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
+                $scope.processSaltEvent, "salt.")
             .then (data) ->
                 console.log "Opened Event Stream: "
                 console.log data
