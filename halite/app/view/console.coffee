@@ -1,6 +1,6 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
-mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration',
+mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuration',
     'AppData', 'AppPref', 'Itemizer', 'Orderer', 'SaltApiSrvc', 'SaltApiEvtSrvc',
     'SessionStore',
     ($scope, $location, $route, Configuration, AppData, AppPref, Itemizer, 
@@ -9,7 +9,7 @@ mainApp.controller 'MinionCtlr', ['$scope', '$location', '$route','Configuration
         $scope.route = $route
         $scope.winLoc = window.location
 
-        #console.log("MinionCtlr")
+        #console.log("ConsoleCtlr")
         $scope.errorMsg = ""
         $scope.closeAlert = () ->
             $scope.errorMsg = ""

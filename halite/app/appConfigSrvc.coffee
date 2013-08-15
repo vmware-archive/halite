@@ -15,18 +15,18 @@ configuration =
             template: "/static/app/view/home.html"
             controller: "HomeCtlr"
         otherwise: 
-            label: "minion"
-            route: "/app/minion"
-            url: "/app/minion/"
-            template: "/static/app/view/minion.html"
-            controller: "MinionCtlr"
+            label: "console"
+            route: "/app/console"
+            url: "/app/console/"
+            template: "/static/app/view/console.html"
+            controller: "ConsoleCtlr"
         tabs:
             [
-                label: "minion"
-                route: "/app/minion"
-                url: "/app/minion/"
-                template: "/static/app/view/minion.html"
-                controller: "MinionCtlr"
+                label: "console"
+                route: "/app/console"
+                url: "/app/console/"
+                template: "/static/app/view/console.html"
+                controller: "ConsoleCtlr"
             ,
                 label: "command"
                 route: "/app/command"
