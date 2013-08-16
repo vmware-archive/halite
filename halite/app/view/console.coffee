@@ -304,17 +304,30 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 $scope.jobs.set(jid, new Itemizer())
             job = $scope.jobs.get(jid)
             job.deepSet(field, val)
-            
         
+        $scope.processJobEvent = (edata) ->
+            jid = edata.data.jid
+            if not $scope.jobs.get(jid)?
+                $scope.jobs.set(jid, new Itemizer())
+            job = $scope.jobs.get(jid)
+            if not job.get('events')?
+                job.set('events',[])
+            events = job.get('events')
+            events.push edata
+            job.set('jid',jid)
+            job.set('fun', edata.data.fun)
+            job.set('success', false)
+            job.set('error', false)
+            
+            
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
             console.log edata
             parts = _(edata.tag).words(".") # split on "." character
             if parts[0] is 'salt'
                 if parts[1] is 'job' or parts[1] is 'run'
-                    data = {}
-                    #$scope.updateJobs()
-            return data
+                    $scope.processJobEvent(edata)
+            return edata
             
         $scope.openEventStream = () ->
             $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
