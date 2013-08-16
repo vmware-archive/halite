@@ -40,10 +40,12 @@
     </div><!-- /container-fluid -->
 
     <div ng-include="'{{baseUrl}}/static/app/route.html'" ></div>
-
+    <script src="{{baseUrl}}/static/lib/angular-unstable/angular-loader{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular-unstable/angular-route{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-resource{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-cookies{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/angular-unstable/angular-animate{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/angular-unstable/angular-sanitize{{mini}}.js"></script>
 
     <!--<script src="{{baseUrl}}/lib/angular-unstable/angular-mocks{{mini}}.js"></script>-->
@@ -54,6 +56,8 @@
     <script src="{{baseUrl}}/static/lib/angular-ui/utils/utils{{mini}}.js"></script>
     
     <script src="{{baseUrl}}/static/lib/underscore/underscore{{mini}}.js"></script>
+    <script src="{{baseUrl}}/static/lib/underscore/underscore.string{{mini}}.js"></script>
+    <script type="text/javascript">_.mixin(_.string.exports());</script>
 
     {% for script in scripts %}
     <script src="{{baseUrl}}/static/app/{{script.name}}" type="{{script.mtype}}"></script>

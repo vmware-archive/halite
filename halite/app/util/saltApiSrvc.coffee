@@ -161,17 +161,22 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
         onError = (event) ->
             #console.log "SSE Error:"
             #console.log event
-            $rootScope.$apply defer?.reject("SSE Errored")
+            if defer?
+                console.log "SSE Open Error"
+                $rootScope.$apply defer.reject("SSE Errored")
+                defer = null
             return true
         
         onOpen = (event) ->
-            console.log "SSE Open:" 
-            console.log event 
-            $rootScope.$apply defer?.resolve(event)
+            #console.log "SSE Open:" 
+            #console.log event 
+            if defer?
+                $rootScope.$apply defer.resolve(event)
+                defer = null
             return true
         
         onMessage = (event) ->
-            console.log "SSE Message:" 
+            #console.log "SSE Message:" 
             data = angular.fromJson(event.data)
             #console.log(data)
             $rootScope.$apply servicer.process?(data)

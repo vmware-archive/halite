@@ -113,7 +113,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
         
         $scope.fetchStatae = () ->
             cmd =
-                mode: "sync"
+                mode: "async"
                 fun: "runner.manage.status"
 
             $scope.statusing = true   
@@ -122,11 +122,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 $scope.statusing = false 
                 result = data.return?[0]
                 if result
-                    #console.log result
-                    if angular.isString(result)
-                        $scope.errorMsg = result
-                        return false
-                    $scope.reloadMinions($scope.buildStatae(result), "status")
+                    console.log result
+                    
+                    #$scope.reloadMinions($scope.buildStatae(result), "status")
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
@@ -153,7 +151,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 $scope.pinging = false
                 result = data.return?[0]
                 if result
-                    #console.log result
+                    console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
@@ -183,7 +181,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 $scope.graining = false
                 result = data.return?[0]
                 if result
-                    #console.log result
+                    console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
@@ -277,13 +275,47 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
             .error (data, status, headers, config) ->
                 $scope.commanding = false
 
-        $scope.processSaltEvent = (data) ->
-            console.log "Process Salt Event: "
-            console.log data
+        $scope.reloadJobs = (data, field) ->
+            ### update jobs and then remove via filter stale jobs not
+                in data
+            ###
+            $scope.updateJobs(data, field)
+            keys = ( key for key, val of data)
+            $scope.jobs?.filter(keys)
+            return true
+        
+        $scope.updateJobs = (data, field) ->
+            ### 
+            Update multiple jobs with entries in data where each entry is
+            jid: stuff
+            put stuff in field of job 
             
+            primary job entry key is the jid
+            ###
+            for key, val of data
+                if not $scope.jobs.get(key)?
+                    $scope.jobs.set(key, new Itemizer())
+                $scope.jobs.get(key).deepSet(field, val)
+            $scope.jobs.sort(null, true)
+            return true
+        
+        $scope.updateJobField = (jid, field, value) ->
+            if not $scope.jobs.get(jid)?
+                $scope.jobs.set(jid, new Itemizer())
+            job = $scope.jobs.get(jid)
+            job.deepSet(field, val)
+            
+        
+        $scope.processSaltEvent = (edata) ->
+            console.log "Process Salt Event: "
+            console.log edata
+            parts = _(edata.tag).words(".") # split on "." character
+            if parts[0] is 'salt'
+                if parts[1] is 'job' or parts[1] is 'run'
+                    data = {}
+                    #$scope.updateJobs()
             return data
-        
-        
+            
         $scope.openEventStream = () ->
             $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
                 $scope.processSaltEvent, "salt.")
