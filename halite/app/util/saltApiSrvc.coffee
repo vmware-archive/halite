@@ -53,29 +53,11 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 url = "#{base}/"
                 $http.post( url, cmds, config  )
                 .success((data, status, headers, config) ->
-                    #console.log "act token"
                     #console.log SessionStore.get('saltApiAuth')?.token
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    $scope.errorMsg = "Call Failed!"
-                    return true
-                )
-            act: ($scope, cmds) ->
-                headers =
-                    "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
-
-                config =
-                    headers: headers
-                url = "#{base}/"
-                $http.post( url, cmds, config  )
-                .success((data, status, headers, config) ->
-                    #console.log "act token"
-                    #console.log SessionStore.get('saltApiAuth')?.token
-                    return true
-                )
-                .error((data, status, headers, config) ->
-                    $scope.errorMsg = "Call Failed!"
+                    $scope.errorMsg = "Run Failed!"
                     return true
                 )
             action: ($scope, cmds) ->
@@ -93,12 +75,11 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 .success((data, status, headers, config) ->
                     $scope.command.history[JSON.stringify($scope.command.lastCmd)] = 
                         $scope.command.lastCmd
-                    #console.log "act token"
                     #console.log SessionStore.get('saltApiAuth')?.token
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    $scope.errorMsg = "Call Failed!"
+                    $scope.errorMsg = "Action Failed!"
                     return true
                 )
             login: ($scope, username, password) ->
@@ -203,7 +184,7 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
             events: ($scope, process, tag) ->
                 token = SessionStore.get('saltApiAuth')?.token
                 tag = if tag? then tag else ""
-                url = "#{base}/events/#{token}?tag=#{tag}"
+                url = "#{base}/event/#{token}?tag=#{tag}"
                 #console.log "event url"
                 #console.log url
                 sse = new EventSource(url);

@@ -21,9 +21,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
         $scope.commanding = false
         $scope.historing = false
         
+        if !AppData.get('jobs')?
+            AppData.set('jobs', new Itemizer())
+        $scope.jobs = AppData.get('jobs')
+        
         if !AppData.get('minions')?
             AppData.set('minions', new Itemizer())
         $scope.minions = AppData.get('minions')
+        
         
         $scope.searchTarget = ""
         $scope.actions =
@@ -111,7 +116,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 fun: "runner.manage.status"
 
             $scope.statusing = true   
-            SaltApiSrvc.act($scope, [cmd])
+            SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
                 $scope.statusing = false 
                 result = data.return?[0]
@@ -142,7 +147,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 tgt: target
             
             $scope.pinging = true
-            SaltApiSrvc.act($scope, [cmd])
+            SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
                 $scope.pinging = false
                 result = data.return?[0]
@@ -172,7 +177,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 tgt: target
             
             $scope.graining = true
-            SaltApiSrvc.act($scope, [cmd])
+            SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
                 $scope.graining = false
                 result = data.return?[0]
@@ -205,7 +210,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
             fields = ['status', 'grains', 'ping']
             
             $scope.minioning = true
-            SaltApiSrvc.act($scope, cmds)
+            SaltApiSrvc.run($scope, cmds)
             .success (data, status, headers, config) ->
                 $scope.minioning = false
                 results = data.return

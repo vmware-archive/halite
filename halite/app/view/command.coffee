@@ -24,7 +24,7 @@ mainApp.controller 'CommandCtlr', [
             }]
 
         $scope.act = () ->
-            $scope.saltApiCallPromise = SaltApiSrvc.act($scope,
+            $scope.saltApiCallPromise = SaltApiSrvc.run($scope,
                 getLowstate($scope.lowstate))
             $scope.saltApiCallPromise.success((data) ->
                 $scope.ret = data.return[0]

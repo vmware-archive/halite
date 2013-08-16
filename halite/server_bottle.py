@@ -151,9 +151,11 @@ def loadSaltApi(app):
     sleep = gevent.sleep if gevented else time.sleep
     
     corsRoutes = ['/login', '/logout',
-                  '/', '/act', '/act/<token>',
+                  '/signature', '/signature/<token>', 
                   '/run', 'run/<token>',
-                  '/events/<token>']
+                  '/event/<token>',
+                  '/fire', '/fire/<token>'
+                  ]
     
     @app.hook('after_request')
     def enableCors():
@@ -206,8 +208,7 @@ def loadSaltApi(app):
             result = {}
         return result
     
-    @app.post('/signature')
-    @app.post('/signature/<token>')
+    @app.post(['/signature', '/signature/<token>'])
     def signaturePost(token = None):
         """ Fetch module function signature(s) with either credentials in post data
             or token from url or token from X-Auth-Token header
@@ -232,11 +233,7 @@ def loadSaltApi(app):
             
         return {"return": results}
     
-    @app.post('/') 
-    @app.post('/act')
-    @app.post('/act/<token>')
-    @app.post('/run')
-    @app.post('/run/<token>')
+    @app.post(['/run', '/run/<token>'])
     def runPost(token = None):
         """ Execute salt command with either credentials in post data
             or token from url or token from X-Auth-Token headertoken 
@@ -262,7 +259,6 @@ def loadSaltApi(app):
         return {"return": results}   
         
     @app.get('/event/<token>')
-    @app.get('/events/<token>')
     def eventGet(token):
         """
             Create server sent event stream from salt
@@ -292,9 +288,8 @@ def loadSaltApi(app):
                 yield 'data: {0}\n\n'.format(json.dumps(data))
             else:
                 sleep(0.1)
-    
-    @app.post('/fire')            
-    @app.post('/fire/<token>')
+             
+    @app.post(['/fire', '/fire/<token>'])
     def firePost(token=None):
         """
             Fire event(s)
