@@ -50,7 +50,7 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
 
                 config =
                     headers: headers
-                url = "#{base}/"
+                url = "#{base}/run"
                 $http.post( url, cmds, config  )
                 .success((data, status, headers, config) ->
                     #console.log SessionStore.get('saltApiAuth')?.token
