@@ -94,6 +94,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 result = minion.val.get($scope.sortage.target)?
             else
                 result = minion.val.get($scope.sortage.target)
+            result = if result? then result else false
             return result
         
         $scope.reloadMinions = (data, field) ->

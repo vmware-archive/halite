@@ -132,6 +132,8 @@ class Itemizer
         return (@_data[key].val for key in @_keys)
         
     sort: (sorter, deep) ->
+        if not sorter?
+            return @_keys
         @_keys.sort sorter
         if deep
             for key in @_keys
@@ -292,6 +294,8 @@ class Orderer
         return (@data[key] for key in @keys)
         
     sort: (sorter, deep) ->
+        if not sorter?
+            return @_keys
         @keys.sort sorter
         if deep
             for key in @keys
