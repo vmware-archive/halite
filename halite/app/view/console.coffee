@@ -151,7 +151,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
                 $scope.pinging = false
                 result = data.return?[0]
                 if result
-                    console.log result
+                    #console.log result
                     if angular.isString(result)
                         $scope.errorMsg = result
                         return false
@@ -305,33 +305,91 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
             job = $scope.jobs.get(jid)
             job.deepSet(field, val)
         
-
-            
-        $scope.initJob(job, edata)
-            job.set('jid',edata.jid)
-            job.set('fun', edata.data.fun)
+        $scope.initJob = (job, data) ->
+            job.set('jid',data.jid)
+            job.set('fun', data.fun)
             job.set('events',[])
             job.set('minions', new Itemizer())
             job.set('success', false)
-            job.set('error', false)
+            job.set('errors', [])
+            job.set('done', false)
+            job.set('promise', null)
+            return job
             
-        
         $scope.processJobEvent = (job, edata) ->
             events = job.get('events')
             events.push edata
+            return job
         
-        $scope.processJobNewEvent = (job, edata) ->
+        $scope.checkJobDone = (job) ->
             minions = job.get('minions')
-            for mid in edata.minions
-                minions.set(mid, false, 'success')
-                minions.set(mid,'', 'error')
+            success = true
+            for minion in minions.values()
+                if not minion['done']
+                    return false
+                if not minion['success'] or minion['retcode'] != 0
+                    success = false
+                    
+            job.set('done', true)
+            job.set('success', success)
+            console.log "Job Done Success = #{success}"
+            console.log job
+            return true
                 
         
-        $scope.processJobRetEvent = (job, edata) ->
+        $scope.initMinion = (minion) ->
+            minion['done'] = false
+            minion['success'] = false
+            minion['error'] = ''
+            minion['return'] = null
+            minion['retcode'] = null
+        
+        
+        $scope.processJobNewEvent = (job, data) ->
+            console.log "Job New Event"
             minions = job.get('minions')
-            for mid in edata.minions
+            for mid in data.minions
+                minion = minions.get(mid)
+                if not minion?
+                    minions.set(mid, mid, 'id')
+                    minion = minions.get(mid)
+                $scope.initMinion(minion)
                 
+            return job
+        
+        $scope.processJobRetEvent = (job, data) ->
+            console.log "Job Ret Event"
+            minions = job.get('minions')
+            minion = minions.get(data.id)
+            if not minion?
+                minions.set(data.id, data.id, 'id')
+                minion = minions.get(mid)
+                $scope.initMinion(minion)
             
+            minion['done']=true
+            minion['success'] = data.success
+            if data.success == true
+                minion['retcode'] = data.retcode
+            if data.success == true
+                if data.retcode == 0
+                    minion['return'] = data.return
+                else
+                    minion['error'] = "Error retcode = #{data.retcode}"
+                    job.get('errors').push(minion['error'])
+            else 
+                minion['error'] = data.return
+                job.get('errors').push(minion['error'])
+            
+            $scope.checkJobDone(job)
+            return job
+            
+        $scope.processRunNewEvent = (job, data) ->
+            console.log "RunNewEvent"
+            return job
+        
+        $scope.processRunRetEvent = (job, data) ->
+            console.log "RunRetEvent"
+            return job
             
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
@@ -340,22 +398,24 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route','Configuratio
             if parts[0] is 'salt'
                 if parts[1] is 'job' or parts[1] is 'run'
                     jid = parts[2]
-                    if jid != edata.jid
+                    if jid != edata.data.jid
                         console.log "Bad job event"
                         $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.jid}"
                         return false
                     if not $scope.jobs.get(jid)?
                         job = new Itemizer()
-                        $scope.initJob(job, edata)
+                        $scope.initJob(job, edata.data)
                         $scope.jobs.set(jid, job)
                     job = $scope.jobs.get(jid)
                     $scope.processJobEvent(job, edata)
                     kind = parts[3]
                     if kind == 'new'
-                        $scope.processJobNewEvent(job, edata)
+                        $scope["process#{_(parts[1]).capitalize()}NewEvent"](job, edata.data)
+                        #$scope.processJobNewEvent(job, edata)
                     else if kind == 'ret'
-                        $scope.processJobRetEvent(job, edata)
-                        
+                        $scope["process#{_(parts[1]).capitalize()}RetEvent"](job, edata.data)
+                        #$scope.processJobRetEvent(job, edata)
+                    
             return edata
             
         $scope.openEventStream = () ->
