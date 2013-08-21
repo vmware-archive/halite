@@ -41,7 +41,7 @@
             </div>
           </div>
           <div class="btn-group ">
-            <button class="btn" ng-click="fetchStatae()" 
+            <button class="btn" ng-click="fetchActives()" 
               title="Fetch up/down status of all minions">
               <i class="icon-fire" 
                 ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
@@ -194,8 +194,8 @@
           ng-class="minion.val.get('ping')?'badge-success':'badge-important'">
           <i class="icon-bullhorn icon-white"></i>
         </span>
-        <span class="badge" title="Latest status: Green=up, Red=down"
-          ng-class="minion.val.get('status')?'badge-success':'badge-important'">
+        <span class="badge" title="Latest active status: Green=up, Red=down"
+          ng-class="minion.val.get('active')?'badge-success':'badge-important'">
           <i class="icon-fire icon-white"></i>
         </span>
         <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">

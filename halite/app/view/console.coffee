@@ -111,7 +111,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.minions.sort(null, true)
             return true
         
-        $scope.fetchStatae = () ->
+        $scope.fetchActives = () ->
             cmd =
                 mode: "async"
                 fun: "runner.manage.status"
@@ -119,24 +119,35 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.statusing = true   
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
-                $scope.statusing = false 
+                 
                 result = data.return?[0]
                 if result
-                    console.log result
-                    
+                    job = $scope.startRun(result, cmd.fun)
+                    job.get('promise').then (donejob) ->
+                        $scope.buildActives(donejob)
+                        
                     #$scope.reloadMinions($scope.buildStatae(result), "status")
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
             return true
         
-        $scope.buildStatae = (result) ->
-            statae = {}
-            for name in result.up
-                statae[name]=true
-            for name in result.down
-                statae[name]=false
-            return statae
+        $scope.buildActives = (job) ->
+            result = job.get('return')
+            for mid in result.up
+                if not $scope.minions.get(mid)?
+                    $scope.minions.set(mid, new Itemizer())
+                $scope.initMinion($scope.minions.get(mid), mid)
+                minion = $scope.minions.get(mid)
+                minion.set('active', true)
+            for mid in result.down
+                if not $scope.minions.get(mid)?
+                    $scope.minions.set(mid, new Itemizer())
+                $scope.initMinion($scope.minions.get(mid), mid)
+                minion = $scope.minions.get(mid)
+                minion.set('active', false)
+            $scope.statusing = false
+            return job
         
         $scope.fetchPings = (target) ->
             target = if target then target else "*"
@@ -173,7 +184,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         ping = result['return']
                     
                 $scope.minions.get(key).set('ping', ping)
-            return true   
+            return job   
                     
             
         $scope.fetchGrains = (target) ->
@@ -313,6 +324,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.jobs.get(jid).deepSet(field, val)
             
         $scope.newJob = (job, mids) ->
+            if not job.get('results')?
+                job.set('results', new Itemizer())
             results = job.get('results')
             for mid in mids
                 if not results.get(mid)?
@@ -336,7 +349,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             job.set('jid', jid)
             job.set('fun', fun)
             job.set('events',[])
-            job.set('results', new Itemizer())
             job.set('fail', true)
             job.set('errors', [])
             job.set('done', false)
@@ -347,6 +359,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.initResult = (result) ->
             ### minion result object in $scope.jobs job.results ###
             result['minion'] = null # minion link to itemizer $scope.minions
+            result['active'] = null
             result['done'] = false
             result['fail'] = true
             result['error'] = ''
@@ -359,6 +372,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             ### itemizer in $scope.minions ###
             minion.set('id', mid)
             minion.set('jobs', new Itemizer())
+            minion.set('active', false)
             return minion
         
         $scope.linkJobMinion = (job, mid) ->
@@ -426,13 +440,50 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.checkJobDone(job)
             return job
         
+        $scope.startRun = (tag, fun) ->
+            console.log "Start Run"
+            console.log tag
+            parts = _(tag).words(".")
+            jid = parts[2]
+            if not $scope.jobs.get(jid)?
+                job = new Itemizer()
+                $scope.initJob(job, jid, fun)
+                $scope.jobs.set(jid, job)
+            job = $scope.jobs.get(jid)
+            $scope.newRun(job)
+            return job
+        
+        $scope.newRun = (job) ->
+            job.set('success', false)
+            job.set('return', null)
+            return job
             
         $scope.processRunNewEvent = (job, data) ->
             console.log "RunNewEvent"
+            $scope.newRun(job)
             return job
         
         $scope.processRunRetEvent = (job, data) ->
             console.log "RunRetEvent"
+            
+            job.set('done', true)
+            job.set('success', data.success)
+            job.set('fail', not data.success)
+            if data.success == true
+                job.set('return', data.ret)
+            else
+                job.get('errors').push(data.ret)
+                
+            console.log "Job Done Fail = #{job.get('fail')}"
+            console.log job
+            
+            if job.get('errors').length > 0
+                job.get('defer')?.reject(job.get('errors'))
+            else
+                job.get('defer')?.resolve(job)
+            
+            job.set('defer', null)
+            job.set('promise', null)
             return job
         
         $scope.processJobEvent = (job, edata) ->
@@ -460,10 +511,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     kind = parts[3]
                     if kind == 'new'
                         $scope["process#{_(parts[1]).capitalize()}NewEvent"](job, edata.data)
-                        #$scope.processJobNewEvent(job, edata)
                     else if kind == 'ret'
                         $scope["process#{_(parts[1]).capitalize()}RetEvent"](job, edata.data)
-                        #$scope.processJobRetEvent(job, edata)
                     
             return edata
             
