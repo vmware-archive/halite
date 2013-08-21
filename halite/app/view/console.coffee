@@ -141,7 +141,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.fetchPings = (target) ->
             target = if target then target else "*"
             cmd =
-                mode: "sync"
+                mode: "async"
                 fun: "test.ping"
                 tgt: target
             
@@ -151,22 +151,30 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.pinging = false
                 result = data.return?[0]
                 if result
-                    #console.log result
-                    if angular.isString(result)
-                        $scope.errorMsg = result
-                        return false
-                    $scope.updateMinions($scope.buildPings(result), "ping")
+                    job = $scope.startJob(result, cmd.fun)
+                    job.get('promise').then (donejob) ->
+                        $scope.buildPings(donejob)
+                    
+                    #$scope.updateMinions($scope.buildPings(result), "ping")
                 return true
             .error (data, status, headers, config) ->
                 $scope.pinging = false
                 
             return true
         
-        $scope.buildPings = (result) ->
+        
+        $scope.buildPings = (job) ->
+            results = job.get('results')
             for key in $scope.minions.keys()
-                if key not of result
-                    result[key] = false
-            return result
+                ping = false
+                if key in results.keys()
+                    result = results.get(key)
+                    if not result['fail']
+                        ping = result['return']
+                    
+                $scope.minions.get(key).set('ping', ping)
+            return true   
+                    
             
         $scope.fetchGrains = (target) ->
             target = if target then target else "*"
@@ -303,13 +311,33 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             if not $scope.jobs.get(jid)?
                 $scope.jobs.set(jid, new Itemizer())
             $scope.jobs.get(jid).deepSet(field, val)
+            
+        $scope.newJob = (job, mids) ->
+            results = job.get('results')
+            for mid in mids
+                if not results.get(mid)?
+                    results.set(mid, mid, 'id')
+                $scope.initResult(results.get(mid))
+            return job
+            
+        $scope.startJob = (result, fun) ->
+            console.log "Start Job"
+            console.log result
+            jid = result.jid
+            if not $scope.jobs.get(jid)?
+                job = new Itemizer()
+                $scope.initJob(job, jid, fun)
+                $scope.jobs.set(jid, job)
+            job = $scope.jobs.get(jid)
+            $scope.newJob(job, result.minions)
+            return job
         
-        $scope.initJob = (job, data) ->
-            job.set('jid',data.jid)
-            job.set('fun', data.fun)
+        $scope.initJob = (job, jid, fun) ->
+            job.set('jid', jid)
+            job.set('fun', fun)
             job.set('events',[])
             job.set('results', new Itemizer())
-            job.set('success', false)
+            job.set('fail', true)
             job.set('errors', [])
             job.set('done', false)
             job.set('defer', $q.defer())
@@ -317,13 +345,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return job
              
         $scope.initResult = (result) ->
-            ### minion results object in $scope.jobs job.results ###
+            ### minion result object in $scope.jobs job.results ###
+            result['minion'] = null # minion link to itemizer $scope.minions
             result['done'] = false
-            result['success'] = false
+            result['fail'] = true
             result['error'] = ''
+            result['success'] = false
             result['return'] = null
             result['retcode'] = null
-            result['minion'] = null # minion link
             return result
         
         $scope.initMinion = (minion, mid) ->
@@ -344,37 +373,34 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.checkJobDone = (job) ->
             results = job.get('results')
-            success = true
+            fail = false
             for result in results.values()
                 if not result['done']
                     return false
-                if not result['success'] == true or result['retcode'] != 0
-                    success = false
+                if result['fail']
+                    fail = true
              
             job.set('done', true)
-            job.set('success', success)
-            console.log "Job Done Success = #{success}"
+            job.set('fail', fail)
+            console.log "Job Done Fail = #{fail}"
             console.log job
-            if success == true
-                job.get('defer')?.resolve(job)
-            else
+            
+            if job.get('errors').length > 0
                 job.get('defer')?.reject(job.get('errors'))
+            else
+                job.get('defer')?.resolve(job)
+            
             job.set('defer', null)
             job.set('promise', null)
             return true
 
-
         $scope.processJobNewEvent = (job, data) ->
-            console.log "Job New Event"
-            results = job.get('results')
-            for mid in data.minions
-                if not results.get(mid)?
-                    results.set(mid, mid, 'id')
-                $scope.initResult(results.get(mid))
+            #console.log "Job New Event"
+            $scope.newJob(job, data.minions)
             return job
         
         $scope.processJobRetEvent = (job, data) ->
-            console.log "Job Ret Event"
+            #console.log "Job Ret Event"
             results = job.get('results')
             if not results.get(data.id)?
                 results.set(data.id, data.id, 'id')
@@ -388,6 +414,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             if data.success == true
                 if data.retcode == 0
                     result['return'] = data.return
+                    result['fail'] = false
                 else
                     result['error'] = "Error retcode = #{data.retcode}"
                     job.get('errors').push(result['error'])
@@ -396,7 +423,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 job.get('errors').push(result['error'])
             
             $scope.linkJobMinion(job, data.id)      
-            
             $scope.checkJobDone(job)
             return job
         
@@ -427,7 +453,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         return false
                     if not $scope.jobs.get(jid)?
                         job = new Itemizer()
-                        $scope.initJob(job, edata.data)
+                        $scope.initJob(job, jid, edata.data.fun)
                         $scope.jobs.set(jid, job)
                     job = $scope.jobs.get(jid)
                     $scope.processJobEvent(job, edata)
