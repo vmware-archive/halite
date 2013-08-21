@@ -13,6 +13,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.errorMsg = ""
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
+            
+        $scope.monitorMode = "minion"
         
         $scope.graining = false
         $scope.pinging = false
