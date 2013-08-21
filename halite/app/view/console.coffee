@@ -135,17 +135,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.buildActives = (job) ->
             result = job.get('return')
             for mid in result.up
-                if not $scope.minions.get(mid)?
-                    $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
-                minion = $scope.minions.get(mid)
-                minion.set('active', true)
+                $scope.activize(mid)
             for mid in result.down
-                if not $scope.minions.get(mid)?
-                    $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
-                minion = $scope.minions.get(mid)
-                minion.set('active', false)
+                $scope.deactivize(mid)
             $scope.statusing = false
             return job
         
@@ -323,15 +315,21 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.jobs.set(jid, new Itemizer())
             $scope.jobs.get(jid).deepSet(field, val)
             
-        $scope.newJob = (job, mids) ->
-            if not job.get('results')?
-                job.set('results', new Itemizer())
-            results = job.get('results')
-            for mid in mids
-                if not results.get(mid)?
-                    results.set(mid, mid, 'id')
-                $scope.initResult(results.get(mid))
-            return job
+        $scope.activize = (mid) ->
+            ### set to true the active status for minion mid ###
+            if not $scope.minions.get(mid)?
+                    $scope.minions.set(mid, new Itemizer())
+                    $scope.initMinion($scope.minions.get(mid), mid)
+            minion = $scope.minions.get(mid)
+            minion.set('active', true)
+        
+        $scope.deactivize = (mid) ->
+            ### set to false the active status for minion mid ###
+            if not $scope.minions.get(mid)?
+                    $scope.minions.set(mid, new Itemizer())
+                    $scope.initMinion($scope.minions.get(mid), mid)
+            minion = $scope.minions.get(mid)
+            minion.set('active', false)
             
         $scope.startJob = (result, fun) ->
             console.log "Start Job"
@@ -345,6 +343,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.newJob(job, result.minions)
             return job
         
+        $scope.newJob = (job, mids) ->
+            if not job.get('results')?
+                job.set('results', new Itemizer())
+            results = job.get('results')
+            for mid in mids
+                if not results.get(mid)?
+                    results.set(mid, {})
+                $scope.initResult(results.get(mid), mid)
+            return job
+        
         $scope.initJob = (job, jid, fun) ->
             job.set('jid', jid)
             job.set('fun', fun)
@@ -356,10 +364,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             job.set('promise', job.get('defer').promise)
             return job
              
-        $scope.initResult = (result) ->
+        $scope.initResult = (result, mid) ->
             ### minion result object in $scope.jobs job.results ###
+            result['id'] = mid
             result['minion'] = null # minion link to itemizer $scope.minions
-            result['active'] = null
+            result['active'] = $scope.minions.get(mid)?.get('active')
             result['done'] = false
             result['fail'] = true
             result['error'] = ''
@@ -387,14 +396,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.checkJobDone = (job) ->
             results = job.get('results')
-            fail = false
-            for result in results.values()
-                if not result['done']
-                    return false
-                if result['fail']
-                    fail = true
-             
-            job.set('done', true)
+            done = _((result.done for result in results.values() when\
+                result.active)).all()
+            if not done
+                return false
+            
+            job.set('done', done)
+            
+            fail = _((result.fail for result in results.values() when\
+                result.active and result.done )).any()
             job.set('fail', fail)
             console.log "Job Done Fail = #{fail}"
             console.log job
@@ -416,12 +426,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processJobRetEvent = (job, data) ->
             #console.log "Job Ret Event"
             results = job.get('results')
-            if not results.get(data.id)?
-                results.set(data.id, data.id, 'id')
-                $scope.initResult(results.get(data.id))
-            result = results.get(data.id)
+            mid = data.id
+            if not results.get(mid)?
+                results.set(mid, mid, 'id')
+                $scope.initResult(results.get(mid))
+            result = results.get(mid)
             
-            result['done']=true
+            result['done'] = true
+            result['active'] = true
             result['success'] = data.success
             if data.success == true
                 result['retcode'] = data.retcode
@@ -436,7 +448,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 result['error'] = data.return
                 job.get('errors').push(result['error'])
             
-            $scope.linkJobMinion(job, data.id)      
+            $scope.linkJobMinion(job, mid) 
+            $scope.activize(mid) #since we got a return then minion must be active
             $scope.checkJobDone(job)
             return job
         
@@ -522,6 +535,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             .then (data) ->
                 console.log "Opened Event Stream: "
                 console.log data
+                $scope.$emit('Activize')
             , (data) ->
                 console.log "Error Opening Event Stream"
                 console.log data
@@ -542,11 +556,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             else
                 $scope.closeEventStream()
             
-        
+        $scope.activizeListener = (event) ->
+            console.log "Received #{event.name}"
+            console.log event
+            $scope.fetchActives()
+            
         $scope.$on('ToggleAuth', $scope.authListener)
+        $scope.$on('Activize', $scope.activizeListener)
         
-        #if not $scope.minions.keys().length and SessionStore.get('loggedIn') == true
-        #   $scope.fetchMinions()
+        if not SaltApiEvtSrvc.active and SessionStore.get('loggedIn') == true
+            $scope.openEventStream()
         
         return true
     ]

@@ -185,6 +185,8 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
         servicer =
             close: ($scope) ->
                 sse?.close()
+                sse = null
+                @active = false
             
             events: ($scope, process, tag) ->
                 token = SessionStore.get('saltApiAuth')?.token
@@ -197,6 +199,7 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
                 sse.onopen =onOpen
                 sse.onmessage = onMessage
                 @process = process #callback to process an event with data
+                @active = true
                 defer = $q.defer()  #on the creation of the stream
                 return defer.promise
 
