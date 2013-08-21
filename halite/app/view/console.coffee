@@ -376,8 +376,24 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             minion = $scope.getMinion(mid)
             minion.get('jobs').set(job.get('jid'), job)
             
-            job.get('results').get(mid)['minion'] = minion
+            job.get('results').get(mid)?.minion = minion
             return true
+            
+        $scope.unlinkJobMinion = (job, mid) ->
+            minion = job.get('results').get(mid)?.minion
+            minion?.get('jobs').del(job.get('jid'))
+            
+            job.get('results').get(mid)?.minion = null
+            return true
+        
+        $scope.unlinkMinionFromJobs = (mid) ->
+            minion = $scope.minions.get(mid)
+            if minion
+                for job in minion.get('jobs').values()
+                    job.get('results').get(mid)?.minion = null
+                    minion.get('jobs').del(job.get('jid'))
+            return true
+
         
         $scope.checkJobDone = (job) ->
             results = job.get('results')
@@ -442,6 +458,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processJobEvent = (job, edata) ->
             job.get('events').set(edata.tag, edata)
             return job
+        
+        $scope.processKeyEvent = (edata) ->
+            
+            return true
             
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
@@ -475,6 +495,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     $scope.processMinionEvent(minion, edata)
                     $scope.activize(mid)
                     $scope.fetchGrains(mid)
+                
+                 else if parts[1] is 'key'
+                    $scope.processKeyEvent(edata)
+                    data = edata.data
+                    mid = data.id
+                    if data.result is true
+                        if data.act is 'delete'
+                            $scope.unlinkMinionFromJobs(mid)
+                            $scope.minions.del(mid)
                     
             return edata
             
