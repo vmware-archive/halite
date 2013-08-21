@@ -17,7 +17,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.graining = false
         $scope.pinging = false
         $scope.statusing = false
-        $scope.minioning = false
+        $scope.eventing = false
         $scope.commanding = false
         $scope.historing = false
         
@@ -28,7 +28,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         if !AppData.get('minions')?
             AppData.set('minions', new Itemizer())
         $scope.minions = AppData.get('minions')
-        
         
         $scope.searchTarget = ""
         $scope.actions =
@@ -48,8 +47,73 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.runAction = (group, name) ->
             cmd = $scope.actions[group][name]
+
+        $scope.action = (cmd) ->
+            $scope.commanding = true
+            if not cmd
+                cmd = $scope.command.getCmd()
                 
-        
+            SaltApiSrvc.action($scope, cmd )
+            .success (data, status, headers, config ) ->
+                $scope.commanding = false
+                result = data.return[0]
+                console.log result
+                return true
+            .error (data, status, headers, config) ->
+                $scope.commanding = false
+
+                
+        $scope.command =
+            result: {}
+            history: {}
+            lastCmd: null
+            cmd:
+                mode: 'async'
+                fun: ''
+                tgt: '*'
+                args: ['']
+            
+            size: (obj) ->
+                return _.size(obj)
+            
+            addArg: () ->
+                @cmd.args.push('')
+                
+            delArg: () ->
+                if @cmd.args.length > 1
+                    @cmd.args = @cmd.args[0..-2]
+
+            getCmd: () ->
+                cmd =
+                [
+                    fun: @cmd.fun,
+                    mode: @cmd.mode,
+                    tgt: @cmd.tgt,
+
+                    arg: (arg for arg in @cmd.args when arg isnt '')
+                ]
+                return cmd
+                
+        $scope.fetchPings = (target) ->
+            target = if target then target else "*"
+            cmd =
+                mode: "async"
+                fun: "test.ping"
+                tgt: target
+            
+            $scope.pinging = true
+            SaltApiSrvc.run($scope, [cmd])
+            .success (data, status, headers, config) ->
+                result = data.return?[0]
+                if result
+                    job = $scope.startJob(result, cmd.fun)
+                $scope.pinging = false
+                return true
+            .error (data, status, headers, config) ->
+                $scope.pinging = false
+                
+            return true
+                
         $scope.filterage =
             grains: ["any", "id", "host", "domain", "server_id"]
             grain: "any"
@@ -58,7 +122,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.reverse = false
         $scope.sortage =
-            targets: ["id", "grains", "ping", "status"]
+            targets: ["id", "grains", "ping", "active"]
             target: "id"
             reverse: false
 
@@ -97,20 +161,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             result = if result? then result else false
             return result
         
-        $scope.reloadMinions = (data, field) ->
-            $scope.updateMinions(data, field)
-            keys = ( key for key, val of data)
-            $scope.minions?.filter(keys)
-            return true
-            
-        $scope.updateMinions = (data, field) ->
-            for key, val of data
-                if not $scope.minions.get(key)?
-                    $scope.minions.set(key, new Itemizer())
-                $scope.minions.get(key).deepSet(field, val)
-            $scope.minions.sort(null, true)
-            return true
-        
         $scope.fetchActives = () ->
             cmd =
                 mode: "async"
@@ -119,14 +169,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.statusing = true   
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
-                 
                 result = data.return?[0]
                 if result
                     job = $scope.startRun(result, cmd.fun)
                     job.get('promise').then (donejob) ->
                         $scope.buildActives(donejob)
-                        
-                    #$scope.reloadMinions($scope.buildStatae(result), "status")
+                        $scope.$emit("Marshall")
+                
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
@@ -134,205 +183,130 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.buildActives = (job) ->
             result = job.get('return')
+            mids = []
             for mid in result.up
                 $scope.activize(mid)
+                mids.push mid
             for mid in result.down
                 $scope.deactivize(mid)
+                mids.push mid
+            
+            $scope.minions?.filter(mids) #remove non status minions
             $scope.statusing = false
             return job
-        
-        $scope.fetchPings = (target) ->
-            target = if target then target else "*"
-            cmd =
-                mode: "async"
-                fun: "test.ping"
-                tgt: target
-            
-            $scope.pinging = true
-            SaltApiSrvc.run($scope, [cmd])
-            .success (data, status, headers, config) ->
-                $scope.pinging = false
-                result = data.return?[0]
-                if result
-                    job = $scope.startJob(result, cmd.fun)
-                    job.get('promise').then (donejob) ->
-                        $scope.buildPings(donejob)
-                    
-                    #$scope.updateMinions($scope.buildPings(result), "ping")
-                return true
-            .error (data, status, headers, config) ->
-                $scope.pinging = false
-                
-            return true
-        
-        
-        $scope.buildPings = (job) ->
-            results = job.get('results')
-            for key in $scope.minions.keys()
-                ping = false
-                if key in results.keys()
-                    result = results.get(key)
-                    if not result['fail']
-                        ping = result['return']
-                    
-                $scope.minions.get(key).set('ping', ping)
-            return job   
-                    
             
         $scope.fetchGrains = (target) ->
             target = if target then target else "*"
             cmd =
-                mode: "sync"
+                mode: "async"
                 fun: "grains.items"
                 tgt: target
             
             $scope.graining = true
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
-                $scope.graining = false
                 result = data.return?[0]
                 if result
-                    console.log result
-                    if angular.isString(result)
-                        $scope.errorMsg = result
-                        return false
-                    
-                    $scope.updateMinions(result, "grains")
+                    job = $scope.startJob(result, cmd.fun)
+                    job.get('promise').then (donejob) ->
+                        $scope.buildGrains(donejob)
                 return true
             .error (data, status, headers, config) ->
                 $scope.graining = false
             return true
         
-        $scope.fetchMinions = () ->
-            cmds =
-            [
-                mode: "sync"
-                fun: "runner.manage.status"
-            ,
-                mode: "sync"
-                fun: "grains.items"
-                tgt: "*"
-            ,
-                mode: "sync"
-                fun: "test.ping"
-                tgt: "*"
-            ]
-            fields = ['status', 'grains', 'ping']
+        $scope.buildGrains = (job) ->
+            results = job.get('results')
+            for mid in results.keys()
+                result = results.get(mid)
+                if not result['fail']
+                    grains = result['return']
+                    $scope.deepSetMinionField(mid, 'grains', grains)
+            $scope.graining = false
+            return job   
+
+        $scope.setMinionField = (mid, field, value) ->
+            if not $scope.minions.get(mid)?
+                $scope.minions.set(mid, new Itemizer())
+                $scope.initMinion($scope.minions.get(mid), mid)
+            $scope.minions.get(mid).set(field, value)
+            return true
             
-            $scope.minioning = true
-            SaltApiSrvc.run($scope, cmds)
-            .success (data, status, headers, config) ->
-                $scope.minioning = false
-                results = data.return
-                for result, i in results
-                    #console.log result
-                    if angular.isString(result)
-                        $scope.errorMsg = result
-                        return false
-                    if fields[i] is "status"
-                        result = $scope.buildStatae(result)
-                        $scope.reloadMinions(result, fields[i])
-                    else
-                        if fields[i] is "ping"
-                            result = $scope.buildPings(result)
-                        $scope.updateMinions(result, fields[i])
-                return true
-            .error (data, status, headers, config) ->
-                $scope.minioning = false
+        $scope.deepSetMinionField = (mid, field, value) ->
+            if not $scope.minions.get(mid)?
+                $scope.minions.set(mid, new Itemizer())
+                $scope.initMinion($scope.minions.get(mid), mid)
+            $scope.minions.get(mid).deepSet(field, value)
             return true
         
-        $scope.command =
-            result: {}
-            history: {}
-            lastCmd: null
-            cmd:
-                mode: 'async'
-                fun: ''
-                tgt: '*'
-                args: ['']
-            
-            size: (obj) ->
-                return _.size(obj)
-            
-            addArg: () ->
-                @cmd.args.push('')
-                
-            delArg: () ->
-                if @cmd.args.length > 1
-                    @cmd.args = @cmd.args[0..-2]
-
-            getCmd: () ->
-                cmd =
-                [
-                    fun: @cmd.fun,
-                    mode: @cmd.mode,
-                    tgt: @cmd.tgt,
-
-                    arg: (arg for arg in @cmd.args when arg isnt '')
-                ]
-                return cmd
-        
-        $scope.action = (cmd) ->
-            $scope.commanding = true
-            if not cmd
-                cmd = $scope.command.getCmd()
-                
-            SaltApiSrvc.action($scope, cmd )
-            .success (data, status, headers, config ) ->
-                $scope.commanding = false
-                result = data.return[0]
-                console.log result
-                return true
-            .error (data, status, headers, config) ->
-                $scope.commanding = false
-
-        $scope.reloadJobs = (data, field) ->
-            ### update jobs and then remove via filter stale jobs not
-                in data
-            ###
-            $scope.updateJobs(data, field)
-            keys = ( key for key, val of data)
-            $scope.jobs?.filter(keys)
+        $scope.updateMinionField = (mid, field, value) ->
+            if not $scope.minions.get(mid)?
+                $scope.minions.set(mid, new Itemizer())
+                $scope.initMinion($scope.minions.get(mid), mid)
+            $scope.minions.get(mid).deepSet(field, value, true)
             return true
         
-        $scope.updateJobs = (data, field) ->
-            ### 
-            Update multiple jobs with entries in data where each entry is
-            jid: stuff
-            put stuff in field of job 
-            
-            primary job entry key is the jid
-            ###
-            for key, val of data
-                if not $scope.jobs.get(key)?
-                    $scope.jobs.set(key, new Itemizer())
-                $scope.jobs.get(key).deepSet(field, val)
-            $scope.jobs.sort(null, true)
+        $scope.activize = (mid) ->
+            $scope.deepSetMinionField(mid, 'active', true)
             return true
         
+        $scope.deactivize = (mid) ->
+            $scope.deepSetMinionField(mid, 'active', false)
+            return true
+
         $scope.updateJobField = (jid, field, value) ->
             if not $scope.jobs.get(jid)?
                 $scope.jobs.set(jid, new Itemizer())
-            $scope.jobs.get(jid).deepSet(field, val)
-            
-        $scope.activize = (mid) ->
-            ### set to true the active status for minion mid ###
-            if not $scope.minions.get(mid)?
-                    $scope.minions.set(mid, new Itemizer())
-                    $scope.initMinion($scope.minions.get(mid), mid)
-            minion = $scope.minions.get(mid)
-            minion.set('active', true)
+            $scope.jobs.get(jid).deepSet(field, val, true)
+
+        $scope.startRun = (tag, fun) ->
+            console.log "Start Run #{fun}"
+            console.log tag
+            parts = _(tag).words(".")
+            jid = parts[2]
+            if not $scope.jobs.get(jid)?
+                job = new Itemizer()
+                $scope.initJob(job, jid, fun)
+                $scope.jobs.set(jid, job)
+            job = $scope.jobs.get(jid)
+            $scope.newRun(job)
+            return job
         
-        $scope.deactivize = (mid) ->
-            ### set to false the active status for minion mid ###
-            if not $scope.minions.get(mid)?
-                    $scope.minions.set(mid, new Itemizer())
-                    $scope.initMinion($scope.minions.get(mid), mid)
-            minion = $scope.minions.get(mid)
-            minion.set('active', false)
+        $scope.newRun = (job) ->
+            job.set('success', false)
+            job.set('return', null)
+            return job
             
+        $scope.processRunNewEvent = (job, data) ->
+            console.log "RunNewEvent"
+            $scope.newRun(job)
+            return job
+        
+        $scope.processRunRetEvent = (job, data) ->
+            console.log "RunRetEvent"
+            
+            job.set('done', true)
+            job.set('success', data.success)
+            job.set('fail', not data.success)
+            if data.success == true
+                job.set('return', data.ret)
+            else
+                job.get('errors').push(data.ret)
+                
+            console.log "Job Done Fail = #{job.get('fail')}"
+            console.log job
+            
+            if job.get('errors').length > 0
+                job.get('defer')?.reject(job.get('errors'))
+            else
+                job.get('defer')?.resolve(job)
+            
+            job.set('defer', null)
+            job.set('promise', null)
+            return job
+                        
         $scope.startJob = (result, fun) ->
-            console.log "Start Job"
+            console.log "Start Job #{fun}"
             console.log result
             jid = result.jid
             if not $scope.jobs.get(jid)?
@@ -453,52 +427,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.checkJobDone(job)
             return job
         
-        $scope.startRun = (tag, fun) ->
-            console.log "Start Run"
-            console.log tag
-            parts = _(tag).words(".")
-            jid = parts[2]
-            if not $scope.jobs.get(jid)?
-                job = new Itemizer()
-                $scope.initJob(job, jid, fun)
-                $scope.jobs.set(jid, job)
-            job = $scope.jobs.get(jid)
-            $scope.newRun(job)
-            return job
-        
-        $scope.newRun = (job) ->
-            job.set('success', false)
-            job.set('return', null)
-            return job
-            
-        $scope.processRunNewEvent = (job, data) ->
-            console.log "RunNewEvent"
-            $scope.newRun(job)
-            return job
-        
-        $scope.processRunRetEvent = (job, data) ->
-            console.log "RunRetEvent"
-            
-            job.set('done', true)
-            job.set('success', data.success)
-            job.set('fail', not data.success)
-            if data.success == true
-                job.set('return', data.ret)
-            else
-                job.get('errors').push(data.ret)
-                
-            console.log "Job Done Fail = #{job.get('fail')}"
-            console.log job
-            
-            if job.get('errors').length > 0
-                job.get('defer')?.reject(job.get('errors'))
-            else
-                job.get('defer')?.resolve(job)
-            
-            job.set('defer', null)
-            job.set('promise', null)
-            return job
-        
         $scope.processJobEvent = (job, edata) ->
             events = job.get('events')
             events.push edata
@@ -530,16 +458,18 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return edata
             
         $scope.openEventStream = () ->
+            $scope.eventing = true
             $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
                 $scope.processSaltEvent, "salt.")
             .then (data) ->
                 console.log "Opened Event Stream: "
                 console.log data
-                $scope.$emit('Activize')
+                $scope.$emit('Activate')
+                $scope.eventing = false
             , (data) ->
                 console.log "Error Opening Event Stream"
                 console.log data
-                
+                $scope.eventing = false
                 return data
             return true
         
@@ -556,13 +486,19 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             else
                 $scope.closeEventStream()
             
-        $scope.activizeListener = (event) ->
+        $scope.activateListener = (event) ->
             console.log "Received #{event.name}"
             console.log event
             $scope.fetchActives()
+        
+        $scope.marshallListener = (event) ->
+            console.log "Received #{event.name}"
+            console.log event
+            $scope.fetchGrains()
             
         $scope.$on('ToggleAuth', $scope.authListener)
-        $scope.$on('Activize', $scope.activizeListener)
+        $scope.$on('Activate', $scope.activateListener)
+        $scope.$on('Marshall', $scope.marshallListener)
         
         if not SaltApiEvtSrvc.active and SessionStore.get('loggedIn') == true
             $scope.openEventStream()

@@ -12,12 +12,6 @@
               <input type="text" class="input-medium" placeholder="Enter target pattern" 
                 ng-model="searchTarget" title="Minion search target pattern">
               <div class="btn-group">
-                <button class="btn" type="submit" ng-click="fetchGrains(searchTarget)" 
-                  title="Fetch grains from minions that match target">
-                  <i class="icon-briefcase" 
-                    ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
-                  </i>
-                </button>
                 <button class="btn" ng-click="fetchPings(searchTarget)" 
                   title="Ping minions that match target">
                   <i class="icon-bullhorn" 
@@ -41,23 +35,25 @@
             </div>
           </div>
           <div class="btn-group ">
+            <button class="btn" ng-click="openEventStream()" 
+              title="Open event stream">
+              <i class="icon-magnet"
+                ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-magnet';">
+              </i>
+            </button>
+            <button class="btn" type="submit" ng-click="fetchGrains(searchTarget)" 
+              title="Fetch grains from minions that match target">
+              <i class="icon-briefcase" 
+                ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
+              </i>
+            </button>
             <button class="btn" ng-click="fetchActives()" 
               title="Fetch up/down status of all minions">
-              <i class="icon-fire" 
+              <i class="icon-refresh" 
                 ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
               </i>
             </button>
-            <button class="btn" ng-click="fetchMinions()" 
-              title="Fetch status and grains and ping all minions">
-              <i class="icon-refresh" 
-                ng-class="minioning?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
-              </i>
-            </button>
-            <button class="btn" ng-click="openEventStream()" 
-              title="Open event stream">
-              <i class="icon-magnet">
-              </i>
-            </button>
+            
           </div>
         </div>
         
@@ -190,10 +186,6 @@
         <bold  style="font-size: larger">{{minion.key}}</bold>
       </span>
       <div class="widget-icons pull-right">
-        <span class="badge" title="Latest ping: Green=success, Red=failure" 
-          ng-class="minion.val.get('ping')?'badge-success':'badge-important'">
-          <i class="icon-bullhorn icon-white"></i>
-        </span>
         <span class="badge" title="Latest active status: Green=up, Red=down"
           ng-class="minion.val.get('active')?'badge-success':'badge-important'">
           <i class="icon-fire icon-white"></i>
