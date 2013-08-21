@@ -235,24 +235,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return job   
 
         $scope.setMinionField = (mid, field, value) ->
-            if not $scope.minions.get(mid)?
-                $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
-            $scope.minions.get(mid).set(field, value)
+            $scope.getMinion(mid).set(field, value)
             return true
             
         $scope.deepSetMinionField = (mid, field, value) ->
-            if not $scope.minions.get(mid)?
-                $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
-            $scope.minions.get(mid).deepSet(field, value)
+            $scope.getMinion(mid).deepSet(field, value)
             return true
         
         $scope.updateMinionField = (mid, field, value) ->
-            if not $scope.minions.get(mid)?
-                $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
-            $scope.minions.get(mid).deepSet(field, value, true)
+            $scope.getMinion(mid).deepSet(field, value, true)
             return true
         
         $scope.activize = (mid) ->
@@ -262,6 +253,25 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.deactivize = (mid) ->
             $scope.deepSetMinionField(mid, 'active', false)
             return true
+        
+        $scope.processMinionEvent = (minion, edata) ->
+            minion.get('events').set(edata.tag, edata)
+            return minion
+        
+        $scope.initMinion = (minion, mid) ->
+            ### itemizer in $scope.minions ###
+            minion.set('id', mid)
+            minion.set('jobs', new Itemizer())
+            minion.set('active', false)
+            minion.set('events', new Itemizer())
+            return minion
+        
+        $scope.getMinion = (mid) ->
+            # Gets minion by minion Id mid or creates and inits if not exist
+            if not $scope.minions.get(mid)?
+                $scope.minions.set(mid, new Itemizer())
+                $scope.initMinion($scope.minions.get(mid), mid)
+            return ($scope.minions.get(mid))
 
         $scope.updateJobField = (jid, field, value) ->
             if not $scope.jobs.get(jid)?
@@ -339,7 +349,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.initJob = (job, jid, fun) ->
             job.set('jid', jid)
             job.set('fun', fun)
-            job.set('events',[])
+            job.set('events', new Itemizer())
             job.set('fail', true)
             job.set('errors', [])
             job.set('done', false)
@@ -360,18 +370,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             result['retcode'] = null
             return result
         
-        $scope.initMinion = (minion, mid) ->
-            ### itemizer in $scope.minions ###
-            minion.set('id', mid)
-            minion.set('jobs', new Itemizer())
-            minion.set('active', false)
-            return minion
-        
         $scope.linkJobMinion = (job, mid) ->
-            if not $scope.minions.get(mid)?
-                $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
-            minion = $scope.minions.get(mid)
+            minion = $scope.getMinion(mid)
             minion.get('jobs').set(job.get('jid'), job)
             
             job.get('results').get(mid)['minion'] = minion
@@ -438,8 +438,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return job
         
         $scope.processJobEvent = (job, edata) ->
-            events = job.get('events')
-            events.push edata
+            job.get('events').set(edata.tag, edata)
             return job
             
         $scope.processSaltEvent = (edata) ->
@@ -451,7 +450,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     jid = parts[2]
                     if jid != edata.data.jid
                         console.log "Bad job event"
-                        $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.jid}"
+                        $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.data.jid}"
                         return false
                     if not $scope.jobs.get(jid)?
                         job = new Itemizer()
@@ -464,6 +463,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         $scope["process#{_(parts[1]).capitalize()}NewEvent"](job, edata.data)
                     else if kind == 'ret'
                         $scope["process#{_(parts[1]).capitalize()}RetEvent"](job, edata.data)
+                else if parts[1] is 'minion' or parts[1] is 'syndic'
+                    mid = parts[2]
+                    if mid != edata.data.id
+                        console.log "Bad minion event"
+                        $scope.errorMsg = "Bad minion event: MID #{mid} not match #{edata.data.id}"
+                        return false
+                    minion = $scope.getMinion(mid)
+                    $scope.processMinionEvent(minion, edata)
+                    $scope.activize(mid)
+                    $scope.fetchGrains(mid)
                     
             return edata
             
