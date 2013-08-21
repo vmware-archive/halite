@@ -5,6 +5,7 @@
     <alert type="'error'" close="closeAlert()" ng-cloak ng-show="!!$parent.errorMsg">Error! {{errorMsg}}</alert>
   
     <form class="form-inline " style="margin: 0 0 0 0">
+      <h4>Command</h4>
       <div class="btn-toolbar">
         <div class="btn-group">
           <div class="input-append">
@@ -33,6 +34,7 @@
             </div>
           </div>
         </div>
+        
         <div class="btn-group">
           <button class="btn"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
             title="Execute lowstate command">
@@ -109,7 +111,7 @@
             </i>
         </button>
       </div>
-      
+      <h4>Monitor</h4>
       <div class="btn-toolbar">
         <div class="btn-group">
           <div class="input-append">
