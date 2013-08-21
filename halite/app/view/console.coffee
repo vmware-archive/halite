@@ -47,21 +47,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.runAction = (group, name) ->
             cmd = $scope.actions[group][name]
-
-        $scope.action = (cmd) ->
-            $scope.commanding = true
-            if not cmd
-                cmd = $scope.command.getCmd()
-                
-            SaltApiSrvc.action($scope, cmd )
-            .success (data, status, headers, config ) ->
-                $scope.commanding = false
-                result = data.return[0]
-                console.log result
-                return true
-            .error (data, status, headers, config) ->
-                $scope.commanding = false
-
                 
         $scope.command =
             result: {}
@@ -93,6 +78,30 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     arg: (arg for arg in @cmd.args when arg isnt '')
                 ]
                 return cmd
+
+        $scope.action = (cmd) ->
+            $scope.commanding = true
+            if not cmd
+                cmd = $scope.command.getCmd()
+                
+            SaltApiSrvc.action($scope, cmd )
+            .success (data, status, headers, config ) ->
+                results = data.return
+                for result, index in results
+                    if result
+                        parts = _(cmd[index].fun).words(".") # split on "." character
+                        if parts.length == 3 
+                            if parts[0] =='runner'
+                                job = $scope.startRun(result, cmd[index].fun)
+                            else if parts[0] == 'wheel'
+                                console.log "Wheel"
+                                console.log result
+                        else
+                            job = $scope.startJob(result, cmd[index].fun)
+                    $scope.commanding = false
+                return true
+            .error (data, status, headers, config) ->
+                $scope.commanding = false
                 
         $scope.fetchPings = (target) ->
             target = if target then target else "*"
@@ -370,8 +379,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.checkJobDone = (job) ->
             results = job.get('results')
+            # active is true or null ie not false
             done = _((result.done for result in results.values() when\
-                result.active)).all()
+                result.active isnt false)).all()
             if not done
                 return false
             

@@ -65,7 +65,7 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
                 config =
                     headers: headers
-                url = "#{base}/"
+                url = "#{base}/run"
                 
                 $scope.command.lastCmd = cmds
                 if not angular.isArray(cmds)
