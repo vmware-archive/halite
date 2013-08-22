@@ -14,7 +14,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
             
-        $scope.monitorMode = "minion"
+        $scope.monitorMode = "job"
         
         $scope.graining = false
         $scope.pinging = false
@@ -32,6 +32,60 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.minions = AppData.get('minions')
         
         $scope.searchTarget = ""
+        
+        $scope.filterage =
+            grains: ["any", "id", "host", "domain", "server_id"]
+            grain: "any"
+            target: ""
+            express: ""
+        
+        $scope.setFilterGrain = (index) ->
+            $scope.filterage.grain = $scope.filterage.grains[index]
+            $scope.setFilterExpress()
+            return true
+        
+        $scope.setFilterTarget = (target) ->
+            $scope.filterage.target = target
+            $scope.setFilterExpress()
+            return true
+        
+        $scope.setFilterExpress = () ->
+            console.log "setFilterExpress"
+            if $scope.filterage.grain is "any"
+                $scope.filterage.express = $scope.filterage.target
+            else
+                regex = RegExp($scope.filterage.target,"i")
+                grain = $scope.filterage.grain
+                $scope.filterage.express = (minion) ->
+                    return minion.val.get("grains").get(grain).toString().match(regex)
+            return true
+
+        $scope.sortage =
+            targets: ["id", "grains", "ping", "active"]
+            target: "id"
+            reverse: false
+
+        $scope.setSortTarget = (index) ->
+            $scope.sortage.target = $scope.sortage.targets[index]
+            return true
+            
+        $scope.sortMinions = (minion) ->
+            if $scope.sortage.target is "id"
+                result = minion.val.get("grains")?.get("id")
+            else if $scope.sortage.target is "grains"
+                result = minion.val.get($scope.sortage.target)?
+            else
+                result = minion.val.get($scope.sortage.target)
+            result = if result? then result else false
+            return result
+        
+        $scope.reverse = true
+        $scope.sortJobs = (job) ->
+            result = job.val.get('jid')
+            result = if result? then result else false
+            return result
+        
+        
         $scope.actions =
             State:
                 highstate:
@@ -124,53 +178,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.pinging = false
                 
             return true
-                
-        $scope.filterage =
-            grains: ["any", "id", "host", "domain", "server_id"]
-            grain: "any"
-            target: ""
-            express: ""
-        
-        $scope.reverse = false
-        $scope.sortage =
-            targets: ["id", "grains", "ping", "active"]
-            target: "id"
-            reverse: false
-
-        $scope.setFilterGrain = (index) ->
-            $scope.filterage.grain = $scope.filterage.grains[index]
-            $scope.setFilterExpress()
-            return true
-        
-        $scope.setFilterTarget = (target) ->
-            $scope.filterage.target = target
-            $scope.setFilterExpress()
-            return true
-        
-        $scope.setFilterExpress = () ->
-            console.log "setFilterExpress"
-            if $scope.filterage.grain is "any"
-                $scope.filterage.express = $scope.filterage.target
-            else
-                regex = RegExp($scope.filterage.target,"i")
-                grain = $scope.filterage.grain
-                $scope.filterage.express = (minion) ->
-                    return minion.val.get("grains").get(grain).toString().match(regex)
-            return true
-        
-        $scope.setSortTarget = (index) ->
-            $scope.sortage.target = $scope.sortage.targets[index]
-            return true
-            
-        $scope.sortMinions = (minion) ->
-            if $scope.sortage.target is "id"
-                result = minion.val.get("grains")?.get("id")
-            else if $scope.sortage.target is "grains"
-                result = minion.val.get($scope.sortage.target)?
-            else
-                result = minion.val.get($scope.sortage.target)
-            result = if result? then result else false
-            return result
         
         $scope.fetchActives = () ->
             cmd =
@@ -372,6 +379,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             result['retcode'] = null
             return result
         
+        $scope.resultKeys = ["done", "fail", "success", "retcode" ]
+        
         $scope.linkJobMinion = (job, mid) ->
             minion = $scope.getMinion(mid)
             minion.get('jobs').set(job.get('jid'), job)
@@ -430,8 +439,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             results = job.get('results')
             mid = data.id
             if not results.get(mid)?
-                results.set(mid, mid, 'id')
-                $scope.initResult(results.get(mid))
+                results.set(mid, {})
+                $scope.initResult(results.get(mid), mid)
             result = results.get(mid)
             
             result['done'] = true
