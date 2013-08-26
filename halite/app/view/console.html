@@ -7,10 +7,9 @@
     <form class="form-inline " style="margin: 0 0 0 0">
       <div class="btn-toolbar">
         <div class="btn-group">
-          <div class="input-prepend input-append">
+          <div class="input-prepend">
             <button class="btn disabled">Command</button>
-            <input type="text" class="input-large" placeholder="Enter target pattern" 
-              ng-model="searchTarget" title="Minion search target pattern">
+            
             <div class="btn-group">
               <button class="btn" ng-click="fetchPings(searchTarget)" 
                 title="Ping minions that match target">
@@ -32,6 +31,8 @@
                 <li><a ng-href="">TBD</a></li>
               </ul>
             </div>
+            <input type="text" class="input-large" placeholder="Enter target pattern" 
+              ng-model="searchTarget" title="Minion search target pattern">
           </div>
         </div>
         
