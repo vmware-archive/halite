@@ -80,7 +80,7 @@
         </div>
       </div>
         
-      <div class="controls" collapse="collapsed">
+      <div class="controls" ng-show="!collapsed">
         <label class="control-label">Function<br/>
           <input type="text" class="input-large" placeholder="Enter module.function"
             ng-model="command.cmd.fun" title="Module function">
@@ -192,7 +192,7 @@
         </div>  
         <div class="clearfix"></div>
       </div>
-      <div class="widget-content" collapse="collapsed">
+      <div class="widget-content" ng-show="!collapsed">
         <!-- Widget content -->
         <tabset>
           <tab heading="Info">
@@ -405,7 +405,7 @@
         </div>  
         <div class="clearfix"></div>
       </div>
-      <div class="widget-content" collapse="collapsed">
+      <div class="widget-content" ng-show="!collapsed">
         <!-- Widget content -->
         <tabset>
           <tab heading="Result">
