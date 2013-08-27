@@ -1,3 +1,51 @@
+.animate-fade.ng-hide-add, 
+.animate-fade.ng-hide-remove {
+  -webkit-transition: all linear 0.25s;
+  -moz-transition: all linear 0.25s;
+  -o-transition: all linear 0.25s;
+  transition: all linear 0.25s;
+  display: block !important;
+}
+
+.animate-fade.ng-hide-add, /* starting animation for show */
+.animate-fade.ng-hide-remove.ng-hide-remove-active { /* terminal animation for hide */
+  opacity: 1;
+}
+
+.animate-fade.ng-hide-remove, /* starting animation for hide */
+.animate-fade.ng-hide-add.ng-hide-add-active { /* terminal animation for show */
+  opacity: 0;
+}
+
+
+
+
+.box { 
+  border: 1px solid #888;
+  border-radius: 3px;
+  padding: 0px 4px;
+  margin: 0px 0px -1px 0px;
+}
+
+.slat { 
+  border: 1px solid #888; 
+  border-radius: 3px;
+  margin: 3px 0px 0px 0px;
+  background: #fafafa;
+}
+
+.slat-head { 
+  padding: 4px 5px;
+} 
+
+.slat-body { 
+  border-top-style: solid;
+  border-width: 1px;
+  border-color: #ccc; 
+  padding: 4px 5px;
+}
+
+
 
 .filter-active {background: #ccc}
 

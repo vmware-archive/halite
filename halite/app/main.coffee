@@ -9,7 +9,8 @@
 # assign to window.myApp if we want to have a global handle to the module
 
 # Main App Module 
-mainApp = angular.module("MainApp", ['ngRoute', 'ngCookies','appConfigSrvc', 'appPrefSrvc',
+mainApp = angular.module("MainApp", ['ngRoute', 'ngCookies', 'ngAnimate', 
+        'appConfigSrvc', 'appPrefSrvc',
         'appDataSrvc', 'appStoreSrvc', 'appUtilSrvc', 'appFltr', 'appDrtv', 
         'saltApiSrvc', 'demoSrvc', 'ui.bootstrap', 'ui.utils'])
 

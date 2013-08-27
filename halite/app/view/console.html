@@ -4,12 +4,11 @@
 
     <alert type="'error'" close="closeAlert()" ng-cloak ng-show="!!$parent.errorMsg">Error! {{errorMsg}}</alert>
   
-    <form class="form-inline " style="margin: 0 0 0 0">
-      <div class="btn-toolbar">
+    <form class="form-inline box" >
+      <div class="btn-toolbar"> 
+        <label>Command &nbsp;</label>
         <div class="btn-group">
           <div class="input-prepend">
-            <button class="btn disabled">Command</button>
-            
             <div class="btn-group">
               <button class="btn" ng-click="fetchPings(searchTarget)" 
                 title="Ping minions that match target">
@@ -39,9 +38,8 @@
         <div class="btn-group">
           <button class="btn"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
             title="Execute lowstate command">
-            <i class="icon-cog" 
-              ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-cog';">
-            </i>
+            <i class="icon-chevron-down" title="Click to toggle command form display" 
+              ng-class="collapsed?'icon-chevron-down':'icon-chevron-up'"></i>
           </button>
           <button class="btn dropdown-toggle" 
             ng-class="command.size(command.history)==0?'disabled':''"
@@ -66,7 +64,7 @@
               ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-magnet';">
             </i>
           </button>
-          <button class="btn" type="submit" ng-click="fetchGrains(searchTarget)" 
+          <button class="btn" ng-click="fetchGrains(searchTarget)" 
             title="Fetch grains from minions that match target">
             <i class="icon-briefcase" 
               ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
@@ -81,7 +79,7 @@
         </div>
       </div>
         
-      <div class="controls" ng-show="!collapsed">
+      <div class="controls animate-fade" ng-show="!collapsed">
         <label class="control-label">Function<br/>
           <input type="text" class="input-large" placeholder="Enter module.function"
             ng-model="command.cmd.fun" title="Module function">
@@ -90,8 +88,6 @@
           <input type="text" class="input-medium" placeholder="Enter minion target pattern"
             ng-model="command.cmd.tgt" title="Minion target pattern">
         </label>
-        
-        
         <label class="control-label">Arguments<br/>
           <div class="input-append">
             <input type="text" class="input-medium"
@@ -108,23 +104,25 @@
         </label>
         <button type="submit" class="btn" ng-click="action()">
           Execute <i class="icon-play" 
-              ng-class="commnding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-play';">
+              ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-play';">
             </i>
         </button>
       </div>
+    </form>
+    
+    <form class="form-inline box" >
       <div class="btn-toolbar">
+        <label>Monitor &nbsp;</label>
         <div class="btn-group">
-          <button class="btn disabled">Monitor</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'fun'">Fun</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'job'">Job</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'minion'">Minion</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'event'">Event</button>
         </div>
-      
         
+        <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;</label>
         <div class="btn-group" ng-show="monitorMode == 'minion'">
-          <div class="input-prepend input-append">
-            <button class="btn disabled">Filter</button>
+          <div class="input-append">
             <input type="text" class="input-large" placeholder="Enter filter string" 
               ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
             <div class="btn-group">
@@ -145,8 +143,9 @@
           </div>
         </div>
         
+        <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;</label>
         <div class="btn-group" ng-show="monitorMode == 'minion'">
-          <button class="btn disabled">Sort</button>
+
           <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
             <i class="icon-list"></i>
           </button>
@@ -171,17 +170,16 @@
 
 
 <!--<div class="container-fluid">-->
-<div class="row-fluid" ng-show="monitorMode == 'minion'">
+<div class="row-fluid" style="margin: 5px 0px 0px 0px" ng-show="monitorMode == 'minion'">
   <div class="span12" >
-    <div class="widget" ng-repeat="minion in minions.items() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
-      <!-- Widget title -->
-      <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+    <div class="slat" ng-repeat="minion in minions.items() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
+      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle grains display">
         <span class="label pull-left" title="Minion Id: Green=grains, Orange=no grains" 
           ng-class="minion.val.get('grains')?'label-info':'label-warning'">
           <bold  style="font-size: larger">{{minion.key}}</bold>
         </span>
-        <div class="widget-icons pull-right">
+        <div class="pull-right">
           <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.val.get('active')?'badge-success':'badge-important'">
             <i class="icon-fire icon-white"></i>
@@ -193,8 +191,7 @@
         </div>  
         <div class="clearfix"></div>
       </div>
-      <div class="widget-content" ng-show="!collapsed">
-        <!-- Widget content -->
+      <div class="slat-body animate-fade" ng-show="!collapsed">
         <tabset>
           <tab heading="Info">
             <div class="span4">
@@ -374,10 +371,8 @@
           </tab>
           
         </tabset>
-      </div><!--/widget-content-->
-      <!--<div class="widget-foot">Salt Minion-->
-      <!--</div>-->
-    </div> <!--/widget-->
+      </div><!--/slat-body-->
+    </div> <!--/slat-->
   </div><!--/span-->
 </div><!--/row-->
 <!--</div>--><!--/container-->
@@ -385,16 +380,15 @@
 <!--<div class="container-fluid">-->
 <div class="row-fluid" ng-show="monitorMode == 'job'">
   <div class="span12" >
-    <div class="widget" ng-repeat="job in jobs.items() | orderBy:sortJobs:reverse">
-      <!-- Widget title -->
-      <div class="widget-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+    <div class="slat" ng-repeat="job in jobs.items() | orderBy:sortJobs:reverse">
+      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
           ng-class="job.val.get('done')?'':'label-info'">
           <bold  style="font-size: larger">{{job.key}}</bold>
         </span>
         <span title="Module function">&nbsp;&nbsp;{{job.val.get('fun')}}</span>
-        <div class="widget-icons pull-right">
+        <div class="pull-right">
           <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.val.get('fail')?'badge-important':'badge-success'">
             <i class="icon-certificate icon-white"></i>
@@ -406,8 +400,7 @@
         </div>  
         <div class="clearfix"></div>
       </div>
-      <div class="widget-content" ng-show="!collapsed">
-        <!-- Widget content -->
+      <div class="slat-body" ng-show="!collapsed">
         <tabset>
           <tab heading="Result">
             <div class="span12" ng-if="job.val.get('results')">
@@ -451,10 +444,8 @@
             </div>
           </tab>
         </tabset>
-      </div><!--/widget-content-->
-      <!--<div class="widget-foot">Salt Minion-->
-      <!--</div>-->
-    </div> <!--/widget-->
+      </div><!--/slat-body-->
+    </div> <!--/slat-->
   </div><!--/span-->
 </div><!--/row-->
 <!--</div>--><!--/container-->
