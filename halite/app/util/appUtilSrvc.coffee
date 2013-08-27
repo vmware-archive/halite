@@ -39,6 +39,7 @@ class Itemizer
         @_data = {} # data object maps keys to values that are item objects
         @_keys = [] # list of keys
         @update(stuff, deep)
+        return @
         
     get: (key, tag) ->
         if tag
@@ -179,9 +180,177 @@ class Itemizer
                 
         return @
         
-
-
 appUtilSrvc.value "Itemizer", Itemizer
+
+
+class Minioner
+    constructor: (@id) ->
+        @active = false
+        @grains = new Itemizer()
+        @jobs = new Itemizer()
+        @events = new Itemizer()
+        return @
+    
+    activize: () ->
+        @active = true
+        return @
+    
+    deactivize: () ->
+        @active = false
+        return @
+    
+    grainize: (grains, update) ->
+        @grains.deepSet(grains, update)
+        return @
+
+    processEvent = (edata) ->
+        @events.set(edata.tag, edata)
+        return @
+
+appUtilSrvc.value "Minioner", Minioner
+
+class Resulter
+    constructor: (@id) ->
+        @reset()
+        return @
+    
+    reset: () ->
+        @active = null
+        @done = false
+        @fail = true
+        @error = ''
+        @success = false
+        @return = null
+        @retcode = null
+        return @
+
+appUtilSrvc.value "Resulter", Resulter  
+
+class Jobber
+    constructor: (@jid, @fun, mids) ->
+        @events = new Itemizer()
+        @fail = true
+        @errors = []
+        @done = false
+        @defer = null
+        @promise = null
+        @results = new Itemizer()
+        @minions = new Itemizer()
+        for mid in mids
+            results.set(mid, new Resulter(mid))
+        return @
+        
+    commit: ($q) ->  #create new defer and promise and return promise
+        @defer = $q.defer()
+        @promise = @defer.promise
+        return @promise
+    
+    initResults: (mids) ->
+        for mid in mids
+            unless @results.get(mid)?
+                @results.set(mid, new Resulter(mid))
+        return @
+    
+    checkDone = () ->
+        # active is true or null ie not false
+        @done = _((result.done for result in @results.values() when\
+            result.active isnt false)).all()
+        if not @done
+            return false
+        
+        @fail = _((result.fail for result in @results.values() when\
+            result.active and result.done )).any()
+        
+        console.log "Job Done. Fail = #{@fail}"
+        console.log @
+        
+        if @errors.length > 0
+            @defer?.reject @errors
+        else
+            @defer?.resolve @
+        
+        @defer = null
+        @promise = null
+        return true
+        
+        linkMinion: (minion) ->
+            minion.jobs.set(@jid, @)
+            @minions.set(minion.id, minion)
+            return @
+            
+        unlinkMinion: (mid) ->
+            minion = @minions.get(mid)
+            @minions.del(mid)
+            minion?.get('jobs').del(@jid)
+            return @
+        
+        processEvent: (edata) ->
+            @events.set(edata.tag, edata)
+            return @
+        
+        processNewEvent: (data) ->
+            #console.log "Job New Event"
+            @initResults(data.minions)
+            return @
+        
+        processRetEvent: (data) ->
+            #console.log "Job Ret Event"
+            mid = data.id
+            unless @results.get(mid)?
+                @results.set(mid, new Resulter(mid))
+            result = @results.get(mid)
+            
+            result['done'] = true
+            result['active'] = true
+            result['success'] = data.success
+            if data.success == true
+                result['retcode'] = data.retcode
+            if data.success == true
+                if data.retcode == 0
+                    result['return'] = data.return
+                    result['fail'] = false
+                else
+                    result['error'] = "Error retcode = #{data.retcode}"
+                    @errors.push(result['error'])
+            else 
+                result['error'] = data.return
+                @errors.push(result['error'])
+            return @
+        
+
+appUtilSrvc.value "Jobber", Jobber
+
+class Runner extends Jobber
+    constructor: (@jid, @fun) ->
+        super(jid, fun, ['master']) #one result with id 'master'
+        return @
+    
+
+    processRetEvent = (data) ->
+        console.log "Run Ret Event"
+        result = @results.get('master')
+        result.done = true
+        @done = true
+        result.success = data.success
+        result.fail = ! result.success
+        @fail = result.fail
+               
+        if result.success == true
+            result.return = data.ret
+        else
+            result.error = data.ret
+            @errors.push(data.ret)
+        
+        console.log "Run Done. Fail = #{@fail}"
+        console.log job
+        
+        if @errors.length > 0
+            @defer?.reject(@errors)
+        else
+            @defer?.resolve(@)
+        @defer = null
+        @promise = null
+        return @
 
 
 ###

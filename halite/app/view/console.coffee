@@ -1,10 +1,11 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
-    'Configuration','AppData', 'AppPref', 'Itemizer', 'Orderer', 
+    'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 'Jobber', 'Resulter'
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
-    ($scope, $location, $route, $q, Configuration, AppData, AppPref, Itemizer, 
-    Orderer, SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
+    ($scope, $location, $route, $q, Configuration, AppData, AppPref, 
+    Item, Itemizer, Jobber, Resulter,
+    SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -22,6 +23,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.eventing = false
         $scope.commanding = false
         $scope.historing = false
+        
+        $scope.testJobber = () ->
+            myjob = new Jobber()
+            return myjob
+            
         
         if !AppData.get('jobs')?
             AppData.set('jobs', new Itemizer())
@@ -282,11 +288,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.initMinion($scope.minions.get(mid), mid)
             return ($scope.minions.get(mid))
 
-        $scope.updateJobField = (jid, field, value) ->
-            if not $scope.jobs.get(jid)?
-                $scope.jobs.set(jid, new Itemizer())
-            $scope.jobs.get(jid).deepSet(field, val, true)
-
         $scope.startRun = (tag, fun) ->
             console.log "Start Run #{fun}"
             console.log tag
@@ -402,7 +403,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     job.get('results').get(mid)?.minion = null
                     minion.get('jobs').del(job.get('jid'))
             return true
-
         
         $scope.checkJobDone = (job) ->
             results = job.get('results')
