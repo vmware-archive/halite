@@ -120,49 +120,50 @@
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'event'">Event</button>
         </div>
         
-        <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;</label>
-        <div class="btn-group" ng-show="monitorMode == 'minion'">
-          <div class="input-append">
-            <input type="text" class="input-large" placeholder="Enter filter string" 
-              ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
-            <div class="btn-group">
-              <button class="btn dropdown-toggle leftmost" title="Select grain to filter against">
-                <i class="icon-filter"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li ng-repeat="grain in filterage.grains track by $index">
-                  <a ng-href="" ng-click="setFilterGrain($index)" 
-                    ng-class="filterage.grain==grain?'filter-active':''">
-                    {{grain}}
-                  </a>
-                </li>
-              </ul>
-              <button class="btn disabled" title="Filter against this grain">in {{filterage.grain}}
-              </button>
+        <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
+          <div class="btn-group">
+            <div class="input-append">
+              <input type="text" class="input-large" placeholder="Enter filter string" 
+                ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
+              <div class="btn-group">
+                <button class="btn dropdown-toggle leftmost" title="Select grain to filter against">
+                  <i class="icon-filter"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li ng-repeat="grain in filterage.grains track by $index">
+                    <a ng-href="" ng-click="setFilterGrain($index)" 
+                      ng-class="filterage.grain==grain?'filter-active':''">
+                      {{grain}}
+                    </a>
+                  </li>
+                </ul>
+                <button class="btn disabled" title="Filter against this grain">in {{filterage.grain}}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </label>
         
-        <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;</label>
-        <div class="btn-group" ng-show="monitorMode == 'minion'">
-
-          <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
-            <i class="icon-list"></i>
-          </button>
-          <ul class="dropdown-menu">
-            <li ng-repeat="target in sortage.targets track by $index">
-              <a ng-href="" ng-click="setSortTarget($index)" 
-                ng-class="sortage.target==target?'filter-active':''">
-                {{target}}
-              </a>
-            </li>
-          </ul>
-          <button class="btn disabled" title="Sort by this trait">by {{sortage.target}}
-          </button>
-          <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
-            <i ng-class="sortage.reverse?'icon-arrow-up':'icon-arrow-down'"></i>
-          </button>
-        </div>
+        <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
+          <div class="btn-group" >
+            <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
+              <i class="icon-list"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li ng-repeat="target in sortage.targets track by $index">
+                <a ng-href="" ng-click="setSortTarget($index)" 
+                  ng-class="sortage.target==target?'filter-active':''">
+                  {{target}}
+                </a>
+              </li>
+            </ul>
+            <button class="btn disabled" title="Sort by this trait">by {{sortage.target}}
+            </button>
+            <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
+              <i ng-class="sortage.reverse?'icon-arrow-up':'icon-arrow-down'"></i>
+            </button>
+          </div>
+        </label>
       </div>
     </form>
   </div><!--/span-->
