@@ -81,17 +81,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             
         $scope.sortMinions = (minion) ->
             if $scope.sortage.target is "id"
-                result = minion.val.get("grains")?.get("id")
+                result = minion.val?.grains?.get("id")
             else if $scope.sortage.target is "grains"
-                result = minion.val.get($scope.sortage.target)?
+                result = minion.val.grains.get($scope.sortage.target)?
             else
-                result = minion.val.get($scope.sortage.target)
+                result = minion.val[$scope.sortage.target]
             result = if result? then result else false
             return result
         
         $scope.reverse = true
         $scope.sortJobs = (job) ->
-            result = job.val.get('jid')
+            result = job.val.jid
             result = if result? then result else false
             return result
         
@@ -199,11 +199,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             .success (data, status, headers, config) ->
                 result = data.return?[0]
                 if result
-                    job = $scope.startRun(result, cmd.fun)
-                    job.get('promise').then (donejob) ->
+                    $scope.statusing = false  
+                    #job = $scope.startRun(result, cmd.fun)
+                    ###job.promise.then (donejob) ->
                         $scope.buildActives(donejob)
                         $scope.$emit("Marshall")
-                
+                    ###
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
@@ -236,20 +237,20 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 result = data.return?[0]
                 if result
                     job = $scope.startJob(result, cmd.fun)
-                    job.get('promise').then (donejob) ->
-                        $scope.buildGrains(donejob)
+                    job.commit($q).then (donejob) ->
+                        $scope.assignGrains(donejob)
+                    #$scope.graining = false
                 return true
             .error (data, status, headers, config) ->
                 $scope.graining = false
             return true
         
-        $scope.buildGrains = (job) ->
-            results = job.get('results')
-            for mid in results.keys()
-                result = results.get(mid)
-                if not result['fail']
-                    grains = result['return']
-                    $scope.deepSetMinionField(mid, 'grains', grains)
+        $scope.assignGrains = (job) ->
+            for {key: mid, val: result} in job.results.items()
+                unless result.fail
+                    grains = result.return
+                    minion = $scope.getMinion(mid)
+                    minion.grains.reload(grains, true)
             $scope.graining = false
             return job   
 
@@ -288,8 +289,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.getMinion = (mid) ->
             # Gets minion by minion Id mid or creates and inits if not exist
             if not $scope.minions.get(mid)?
-                $scope.minions.set(mid, new Itemizer())
-                $scope.initMinion($scope.minions.get(mid), mid)
+                $scope.minions.set(mid, new Minioner(mid))
             return ($scope.minions.get(mid))
 
         $scope.startRun = (tag, fun) ->
@@ -342,12 +342,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             console.log "Start Job #{fun}"
             console.log result
             jid = result.jid
-            if not $scope.jobs.get(jid)?
-                job = new Itemizer()
-                $scope.initJob(job, jid, fun)
+            unless $scope.jobs.get(jid)?
+                job = new Jobber(jid, fun)
                 $scope.jobs.set(jid, job)
             job = $scope.jobs.get(jid)
-            $scope.newJob(job, result.minions)
+            job.initResults(result.minions)
             return job
         
         $scope.newJob = (job, mids) ->
@@ -468,8 +467,18 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.checkJobDone(job)
             return job
         
-        $scope.processJobEvent = (job, edata) ->
-            job.get('events').set(edata.tag, edata)
+        $scope.processJobEvent = (jid, kind, edata) ->
+            job = $scope.jobs.get(jid)
+            job.processEvent(edata)
+            data = edata.data
+            if kind == 'new'
+                job.processNewEvent(data)
+            else if kind == 'ret'
+                minion = $scope.getMinion(data.id)
+                minion.activize() #since we got a return then minion must be active
+                job.linkMinion(minion)
+                job.processRetEvent(data)
+                job.checkDone()
             return job
         
         $scope.processKeyEvent = (edata) ->
@@ -481,23 +490,27 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             console.log edata
             parts = edata.tag.split(".") # split on "." character
             if parts[0] is 'salt'
-                if parts[1] is 'job' or parts[1] is 'run'
+                if parts[1] is 'job'
                     jid = parts[2]
                     if jid != edata.data.jid
                         console.log "Bad job event"
                         $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.data.jid}"
                         return false
                     if not $scope.jobs.get(jid)?
-                        job = new Itemizer()
-                        $scope.initJob(job, jid, edata.data.fun)
+                        #job = new Itemizer()
+                        #$scope.initJob(job, jid, edata.data.fun)
+                        job = new Jobber(jid, edata.data.fun)
                         $scope.jobs.set(jid, job)
-                    job = $scope.jobs.get(jid)
-                    $scope.processJobEvent(job, edata)
                     kind = parts[3]
-                    if kind == 'new'
-                        $scope["process#{_(parts[1]).capitalize()}NewEvent"](job, edata.data)
-                    else if kind == 'ret'
-                        $scope["process#{_(parts[1]).capitalize()}RetEvent"](job, edata.data)
+                    $scope.processJobEvent(jid, kind, edata)
+                    
+                else if parts[1] is 'run'
+                    jid = parts[2]
+                    if jid != edata.data.jid
+                        console.log "Bad run event"
+                        $scope.errorMsg = "Bad run event: JID #{jid} not match #{edata.data.jid}"
+                        return false
+                    
                 else if parts[1] is 'minion' or parts[1] is 'syndic'
                     mid = parts[2]
                     if mid != edata.data.id

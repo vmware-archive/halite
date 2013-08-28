@@ -240,9 +240,10 @@ class Jobber
             @results.set(mid, new Resulter(mid))
         return @
         
-    commit: ($q) ->  #create new defer and promise and return promise
-        @defer = $q.defer()
-        @promise = @defer.promise
+    commit: ($q) ->  #return promise if already exists otherwise create and return
+        unless @defer?
+            @defer = $q.defer()
+            @promise = @defer.promise
         return @promise
     
     initResults: (mids) ->
@@ -251,7 +252,7 @@ class Jobber
                 @results.set(mid, new Resulter(mid))
         return @
     
-    checkDone = () ->
+    checkDone: () ->
         # active is true or null ie not false
         @done = _((result.done for result in @results.values() when\
             result.active isnt false)).all()
@@ -273,50 +274,51 @@ class Jobber
         @promise = null
         return true
         
-        linkMinion: (minion) ->
-            minion.jobs.set(@jid, @)
-            @minions.set(minion.id, minion)
-            return @
-            
-        unlinkMinion: (mid) ->
-            minion = @minions.get(mid)
-            @minions.del(mid)
-            minion?.get('jobs').del(@jid)
-            return @
+    linkMinion: (minion) ->
+        minion.jobs.set(@jid, @)
+        @minions.set(minion.id, minion)
+        return @
         
-        processEvent: (edata) ->
-            @events.set(edata.tag, edata)
-            return @
+    unlinkMinion: (mid) ->
+        minion = @minions.get(mid)
+        @minions.del(mid)
+        minion?.get('jobs').del(@jid)
+        return @
+    
+    processEvent: (edata) ->
+        @events.set(edata.tag, edata)
+        return @
+    
+    processNewEvent: (data) ->
+        #console.log "Job New Event"
+        @initResults(data.minions)
+        return @
+    
+    processRetEvent: (data) ->
+        #console.log "Job Ret Event"
+        mid = data.id
+        unless @results.get(mid)?
+            @results.set(mid, new Resulter(mid))
+        result = @results.get(mid)
         
-        processNewEvent: (data) ->
-            #console.log "Job New Event"
-            @initResults(data.minions)
-            return @
-        
-        processRetEvent: (data) ->
-            #console.log "Job Ret Event"
-            mid = data.id
-            unless @results.get(mid)?
-                @results.set(mid, new Resulter(mid))
-            result = @results.get(mid)
-            
-            result['done'] = true
-            result['active'] = true
-            result['success'] = data.success
-            if data.success == true
-                result['retcode'] = data.retcode
-            if data.success == true
-                if data.retcode == 0
-                    result['return'] = data.return
-                    result['fail'] = false
-                else
-                    result['error'] = "Error retcode = #{data.retcode}"
-                    @errors.push(result['error'])
-            else 
-                result['error'] = data.return
+        result['done'] = true
+        result['active'] = true
+        result['success'] = data.success
+        if data.success == true
+            result['retcode'] = data.retcode
+        if data.success == true
+            if data.retcode == 0
+                result['return'] = data.return
+                result['fail'] = false
+            else
+                result['error'] = "Error retcode = #{data.retcode}"
                 @errors.push(result['error'])
-            return @
-        
+        else 
+            result['error'] = data.return
+            @errors.push(result['error'])
+        return @
+    
+    
 
 appUtilSrvc.value "Jobber", Jobber
 

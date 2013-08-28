@@ -178,12 +178,12 @@
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle grains display">
         <span class="label pull-left" title="Minion Id: Green=grains, Orange=no grains" 
-          ng-class="minion.val.get('grains')?'label-info':'label-warning'">
+          ng-class="minion.val.grains.keys().length?'label-info':'label-warning'">
           <bold  style="font-size: larger">{{minion.key}}</bold>
         </span>
         <div class="pull-right">
           <span class="badge" title="Latest active status: Green=up, Red=down"
-            ng-class="minion.val.get('active')?'badge-success':'badge-important'">
+            ng-class="minion.val.active?'badge-success':'badge-important'">
             <i class="icon-fire icon-white"></i>
           </span>
           <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
@@ -200,39 +200,39 @@
               <table class="table table-striped table-bordered table-hover table-condensed">
                 <tr>
                   <td>id</td>
-                  <td>{{minion.val.get("grains").get("id")}}</td>
+                  <td>{{minion.val.grains.get("id")}}</td>
                 </tr> 
                 <tr>
                   <td>host</td>
-                  <td>{{minion.val.get("grains").get("host")}}</td>
+                  <td>{{minion.val.grains.get("host")}}</td>
                 </tr> 
                 <tr>
                   <td>domain</td>
-                  <td>{{minion.val.get("grains").get("domain")}}</td>
+                  <td>{{minion.val.grains.get("domain")}}</td>
                 </tr> 
                 <tr>
                   <td>fqdn</td>
-                  <td>{{minion.val.get("grains").get("fqdn")}}</td>
+                  <td>{{minion.val.grains.get("fqdn")}}</td>
                 </tr> 
                 <tr>
                   <td>nodename</td>
-                  <td>{{minion.val.get("grains").get("nodename")}}</td>
+                  <td>{{minion.val.grains.get("nodename")}}</td>
                 </tr> 
                 <tr>
                   <td>localhost</td>
-                  <td>{{minion.val.get("grains").get("id")}}</td>
+                  <td>{{minion.val.grains.get("id")}}</td>
                 </tr>    
                 <tr>
                   <td>server_id</td>
-                  <td>{{minion.val.get("grains").get("server_id")}}</td>
+                  <td>{{minion.val.grains.get("server_id")}}</td>
                 </tr>
                 <tr>
                   <td>master</td>
-                  <td>{{minion.val.get("grains").get("master")}}</td>
+                  <td>{{minion.val.grains.get("master")}}</td>
                 </tr> 
                 <tr>
                   <td>ipv4</td>
-                  <td>{{minion.val.get("grains").get("ipv4")[0]}}</td>
+                  <td>{{minion.val.grains.get("ipv4")[0]}}</td>
                 </tr> 
               </table>
             </div>
@@ -240,39 +240,39 @@
               <table class="table table-striped table-bordered table-hover table-condensed">
                 <tr>
                   <td>saltversion</td>
-                  <td>{{minion.val.get("grains").get("saltversion")}}</td>
+                  <td>{{minion.val.grains.get("saltversion")}}</td>
                 </tr> 
                 <tr>
                   <td>pythonversion</td>
-                  <td>{{minion.val.get("grains").get("pythonversion").join(".")}}</td>
+                  <td>{{minion.val.grains.get("pythonversion").join(".")}}</td>
                 </tr> 
                 <tr>
                   <td>shell</td>
-                  <td>{{minion.val.get("grains").get("shell")}}</td>
+                  <td>{{minion.val.grains.get("shell")}}</td>
                 </tr> 
                 <tr>
                   <td>defaultencoding</td>
-                  <td>{{minion.val.get("grains").get("defaultencoding")}}</td>
+                  <td>{{minion.val.grains.get("defaultencoding")}}</td>
                 </tr> 
                 <tr>
                   <td>defaultlanguage</td>
-                  <td>{{minion.val.get("grains").get("defaultlanguage")}}</td>
+                  <td>{{minion.val.grains.get("defaultlanguage")}}</td>
                 </tr> 
                 <tr>
                   <td>os</td>
-                  <td>{{minion.val.get("grains").get("os")}}</td>
+                  <td>{{minion.val.grains.get("os")}}</td>
                 </tr> 
                 <tr>
                   <td>os_family</td>
-                  <td>{{minion.val.get("grains").get("os_family")}}</td>
+                  <td>{{minion.val.grains.get("os_family")}}</td>
                 </tr>    
                 <tr>
                   <td>kernel</td>
-                  <td>{{minion.val.get("grains").get("kernel")}}</td>
+                  <td>{{minion.val.grains.get("kernel")}}</td>
                 </tr>
                 <tr>
                   <td>kernelrelease</td>
-                  <td>{{minion.val.get("grains").get("kernelrelease")}}</td>
+                  <td>{{minion.val.grains.get("kernelrelease")}}</td>
                 </tr> 
               </table>
             </div>
@@ -280,39 +280,39 @@
               <table class="table table-striped table-bordered table-hover table-condensed">
                 <tr>
                   <td>ps</td>
-                  <td>{{minion.val.get("grains").get("ps")}}</td>
+                  <td>{{minion.val.grains.get("ps")}}</td>
                 </tr> 
                 <tr>
                   <td>virtual</td>
-                  <td>{{minion.val.get("grains").get("virtual")}}</td>
+                  <td>{{minion.val.grains.get("virtual")}}</td>
                 </tr> 
                 <tr>
                   <td>cpu_model</td>
-                  <td>{{minion.val.get("grains").get("cpu_model")}}</td>
+                  <td>{{minion.val.grains.get("cpu_model")}}</td>
                 </tr> 
                 <tr>
                   <td>cpuarch</td>
-                  <td>{{minion.val.get("grains").get("cpuarch")}}</td>
+                  <td>{{minion.val.grains.get("cpuarch")}}</td>
                 </tr> 
                 <tr>
                   <td>num_cpus</td>
-                  <td>{{minion.val.get("grains").get("num_cpus")}}</td>
+                  <td>{{minion.val.grains.get("num_cpus")}}</td>
                 </tr> 
                 <tr>
                   <td>cpu_flags</td>
-                  <td>{{minion.val.get("grains").get("cpu_flags").join()}}</td>
+                  <td>{{minion.val.grains.get("cpu_flags").join()}}</td>
                 </tr>    
                 <tr>
                   <td>num_gpus</td>
-                  <td>{{minion.val.get("grains").get("num_gpus")}}</td>
+                  <td>{{minion.val.grains.get("num_gpus")}}</td>
                 </tr>
                 <tr>
                   <td>gpus</td>
-                  <td>{{minion.val.get("grains").get("gpus").join()}}</td>
+                  <td>{{minion.val.grains.get("gpus").join()}}</td>
                 </tr> 
                 <tr>
                   <td>mem_total</td>
-                  <td>{{minion.val.get("grains").get("mem_total")}}</td>
+                  <td>{{minion.val.grains.get("mem_total")}}</td>
                 </tr> 
               </table>
             </div>
@@ -320,7 +320,7 @@
           <tab heading="IP">
             <div class="span6">
               <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr ng-repeat="ip in minion.val.get('grains').get('ip_interfaces').items()">
+                <tr ng-repeat="ip in minion.val.grains.get('ip_interfaces').items()">
                   <td>{{ip.key}}</td>
                   <td>{{ip.val.join(', ')}}</td>
                 </tr> 
@@ -328,7 +328,7 @@
             </div>
             <div class="span6">
               <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr ng-repeat="ip in minion.val.get('grains').get('ipv4')">
+                <tr ng-repeat="ip in minion.val.grains.get('ipv4')">
                   <td>ipv4 {{$index}}</td>
                   <td>{{ip}}</td>
                 </tr> 
@@ -340,17 +340,17 @@
               <table class="table table-striped table-bordered table-hover table-condensed">
                 <tr>
                   <td>path</td>
-                  <td>{{minion.val.get("grains").get("path")}}</td>
+                  <td>{{minion.val.grains.get("path")}}</td>
                 </tr> 
                 <tr>
                   <td>saltpath</td>
-                  <td>{{minion.val.get("grains").get("saltpath")}}</td>
+                  <td>{{minion.val.grains.get("saltpath")}}</td>
                 </tr> 
                 <tr>
                   <td>pythonpath</td>
                   <td>
                     <table class="table table-striped table-bordered table-hover table-condensed">
-                      <tr ng-repeat="path in minion.val.get('grains').get('pythonpath')">
+                      <tr ng-repeat="path in minion.val.grains.get('pythonpath')">
                         <td>{{path}}</td>
                       </tr> 
                     </table>
@@ -386,13 +386,13 @@
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
-          ng-class="job.val.get('done')?'':'label-info'">
+          ng-class="job.val.done?'':'label-info'">
           <bold  style="font-size: larger">{{job.key}}</bold>
         </span>
-        <span title="Module function">&nbsp;&nbsp;{{job.val.get('fun')}}</span>
+        <span title="Module function">&nbsp;&nbsp;{{job.val.fun}}</span>
         <div class="pull-right">
           <span class="badge" title="Failure status: Green=success, Red=fail"
-            ng-class="job.val.get('fail')?'badge-important':'badge-success'">
+            ng-class="job.val.fail?'badge-important':'badge-success'">
             <i class="icon-certificate icon-white"></i>
           </span>
           <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
@@ -405,8 +405,8 @@
       <div class="slat-body" ng-show="!collapsed">
         <tabset>
           <tab heading="Result">
-            <div class="span12" ng-if="job.val.get('results')">
-              <dl class="dl-horizontal" ng-repeat="result in job.val.get('results').items()">
+            <div class="span12" ng-if="job.val.results">
+              <dl class="dl-horizontal" ng-repeat="result in job.val.results.items()">
                 <dt>{{result.key}}</dt>
                 <dd>
                   <span ng-repeat="key in resultKeys">{{key}}: {{result.val[key]}}, </span>
@@ -415,9 +415,9 @@
                 </dd>
               </dl>
             </div>
-            <div class="span12" ng-if="job.val.get('return')">
+            <div class="span12" ng-if="job.val.return">
               <dl class="dl-horizontal">
-                <dt>{{job.val.get('fun')}}</dt>
+                <dt>{{job.val.fun}}</dt>
                 <dd>
                   <span>done: {{job.val.get('done')}}, fail: {{job.val.get('fail')}}, success: {{job.val.get('success')}}</span>
                   <span ng-if="job.val.get('errors')">error: {{job.val.get('errors')[0]}}</span>
@@ -438,7 +438,7 @@
                   <th>tag</th>
                   <th>data</th>
                 </tr> 
-                <tr ng-repeat="event in job.val.get('events').values()">
+                <tr ng-repeat="event in job.val.events.values()">
                   <td>{{event.tag}}</td>
                   <td>{{event.data | json}}</td>
                 </tr> 
