@@ -227,7 +227,7 @@ class Resulter
 appUtilSrvc.value "Resulter", Resulter  
 
 class Jobber
-    constructor: (@jid, @fun, mids) ->
+    constructor: (@jid, @fun, mids=[]) ->
         @events = new Itemizer()
         @fail = true
         @errors = []
@@ -237,7 +237,7 @@ class Jobber
         @results = new Itemizer()
         @minions = new Itemizer()
         for mid in mids
-            results.set(mid, new Resulter(mid))
+            @results.set(mid, new Resulter(mid))
         return @
         
     commit: ($q) ->  #create new defer and promise and return promise
@@ -352,6 +352,7 @@ class Runner extends Jobber
         @promise = null
         return @
 
+appUtilSrvc.value "Runner", Runner
 
 ###
 Orderer class  used to provide ordered data object with keyed lookup

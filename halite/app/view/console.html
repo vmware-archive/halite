@@ -4,7 +4,7 @@
 
     <alert type="'error'" close="closeAlert()" ng-cloak ng-show="!!$parent.errorMsg">Error! {{errorMsg}}</alert>
   
-    <form class="form-inline box" >
+    <form class="form-inline box">
       <div class="btn-toolbar"> 
         <label>Command &nbsp;</label>
         <div class="btn-group">
@@ -78,8 +78,9 @@
           </button>
         </div>
       </div>
-        
-      <div class="controls animate-fade" ng-show="!collapsed">
+    </form> 
+    <form class="form-inline box animate-fade" ng-submit="action()"  ng-show="!collapsed">
+      <div class="controls" >
         <label class="control-label">Function<br/>
           <input type="text" class="input-large" placeholder="Enter module.function"
             ng-model="command.cmd.fun" title="Module function">
@@ -102,7 +103,7 @@
               ng-click="command.addArg()"><i class="icon-plus"></i></button>
           </div>
         </label>
-        <button type="submit" class="btn" ng-click="action()">
+        <button class="btn" ng-click="action()">
           Execute <i class="icon-play" 
               ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-play';">
             </i>

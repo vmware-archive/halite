@@ -1,10 +1,11 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
-    'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 'Jobber', 'Resulter'
+    'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
+    'Minioner', 'Resulter', 'Jobber', 'Runner',
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
     ($scope, $location, $route, $q, Configuration, AppData, AppPref, 
-    Item, Itemizer, Jobber, Resulter,
+    Item, Itemizer, Minioner, Resulter, Jobber, Runner,
     SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
@@ -26,6 +27,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         
         $scope.testJobber = () ->
             myjob = new Jobber()
+            myrun = new Runner()
+            mymin = new Minioner()
+            
             return myjob
             
         
@@ -151,7 +155,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 results = data.return
                 for result, index in results
                     if result
-                        parts = _(cmd[index].fun).words(".") # split on "." character
+                        parts = cmd[index].fun.split(".") # split on "." character
                         if parts.length == 3 
                             if parts[0] =='runner'
                                 job = $scope.startRun(result, cmd[index].fun)
@@ -291,7 +295,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.startRun = (tag, fun) ->
             console.log "Start Run #{fun}"
             console.log tag
-            parts = _(tag).words(".")
+            parts = tag.split(".")
             jid = parts[2]
             if not $scope.jobs.get(jid)?
                 job = new Itemizer()
@@ -475,7 +479,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
             console.log edata
-            parts = _(edata.tag).words(".") # split on "." character
+            parts = edata.tag.split(".") # split on "." character
             if parts[0] is 'salt'
                 if parts[1] is 'job' or parts[1] is 'run'
                     jid = parts[2]
