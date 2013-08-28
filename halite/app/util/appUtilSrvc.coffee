@@ -30,8 +30,10 @@ Items can be accessed by item key but the order of entry or sort is preserved.
 Since each item is not a primitive type but an object, ng-repeat will be
 able to reference it as a model target.
 
-Angular 1.15+ provides the ng-repeat track by which means one does not
-need the itemizations but version 1.0X of angular do not have this functionality
+Angular 1.15+ provides the ng-repeat 
+which means one does not need the itemizations for ng-repeating but angular sort
+only works on arrays to need items list for that. Also angular filter string will
+work on nested itemizers but not itemizer with not itemizer values.
 ###
 
 class Itemizer

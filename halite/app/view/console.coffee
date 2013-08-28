@@ -62,12 +62,19 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.setFilterExpress = () ->
             console.log "setFilterExpress"
             if $scope.filterage.grain is "any"
-                $scope.filterage.express = $scope.filterage.target
+                #$scope.filterage.express = $scope.filterage.target
+                regex = RegExp($scope.filterage.target, "i")
+                $scope.filterage.express = (minion) ->
+                    for grain in minion.grains.values()
+                        if angular.isString(grain) and grain.match(regex)
+                            return true
+                        
+                    return false
             else
                 regex = RegExp($scope.filterage.target,"i")
-                grain = $scope.filterage.grain
+                name = $scope.filterage.grain
                 $scope.filterage.express = (minion) ->
-                    return minion.val.get("grains").get(grain).toString().match(regex)
+                    return minion.grains.get(name).toString().match(regex)
             return true
 
         $scope.sortage =
@@ -81,17 +88,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             
         $scope.sortMinions = (minion) ->
             if $scope.sortage.target is "id"
-                result = minion.val?.grains?.get("id")
+                result = minion.grains.get("id")
             else if $scope.sortage.target is "grains"
-                result = minion.val.grains.get($scope.sortage.target)?
+                result = minion.grains.get($scope.sortage.target)?
             else
-                result = minion.val[$scope.sortage.target]
+                result = minion[$scope.sortage.target]
             result = if result? then result else false
             return result
         
         $scope.reverse = true
         $scope.sortJobs = (job) ->
-            result = job.val.jid
+            result = job.jid
             result = if result? then result else false
             return result
         
@@ -199,7 +206,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             .success (data, status, headers, config) ->
                 result = data.return?[0]
                 if result
-                    $scope.statusing = false  
                     job = $scope.startRun(result, cmd.fun)
                     job.commit($q).then (donejob) ->
                         $scope.assignActives(donejob)
@@ -260,34 +266,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.graining = false
             return job   
 
-        $scope.setMinionField = (mid, field, value) ->
-            $scope.getMinion(mid).set(field, value)
-            return true
-            
-        $scope.deepSetMinionField = (mid, field, value) ->
-            $scope.getMinion(mid).deepSet(field, value)
-            return true
-        
-        $scope.updateMinionField = (mid, field, value) ->
-            $scope.getMinion(mid).deepSet(field, value, true)
-            return true
-        
-        $scope.activize = (mid) ->
-            $scope.deepSetMinionField(mid, 'active', true)
-            return true
-        
-        $scope.deactivize = (mid) ->
-            $scope.deepSetMinionField(mid, 'active', false)
-            return true
-        
-        $scope.initMinion = (minion, mid) ->
-            ### itemizer in $scope.minions ###
-            minion.set('id', mid)
-            minion.set('jobs', new Itemizer())
-            minion.set('active', false)
-            minion.set('events', new Itemizer())
-            return minion
-        
         $scope.getMinion = (mid) ->
             # Gets minion by minion Id mid or creates and inits if not exist
             if not $scope.minions.get(mid)?
@@ -304,39 +282,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.jobs.set(jid, job)
             job = $scope.jobs.get(jid)
             return job
-        
-        $scope.newRun = (job) ->
-            job.set('success', false)
-            job.set('return', null)
-            return job
-            
-        $scope.processRunNewEvent = (job, data) ->
-            console.log "RunNewEvent"
-            $scope.newRun(job)
-            return job
-        
-        $scope.processRunRetEvent = (job, data) ->
-            console.log "RunRetEvent"
-            
-            job.set('done', true)
-            job.set('success', data.success)
-            job.set('fail', not data.success)
-            if data.success == true
-                job.set('return', data.ret)
-            else
-                job.get('errors').push(data.ret)
-                
-            console.log "Job Done Fail = #{job.get('fail')}"
-            console.log job
-            
-            if job.get('errors').length > 0
-                job.get('defer')?.reject(job.get('errors'))
-            else
-                job.get('defer')?.resolve(job)
-            
-            job.set('defer', null)
-            job.set('promise', null)
-            return job
                         
         $scope.startJob = (result, fun) ->
             console.log "Start Job #{fun}"
@@ -349,124 +294,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             job.initResults(result.minions)
             return job
         
-        $scope.newJob = (job, mids) ->
-            if not job.get('results')?
-                job.set('results', new Itemizer())
-            results = job.get('results')
-            for mid in mids
-                if not results.get(mid)?
-                    results.set(mid, {})
-                $scope.initResult(results.get(mid), mid)
-            return job
-        
-        $scope.initJob = (job, jid, fun) ->
-            job.set('jid', jid)
-            job.set('fun', fun)
-            job.set('events', new Itemizer())
-            job.set('fail', true)
-            job.set('errors', [])
-            job.set('done', false)
-            job.set('defer', $q.defer())
-            job.set('promise', job.get('defer').promise)
-            return job
-             
-        $scope.initResult = (result, mid) ->
-            ### minion result object in $scope.jobs job.results ###
-            result['id'] = mid
-            result['minion'] = null # minion link to itemizer $scope.minions
-            result['active'] = $scope.minions.get(mid)?.get('active')
-            result['done'] = false
-            result['fail'] = true
-            result['error'] = ''
-            result['success'] = false
-            result['return'] = null
-            result['retcode'] = null
-            return result
-        
         $scope.resultKeys = ["done", "fail", "success", "retcode" ]
-        
-        $scope.linkJobMinion = (job, mid) ->
-            minion = $scope.getMinion(mid)
-            minion.get('jobs').set(job.get('jid'), job)
-            
-            job.get('results').get(mid)?.minion = minion
-            return true
-            
-        $scope.unlinkJobMinion = (job, mid) ->
-            minion = job.get('results').get(mid)?.minion
-            minion?.get('jobs').del(job.get('jid'))
-            
-            job.get('results').get(mid)?.minion = null
-            return true
-        
-        $scope.unlinkMinionFromJobs = (mid) ->
-            minion = $scope.minions.get(mid)
-            if minion
-                for job in minion.get('jobs').values()
-                    job.get('results').get(mid)?.minion = null
-                    minion.get('jobs').del(job.get('jid'))
-            return true
-        
-        $scope.checkJobDone = (job) ->
-            results = job.get('results')
-            # active is true or null ie not false
-            done = _((result.done for result in results.values() when\
-                result.active isnt false)).all()
-            if not done
-                return false
-            
-            job.set('done', done)
-            
-            fail = _((result.fail for result in results.values() when\
-                result.active and result.done )).any()
-            job.set('fail', fail)
-            console.log "Job Done Fail = #{fail}"
-            console.log job
-            
-            if job.get('errors').length > 0
-                job.get('defer')?.reject(job.get('errors'))
-            else
-                job.get('defer')?.resolve(job)
-            
-            job.set('defer', null)
-            job.set('promise', null)
-            return true
-
-        $scope.processJobNewEvent = (job, data) ->
-            #console.log "Job New Event"
-            $scope.newJob(job, data.minions)
-            return job
-        
-        $scope.processJobRetEvent = (job, data) ->
-            #console.log "Job Ret Event"
-            results = job.get('results')
-            mid = data.id
-            if not results.get(mid)?
-                results.set(mid, {})
-                $scope.initResult(results.get(mid), mid)
-            result = results.get(mid)
-            
-            result['done'] = true
-            result['active'] = true
-            result['success'] = data.success
-            if data.success == true
-                result['retcode'] = data.retcode
-            if data.success == true
-                if data.retcode == 0
-                    result['return'] = data.return
-                    result['fail'] = false
-                else
-                    result['error'] = "Error retcode = #{data.retcode}"
-                    job.get('errors').push(result['error'])
-            else 
-                result['error'] = data.return
-                job.get('errors').push(result['error'])
-            
-            $scope.linkJobMinion(job, mid) 
-            $scope.activize(mid) #since we got a return then minion must be active
-            $scope.checkJobDone(job)
-            return job
-        
         
         $scope.processJobEvent = (jid, kind, edata) ->
             job = $scope.jobs.get(jid)
