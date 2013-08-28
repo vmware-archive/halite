@@ -415,16 +415,6 @@
                 </dd>
               </dl>
             </div>
-            <div class="span12" ng-if="job.val.return">
-              <dl class="dl-horizontal">
-                <dt>{{job.val.fun}}</dt>
-                <dd>
-                  <span>done: {{job.val.get('done')}}, fail: {{job.val.get('fail')}}, success: {{job.val.get('success')}}</span>
-                  <span ng-if="job.val.get('errors')">error: {{job.val.get('errors')[0]}}</span>
-                  <span ng-if="job.val.get('return')">return: {{job.val.get('return') | json}}</span>
-                </dd>
-              </dl>
-            </div>
           </tab>
           <tab heading="Fun">
             <div class="span12">

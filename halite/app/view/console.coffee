@@ -200,27 +200,33 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 result = data.return?[0]
                 if result
                     $scope.statusing = false  
-                    #job = $scope.startRun(result, cmd.fun)
-                    ###job.promise.then (donejob) ->
-                        $scope.buildActives(donejob)
+                    job = $scope.startRun(result, cmd.fun)
+                    job.commit($q).then (donejob) ->
+                        $scope.assignActives(donejob)
                         $scope.$emit("Marshall")
-                    ###
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
             return true
         
-        $scope.buildActives = (job) ->
-            result = job.get('return')
-            mids = []
-            for mid in result.up
-                $scope.activize(mid)
-                mids.push mid
-            for mid in result.down
-                $scope.deactivize(mid)
-                mids.push mid
-            
-            $scope.minions?.filter(mids) #remove non status minions
+        $scope.assignActives = (job) ->
+            for {key: mid, val: result} in job.results.items()
+                unless result.fail
+                    status = result.return
+                    mids = []
+                    for mid in status.up
+                        minion = $scope.getMinion(mid)
+                        minion.activize()
+                        mids.push mid
+                    for mid in status.down
+                        minion = $scope.getMinion(mid)
+                        minion.deactivize()
+                        mids.push mid
+                    for key in $scope.minions.keys()
+                        unless key in mids
+                            minion = $scope.getMinion(key)
+                            minion.unlinkJobs()
+                    $scope.minions?.filter(mids) #remove non status minions
             $scope.statusing = false
             return job
             
@@ -274,10 +280,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.deepSetMinionField(mid, 'active', false)
             return true
         
-        $scope.processMinionEvent = (minion, edata) ->
-            minion.get('events').set(edata.tag, edata)
-            return minion
-        
         $scope.initMinion = (minion, mid) ->
             ### itemizer in $scope.minions ###
             minion.set('id', mid)
@@ -298,11 +300,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             parts = tag.split(".")
             jid = parts[2]
             if not $scope.jobs.get(jid)?
-                job = new Itemizer()
-                $scope.initJob(job, jid, fun)
+                job = new Runner(jid, fun)
                 $scope.jobs.set(jid, job)
             job = $scope.jobs.get(jid)
-            $scope.newRun(job)
             return job
         
         $scope.newRun = (job) ->
@@ -467,6 +467,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.checkJobDone(job)
             return job
         
+        
         $scope.processJobEvent = (jid, kind, edata) ->
             job = $scope.jobs.get(jid)
             job.processEvent(edata)
@@ -481,9 +482,32 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 job.checkDone()
             return job
         
+        $scope.processRunEvent = (jid, kind, edata) ->
+            job = $scope.jobs.get(jid)
+            job.processEvent(edata)
+            data = edata.data
+            if kind == 'new'
+                job.processNewEvent(data)
+            else if kind == 'ret'
+                job.processRetEvent(data)
+            return job
+        
+        $scope.processMinionEvent = (mid, edata) ->
+            minion = $scope.getMinion(mid)
+            minion.processEvent(edata)
+            minion.activize()
+            $scope.fetchGrains(mid)
+            return minion
+        
         $scope.processKeyEvent = (edata) ->
-            
-            return true
+            data = edata.data
+            mid = data.id
+            minion = $scope.getMinion(mid)
+            if data.result is true
+                if data.act is 'delete'
+                    minion.unlinkJobs()
+                    $scope.minions.del(mid)
+            return minion
             
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
@@ -497,8 +521,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.data.jid}"
                         return false
                     if not $scope.jobs.get(jid)?
-                        #job = new Itemizer()
-                        #$scope.initJob(job, jid, edata.data.fun)
                         job = new Jobber(jid, edata.data.fun)
                         $scope.jobs.set(jid, job)
                     kind = parts[3]
@@ -510,6 +532,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         console.log "Bad run event"
                         $scope.errorMsg = "Bad run event: JID #{jid} not match #{edata.data.jid}"
                         return false
+                    if not $scope.jobs.get(jid)?
+                        job = new Runner(jid, edata.data.fun)
+                        $scope.jobs.set(jid, job)
+                    kind = parts[3]
+                    $scope.processRunEvent(jid, kind, edata)
                     
                 else if parts[1] is 'minion' or parts[1] is 'syndic'
                     mid = parts[2]
@@ -517,19 +544,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         console.log "Bad minion event"
                         $scope.errorMsg = "Bad minion event: MID #{mid} not match #{edata.data.id}"
                         return false
-                    minion = $scope.getMinion(mid)
-                    $scope.processMinionEvent(minion, edata)
-                    $scope.activize(mid)
-                    $scope.fetchGrains(mid)
+                    $scope.processMinionEvent(mid, edata)
                 
                  else if parts[1] is 'key'
                     $scope.processKeyEvent(edata)
-                    data = edata.data
-                    mid = data.id
-                    if data.result is true
-                        if data.act is 'delete'
-                            $scope.unlinkMinionFromJobs(mid)
-                            $scope.minions.del(mid)
+                    
                     
             return edata
             

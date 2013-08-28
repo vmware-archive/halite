@@ -202,8 +202,14 @@ class Minioner
     grainize: (grains, update) ->
         @grains.deepSet(grains, update)
         return @
+    
+    unlinkJobs: () ->
+        for job in @jobs.values()
+            job.minions.del(@id)
+        @jobs.clear()
+        return @
 
-    processEvent = (edata) ->
+    processEvent: (edata) ->
         @events.set(edata.tag, edata)
         return @
 
@@ -246,7 +252,7 @@ class Jobber
             @promise = @defer.promise
         return @promise
     
-    initResults: (mids) ->
+    initResults: (mids=[]) ->
         for mid in mids
             unless @results.get(mid)?
                 @results.set(mid, new Resulter(mid))
@@ -327,8 +333,7 @@ class Runner extends Jobber
         super(jid, fun, ['master']) #one result with id 'master'
         return @
     
-
-    processRetEvent = (data) ->
+    processRetEvent: (data) ->
         console.log "Run Ret Event"
         result = @results.get('master')
         result.done = true
@@ -344,7 +349,7 @@ class Runner extends Jobber
             @errors.push(data.ret)
         
         console.log "Run Done. Fail = #{@fail}"
-        console.log job
+        console.log @
         
         if @errors.length > 0
             @defer?.reject(@errors)
