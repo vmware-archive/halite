@@ -2,10 +2,10 @@ mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
-    'Minioner', 'Resulter', 'Jobber', 'Runner',
+    'Minioner', 'Resulter', 'Jobber', 'Runner', 'Commander',
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
     ($scope, $location, $route, $q, Configuration, AppData, AppPref, 
-    Item, Itemizer, Minioner, Resulter, Jobber, Runner,
+    Item, Itemizer, Minioner, Resulter, Jobber, Runner, Commander,
     SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
@@ -32,6 +32,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             
             return myjob
             
+        if !AppData.get('commands')?
+            AppData.set('commands', new Itemizer())
+        $scope.commands = AppData.get('commands')
         
         if !AppData.get('jobs')?
             AppData.set('jobs', new Itemizer())
@@ -40,6 +43,32 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         if !AppData.get('minions')?
             AppData.set('minions', new Itemizer())
         $scope.minions = AppData.get('minions')
+        
+        if !AppData.get('events')?
+            AppData.set('events', new Itemizer())
+        $scope.events = AppData.get('events')
+        
+        $scope.snagCommand = (name) -> #get or create Command
+            unless $scope.commands.get(name)?
+                $scope.commands.set(name, new Commander(name))
+            return ($scope.commands.get(name))
+        
+        $scope.snagJob = (jid, cmd) -> #get or create Jobber
+            if not $scope.jobs.get(jid)?
+                job = new Jobber(jid, cmd)
+                $scope.jobs.set(jid, job)
+            return ($scope.jobs.get(jid))
+        
+        $scope.snagRunner = (jid, cmd) -> #get or create Runner
+            if not $scope.jobs.get(jid)?
+                job = new Runner(jid, cmd)
+                $scope.jobs.set(jid, job)
+            return ($scope.jobs.get(jid))
+        
+        $scope.snagMinion = (mid) -> # get or create Minion
+            if not $scope.minions.get(mid)?
+                $scope.minions.set(mid, new Minioner(mid))
+            return ($scope.minions.get(mid))
         
         $scope.searchTarget = ""
         
@@ -102,6 +131,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             result = if result? then result else false
             return result
         
+        $scope.sortEvents = (event) ->
+            result = event.tag
+            result = if result? then result else false
+            return result
+        
+        $scope.sortCommands = (command) ->
+            result = comand.name
+            result = if result? then result else false
+            return result
+        
         
         $scope.actions =
             State:
@@ -124,7 +163,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.command =
             result: {}
             history: {}
-            lastCmd: null
+            lastCmds: null
             cmd:
                 mode: 'async'
                 fun: ''
@@ -141,47 +180,51 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 if @cmd.arg.length > 1
                     @cmd.arg = @cmd.arg[0..-2]
 
-            getCmd: () ->
-                cmd =
+            getCmds: () ->
+                cmds =
                 [
                     fun: @cmd.fun,
                     mode: @cmd.mode,
                     tgt: @cmd.tgt,
-
                     arg: (arg for arg in @cmd.arg when arg isnt '')
                 ]
-                return cmd
+                return cmds
             
             humanize: (cmds) ->
                 unless cmds
-                    cmds = @getCmd()
-                fun = ""
-                for cmd in cmds
-                    fun = "#{cmd.fun} #{cmd.tgt}"
-                    for arg in cmd.arg
-                        fun = fun + " #{arg}"
-                    fun = fun + ","
-                return fun
-
-        $scope.action = (cmd) ->
+                    cmds = @getCmds()
+                return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
+                    when part isnt '').join(' ') for cmd in cmds).join(','))
+        
+        $scope.humanize = (cmds) ->
+            unless angular.isArray(cmds)
+                cmds = [cmds]
+            return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
+                    when part isnt '').join(' ') for cmd in cmds).join(','))
+        
+        
+        $scope.action = (cmds) ->
             $scope.commanding = true
-            if not cmd
-                cmd = $scope.command.getCmd()
-                
-            SaltApiSrvc.action($scope, cmd )
+            if not cmds
+                cmds = $scope.command.getCmds()
+            command = $scope.snagCommand($scope.humanize(cmds))
+            
+            SaltApiSrvc.action($scope, cmds )
             .success (data, status, headers, config ) ->
                 results = data.return
                 for result, index in results
                     if result
-                        parts = cmd[index].fun.split(".") # split on "." character
+                        parts = cmds[index].fun.split(".") # split on "." character
                         if parts.length == 3 
                             if parts[0] =='runner'
-                                job = $scope.startRun(result, cmd[index].fun)
+                                job = $scope.startRun(result, cmds[index])
+                                command.jobs.set(job.jid, job)
                             else if parts[0] == 'wheel'
                                 console.log "Wheel"
                                 console.log result
                         else
-                            job = $scope.startJob(result, cmd[index].fun)
+                            job = $scope.startJob(result, cmds[index])
+                            command.jobs.set(job.jid, job)
                     $scope.commanding = false
                 return true
             .error (data, status, headers, config) ->
@@ -199,7 +242,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             .success (data, status, headers, config) ->
                 result = data.return?[0]
                 if result
-                    job = $scope.startJob(result, cmd.fun)
+                    job = $scope.startJob(result, cmd)
                 $scope.pinging = false
                 return true
             .error (data, status, headers, config) ->
@@ -217,7 +260,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             .success (data, status, headers, config) ->
                 result = data.return?[0]
                 if result
-                    job = $scope.startRun(result, cmd.fun)
+                    job = $scope.startRun(result, cmd)
                     job.commit($q).then (donejob) ->
                         $scope.assignActives(donejob)
                         $scope.$emit("Marshall")
@@ -232,16 +275,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     status = result.return
                     mids = []
                     for mid in status.up
-                        minion = $scope.getMinion(mid)
+                        minion = $scope.snagMinion(mid)
                         minion.activize()
                         mids.push mid
                     for mid in status.down
-                        minion = $scope.getMinion(mid)
+                        minion = $scope.snagMinion(mid)
                         minion.deactivize()
                         mids.push mid
                     for key in $scope.minions.keys()
                         unless key in mids
-                            minion = $scope.getMinion(key)
+                            minion = $scope.snagMinion(key)
                             minion.unlinkJobs()
                     $scope.minions?.filter(mids) #remove non status minions
             $scope.statusing = false
@@ -259,7 +302,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             .success (data, status, headers, config) ->
                 result = data.return?[0]
                 if result
-                    job = $scope.startJob(result, cmd.fun)
+                    job = $scope.startJob(result, cmd)
                     job.commit($q).then (donejob) ->
                         $scope.assignGrains(donejob)
                     #$scope.graining = false
@@ -272,36 +315,24 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             for {key: mid, val: result} in job.results.items()
                 unless result.fail
                     grains = result.return
-                    minion = $scope.getMinion(mid)
+                    minion = $scope.snagMinion(mid)
                     minion.grains.reload(grains, true)
             $scope.graining = false
             return job   
 
-        $scope.getMinion = (mid) ->
-            # Gets minion by minion Id mid or creates and inits if not exist
-            if not $scope.minions.get(mid)?
-                $scope.minions.set(mid, new Minioner(mid))
-            return ($scope.minions.get(mid))
-
-        $scope.startRun = (tag, fun) ->
-            console.log "Start Run #{fun}"
+        $scope.startRun = (tag, cmd) ->
+            console.log "Start Run #{$scope.humanize(cmd)}"
             console.log tag
             parts = tag.split(".")
             jid = parts[2]
-            if not $scope.jobs.get(jid)?
-                job = new Runner(jid, fun)
-                $scope.jobs.set(jid, job)
-            job = $scope.jobs.get(jid)
+            job = $scope.snagRunner(jid, cmd)
             return job
                         
-        $scope.startJob = (result, fun) ->
-            console.log "Start Job #{fun}"
+        $scope.startJob = (result, cmd) ->
+            console.log "Start Job #{$scope.humanize(cmd)}"
             console.log result
             jid = result.jid
-            unless $scope.jobs.get(jid)?
-                job = new Jobber(jid, fun)
-                $scope.jobs.set(jid, job)
-            job = $scope.jobs.get(jid)
+            job = $scope.snagJob(jid, cmd)
             job.initResults(result.minions)
             return job
         
@@ -314,7 +345,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             if kind == 'new'
                 job.processNewEvent(data)
             else if kind == 'ret'
-                minion = $scope.getMinion(data.id)
+                minion = $scope.snagMinion(data.id)
                 minion.activize() #since we got a return then minion must be active
                 job.linkMinion(minion)
                 job.processRetEvent(data)
@@ -332,7 +363,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return job
         
         $scope.processMinionEvent = (mid, edata) ->
-            minion = $scope.getMinion(mid)
+            minion = $scope.snagMinion(mid)
             minion.processEvent(edata)
             minion.activize()
             $scope.fetchGrains(mid)
@@ -341,7 +372,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processKeyEvent = (edata) ->
             data = edata.data
             mid = data.id
-            minion = $scope.getMinion(mid)
+            minion = $scope.snagMinion(mid)
             if data.result is true
                 if data.act is 'delete'
                     minion.unlinkJobs()
@@ -351,6 +382,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
             console.log edata
+            $scope.events.set(edata.tag, edata)
             parts = edata.tag.split(".") # split on "." character
             if parts[0] is 'salt'
                 if parts[1] is 'job'
@@ -359,9 +391,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         console.log "Bad job event"
                         $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.data.jid}"
                         return false
-                    if not $scope.jobs.get(jid)?
-                        job = new Jobber(jid, edata.data.fun)
-                        $scope.jobs.set(jid, job)
+                    $scope.snagJob(jid, edata.data)
                     kind = parts[3]
                     $scope.processJobEvent(jid, kind, edata)
                     
@@ -371,9 +401,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         console.log "Bad run event"
                         $scope.errorMsg = "Bad run event: JID #{jid} not match #{edata.data.jid}"
                         return false
-                    if not $scope.jobs.get(jid)?
-                        job = new Runner(jid, edata.data.fun)
-                        $scope.jobs.set(jid, job)
+                    $scope.snagRunner(jid, edata.data)
                     kind = parts[3]
                     $scope.processRunEvent(jid, kind, edata)
                     

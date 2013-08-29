@@ -43,6 +43,7 @@
   border-width: 1px;
   border-color: #ccc; 
   padding: 4px 5px;
+  overflow: auto;
 }
 
 

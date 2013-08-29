@@ -50,8 +50,8 @@
               <b class="caret"></b>
             </button>
             <ul class="dropdown-menu">
-              <li ng-repeat="(name, cmd) in command.history track by $index">
-                <a ng-href="" ng-click="action(cmd)" >
+              <li ng-repeat="(name, cmds) in command.history track by $index">
+                <a ng-href="" ng-click="action(cmds)" >
                   {{name}}
                 </a>
               </li>
@@ -116,7 +116,7 @@
       <div class="btn-toolbar">
         <label>Monitor &nbsp;</label>
         <div class="btn-group">
-          <button type="button" class="btn" ng-model="monitorMode" btn-radio="'fun'">Fun</button>
+          <button type="button" class="btn" ng-model="monitorMode" btn-radio="'command'">Command</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'job'">Job</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'minion'">Minion</button>
           <button type="button" class="btn" ng-model="monitorMode" btn-radio="'event'">Event</button>
@@ -399,7 +399,7 @@
           ng-class="job.done?'':'label-info'">
           <bold  style="font-size: larger">{{job.jid}}</bold>
         </span>
-        <span title="Module function">&nbsp;&nbsp;{{job.fun}}</span>
+        <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
         <div class="pull-right">
           <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-important':'badge-success'">
@@ -426,11 +426,6 @@
               </dl>
             </div>
           </tab>
-          <tab heading="Command">
-            <div class="span12">
-              <span>{{job.cmd.fun}} {{job.cmd.tgt}}</span><span ng-repeat="arg in job.cmd.arg">&nbsp;{{arg}}</span>
-            </div>
-          </tab>
           <tab heading="Event">
             <div class="span12">
               <table class="table table-striped table-bordered table-hover table-condensed">
@@ -446,6 +441,78 @@
             </div>
           </tab>
         </tabset>
+      </div><!--/slat-body-->
+    </div> <!--/slat-->
+  </div><!--/span-->
+</div><!--/row-->
+<!--</div>--><!--/container-->
+
+<!--<div class="container-fluid">-->
+<div class="row-fluid" ng-show="monitorMode == 'event'">
+  <div class="span12" >
+    <div class="slat" ng-repeat="event in events.values() | orderBy:$index:reverse">
+      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+        title="Click to toggle results display">
+        <span class="label pull-left" title="Event Tag">
+          <bold  style="font-size: larger">{{event.tag}}</bold>
+        </span>
+        <span title="Module function">&nbsp;&nbsp;{{humanize(event.data)}}</span>
+        <div class="pull-right">
+          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
+            <i class="icon-chevron-down" title="Click to toggle results disoplay" 
+              ng-class="collapsed?'icon-chevron-down':'icon-chevron-up'"></i>
+          </a> 
+        </div>  
+        <div class="clearfix"></div>
+      </div>
+      <div class="slat-body" ng-show="!collapsed">
+        
+        <div class="span12">
+          <table class="table table-striped table-bordered table-hover table-condensed">
+            <tr>
+              <th>tag</th>
+              <th>data</th>
+            </tr> 
+            <tr>
+              <td>{{event.tag}}</td>
+              <td>{{event.data | json}}</td>
+            </tr> 
+          </table>
+        </div>
+
+      </div><!--/slat-body-->
+    </div> <!--/slat-->
+  </div><!--/span-->
+</div><!--/row-->
+<!--</div>--><!--/container-->
+
+<!--<div class="container-fluid">-->
+<div class="row-fluid" ng-show="monitorMode == 'command'">
+  <div class="span12" >
+    <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommand:reverse">
+      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+        title="Click to toggle results display">
+        <span class="label pull-left" title="Event Tag">
+          <bold  style="font-size: larger">{{command.name}}</bold>
+        </span>
+        <div class="pull-right">
+          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
+            <i class="icon-chevron-down" title="Click to toggle results disoplay" 
+              ng-class="collapsed?'icon-chevron-down':'icon-chevron-up'"></i>
+          </a> 
+        </div>  
+        <div class="clearfix"></div>
+      </div>
+      <div class="slat-body" ng-show="!collapsed">
+        <div class="span12">
+          <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:reverse">
+            <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
+              ng-class="job.done?'':'label-info'">
+              <bold  style="font-size: larger">{{job.jid}}</bold>
+            </span>
+            <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
+          </p>  
+        </div>
       </div><!--/slat-body-->
     </div> <!--/slat-->
   </div><!--/span-->

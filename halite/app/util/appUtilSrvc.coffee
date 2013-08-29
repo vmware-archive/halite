@@ -235,8 +235,8 @@ class Resulter
 appUtilSrvc.value "Resulter", Resulter  
 
 class Jobber
-    constructor: (@jid, @fun, mids=[]) ->
-        @cmd = null
+    constructor: (@jid, @cmd, mids=[]) ->
+        @name = @humanize(@cmd)
         @fail = true
         @errors = []
         @done = false
@@ -264,10 +264,8 @@ class Jobber
     humanize: (cmd) ->
         unless cmd
             cmd = @cmd
-        fun = "#{cmd.fun} #{cmd.tgt}"
-        for arg in cmd.arg
-            fun = fun + " #{arg}"
-        return fun
+        return ((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
+                    when part isnt '').join(' '))
     
     checkDone: () ->
         # active is true or null ie not false
@@ -345,8 +343,8 @@ class Jobber
 appUtilSrvc.value "Jobber", Jobber
 
 class Runner extends Jobber
-    constructor: (@jid, @fun) ->
-        super(jid, fun, ['master']) #one result with id 'master'
+    constructor: (@jid, @cmd) ->
+        super(jid, cmd, ['master']) #one result with id 'master'
         return @
     
     processRetEvent: (data) ->
@@ -376,6 +374,13 @@ class Runner extends Jobber
         return @
 
 appUtilSrvc.value "Runner", Runner
+
+class Commander
+    constructor: (@name) ->
+        @jobs = new Itemizer()
+        return @
+
+appUtilSrvc.value "Commander", Commander  
 
 ###
 Orderer class  used to provide ordered data object with keyed lookup
