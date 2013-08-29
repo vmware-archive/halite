@@ -18,7 +18,9 @@
 }
 
 
-
+.monitor {
+  margin: 5px 0px 0px 0px;
+}
 
 .box { 
   border: 1px solid #888;
@@ -43,7 +45,7 @@
   border-width: 1px;
   border-color: #ccc; 
   padding: 4px 5px;
-  overflow: auto;
+  /*overflow: auto;*/
 }
 
 

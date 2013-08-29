@@ -23,7 +23,7 @@
                   <li class="nav-header">State</li>
                   <li><a ng-href="">highstate</a></li>
                   <li><a ng-href="">show_highstate</a></li>
-                  <li><a ng-href="">running</a></li>
+                  <li><a ng-href="">show_lowstate</a></li>
                   <li class="divider"></li>
                   <li class="nav-header">TBD</li>
                   <li><a ng-href="">TBD</a></li>
@@ -173,7 +173,7 @@
 
 
 <!--<div class="container-fluid">-->
-<div class="row-fluid" style="margin: 5px 0px 0px 0px" ng-show="monitorMode == 'minion'">
+<div class="row-fluid monitor"  ng-show="monitorMode == 'minion'">
   <div class="span12" >
     <div class="slat" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
@@ -390,7 +390,7 @@
 <!--</div>--><!--/container-->
 
 <!--<div class="container-fluid">-->
-<div class="row-fluid" ng-show="monitorMode == 'job'">
+<div class="row-fluid monitor" ng-show="monitorMode == 'job'">
   <div class="span12" >
     <div class="slat" ng-repeat="job in jobs.values() | orderBy:sortJobs:reverse">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
@@ -448,7 +448,7 @@
 <!--</div>--><!--/container-->
 
 <!--<div class="container-fluid">-->
-<div class="row-fluid" ng-show="monitorMode == 'event'">
+<div class="row-fluid monitor" ng-show="monitorMode == 'event'">
   <div class="span12" >
     <div class="slat" ng-repeat="event in events.values() | orderBy:$index:reverse">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
@@ -479,7 +479,7 @@
             </tr> 
           </table>
         </div>
-
+        <div class="clearfix"></div>
       </div><!--/slat-body-->
     </div> <!--/slat-->
   </div><!--/span-->
@@ -487,12 +487,12 @@
 <!--</div>--><!--/container-->
 
 <!--<div class="container-fluid">-->
-<div class="row-fluid" ng-show="monitorMode == 'command'">
+<div class="row-fluid monitor" ng-show="monitorMode == 'command'">
   <div class="span12" >
     <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommand:reverse">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
-        <span class="label pull-left" title="Event Tag">
+        <span class="pull-left" title="Event Tag">
           <bold  style="font-size: larger">{{command.name}}</bold>
         </span>
         <div class="pull-right">
@@ -513,6 +513,7 @@
             <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
           </p>  
         </div>
+        <div class="clearfix"></div>
       </div><!--/slat-body-->
     </div> <!--/slat-->
   </div><!--/span-->

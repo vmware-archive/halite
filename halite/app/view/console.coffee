@@ -16,7 +16,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
             
-        $scope.monitorMode = "job"
+        $scope.monitorMode = "command"
         
         $scope.graining = false
         $scope.pinging = false
@@ -25,12 +25,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.commanding = false
         $scope.historing = false
         
-        $scope.testJobber = () ->
-            myjob = new Jobber()
-            myrun = new Runner()
-            mymin = new Minioner()
-            
-            return myjob
             
         if !AppData.get('commands')?
             AppData.set('commands', new Itemizer())
