@@ -236,12 +236,13 @@ appUtilSrvc.value "Resulter", Resulter
 
 class Jobber
     constructor: (@jid, @fun, mids=[]) ->
-        @events = new Itemizer()
+        @cmd = null
         @fail = true
         @errors = []
         @done = false
         @defer = null
         @promise = null
+        @events = new Itemizer()
         @results = new Itemizer()
         @minions = new Itemizer()
         for mid in mids
@@ -259,6 +260,14 @@ class Jobber
             unless @results.get(mid)?
                 @results.set(mid, new Resulter(mid))
         return @
+    
+    humanize: (cmd) ->
+        unless cmd
+            cmd = @cmd
+        fun = "#{cmd.fun} #{cmd.tgt}"
+        for arg in cmd.arg
+            fun = fun + " #{arg}"
+        return fun
     
     checkDone: () ->
         # active is true or null ie not false
@@ -300,6 +309,11 @@ class Jobber
     processNewEvent: (data) ->
         #console.log "Job New Event"
         @initResults(data.minions)
+        @cmd =
+            mode: 'async'
+            fun: data.fun
+            tgt: data.tgt
+            arg: data.arg
         return @
     
     processRetEvent: (data) ->

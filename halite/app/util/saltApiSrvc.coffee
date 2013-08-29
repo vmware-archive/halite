@@ -73,8 +73,10 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                 
                 $http.post( url, cmds, config  )
                 .success((data, status, headers, config) ->
-                    $scope.command.history[JSON.stringify($scope.command.lastCmd)] = 
+                    $scope.command.history[$scope.command.humanize($scope.command.lastCmd)] = 
                         $scope.command.lastCmd
+                    #$scope.command.history[JSON.stringify($scope.command.lastCmd)] = 
+                        #$scope.command.lastCmd
                     #console.log SessionStore.get('saltApiAuth')?.token
                     return true
                 )

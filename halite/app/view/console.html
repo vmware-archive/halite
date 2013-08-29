@@ -3,113 +3,114 @@
   <div class="span12">
 
     <alert type="'error'" close="closeAlert()" ng-cloak ng-show="!!$parent.errorMsg">Error! {{errorMsg}}</alert>
-  
-    <form class="form-inline box">
-      <div class="btn-toolbar"> 
-        <label>Command &nbsp;</label>
-        <div class="btn-group">
-          <div class="input-prepend">
-            <div class="btn-group">
-              <button class="btn" ng-click="fetchPings(searchTarget)" 
-                title="Ping minions that match target">
-                <i class="icon-bullhorn" 
-                  ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
-                </i>
-              </button>
-              <button class="btn dropdown-toggle">Action
-                <b class="caret"></b>
-              </button>
-              <ul class="dropdown-menu">
-                <li class="nav-header">State</li>
-                <li><a ng-href="">highstate</a></li>
-                <li><a ng-href="">show_highstate</a></li>
-                <li><a ng-href="">running</a></li>
-                <li class="divider"></li>
-                <li class="nav-header">TBD</li>
-                <li><a ng-href="">TBD</a></li>
-                <li><a ng-href="">TBD</a></li>
-              </ul>
+    <div class="box">
+      <form class="form-inline">
+        <div class="btn-toolbar"> 
+          <label>Command &nbsp;</label>
+          <div class="btn-group">
+            <div class="input-prepend">
+              <div class="btn-group">
+                <button class="btn" ng-click="fetchPings(searchTarget)" 
+                  title="Ping minions that match target">
+                  <i class="icon-bullhorn" 
+                    ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
+                  </i>
+                </button>
+                <button class="btn dropdown-toggle">Action
+                  <b class="caret"></b>
+                </button>
+                <ul class="dropdown-menu">
+                  <li class="nav-header">State</li>
+                  <li><a ng-href="">highstate</a></li>
+                  <li><a ng-href="">show_highstate</a></li>
+                  <li><a ng-href="">running</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">TBD</li>
+                  <li><a ng-href="">TBD</a></li>
+                  <li><a ng-href="">TBD</a></li>
+                </ul>
+              </div>
+              <input type="text" class="input-large" placeholder="Enter target pattern" 
+                ng-model="searchTarget" title="Minion search target pattern">
             </div>
-            <input type="text" class="input-large" placeholder="Enter target pattern" 
-              ng-model="searchTarget" title="Minion search target pattern">
+          </div>
+          
+          <div class="btn-group">
+            <button class="btn"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
+              title="Execute lowstate command">
+              <i class="icon-chevron-down" title="Click to toggle command form display" 
+                ng-class="collapsed?'icon-chevron-down':'icon-chevron-up'"></i>
+            </button>
+            <button class="btn dropdown-toggle" 
+              ng-class="command.size(command.history)==0?'disabled':''"
+              title="Execute saved lowstate command">
+              <i class="icon-book" 
+                ng-class="historing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-book';">
+              </i>
+              <b class="caret"></b>
+            </button>
+            <ul class="dropdown-menu">
+              <li ng-repeat="(name, cmd) in command.history track by $index">
+                <a ng-href="" ng-click="action(cmd)" >
+                  {{name}}
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="btn-group pull-right">
+            <button class="btn" ng-click="openEventStream()" 
+              title="Open event stream">
+              <i class="icon-magnet"
+                ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-magnet';">
+              </i>
+            </button>
+            <button class="btn" ng-click="fetchGrains(searchTarget)" 
+              title="Fetch grains from minions that match target">
+              <i class="icon-briefcase" 
+                ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
+              </i>
+            </button>
+            <button class="btn" ng-click="fetchActives()" 
+              title="Fetch up/down status of all minions">
+              <i class="icon-refresh" 
+                ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
+              </i>
+            </button>
           </div>
         </div>
-        
-        <div class="btn-group">
-          <button class="btn"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
-            title="Execute lowstate command">
-            <i class="icon-chevron-down" title="Click to toggle command form display" 
-              ng-class="collapsed?'icon-chevron-down':'icon-chevron-up'"></i>
-          </button>
-          <button class="btn dropdown-toggle" 
-            ng-class="command.size(command.history)==0?'disabled':''"
-            title="Execute saved lowstate command">
-            <i class="icon-book" 
-              ng-class="historing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-book';">
-            </i>
-            <b class="caret"></b>
-          </button>
-          <ul class="dropdown-menu">
-            <li ng-repeat="(name, cmd) in command.history track by $index">
-              <a ng-href="" ng-click="action(cmd)" >
-                {{name}}
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div class="btn-group pull-right">
-          <button class="btn" ng-click="openEventStream()" 
-            title="Open event stream">
-            <i class="icon-magnet"
-              ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-magnet';">
-            </i>
-          </button>
-          <button class="btn" ng-click="fetchGrains(searchTarget)" 
-            title="Fetch grains from minions that match target">
-            <i class="icon-briefcase" 
-              ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'icon-briefcase';">
-            </i>
-          </button>
-          <button class="btn" ng-click="fetchActives()" 
-            title="Fetch up/down status of all minions">
-            <i class="icon-refresh" 
-              ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
-            </i>
+      </form> 
+      <form class="form-inline animate-fade"  ng-show="!collapsed">
+        <div class="controls" >
+          <label class="control-label">Function<br/>
+            <input type="text" class="input-large" placeholder="Enter module.function"
+              ng-model="command.cmd.fun" title="Module function">
+          </label>
+          <label class="control-label">Target<br/>
+            <input type="text" class="input-medium" placeholder="Enter minion target pattern"
+              ng-model="command.cmd.tgt" title="Minion target pattern">
+          </label>
+          <label class="control-label">Arguments<br/>
+            <div class="input-append">
+              <input type="text" class="input-medium"
+                placeholder="Enter argument"
+                ng-repeat="arg in command.cmd.arg track by $index"
+                ng-model="command.cmd.arg[$index]">
+    
+              <button class="btn" ng-class="command.cmd.arg.length==1?'disabled':''" 
+                type="button" title="Remove last argument"
+                ng-click="command.delArg()"><i class="icon-minus"></i></button>
+              <button class="btn " type="button" title="Add another argument"
+                ng-click="command.addArg()"><i class="icon-plus"></i></button>
+            </div>
+          </label>
+          <button class="btn" type="submit" ng-click="action()">
+            Execute <i class="icon-play" 
+                ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-play';">
+              </i>
           </button>
         </div>
-      </div>
-    </form> 
-    <form class="form-inline box animate-fade" ng-submit="action()"  ng-show="!collapsed">
-      <div class="controls" >
-        <label class="control-label">Function<br/>
-          <input type="text" class="input-large" placeholder="Enter module.function"
-            ng-model="command.cmd.fun" title="Module function">
-        </label>
-        <label class="control-label">Target<br/>
-          <input type="text" class="input-medium" placeholder="Enter minion target pattern"
-            ng-model="command.cmd.tgt" title="Minion target pattern">
-        </label>
-        <label class="control-label">Arguments<br/>
-          <div class="input-append">
-            <input type="text" class="input-medium"
-              placeholder="Enter argument"
-              ng-repeat="arg in command.cmd.args track by $index"
-              ng-model="command.cmd.args[$index]">
-  
-            <button class="btn" ng-class="command.cmd.args.length==1?'disabled':''" 
-              type="button" title="Remove last argument"
-              ng-click="command.delArg()"><i class="icon-minus"></i></button>
-            <button class="btn " type="button" title="Add another argument"
-              ng-click="command.addArg()"><i class="icon-plus"></i></button>
-          </div>
-        </label>
-        <button class="btn" ng-click="action()">
-          Execute <i class="icon-play" 
-              ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'icon-play';">
-            </i>
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
     
     <form class="form-inline box" >
       <div class="btn-toolbar">
@@ -363,7 +364,16 @@
           </tab>
           <tab heading="Event">
             <div class="span12">
-              <p class="lead">Events</p>
+              <table class="table table-striped table-bordered table-hover table-condensed">
+                <tr>
+                  <th>tag</th>
+                  <th>data</th>
+                </tr> 
+                <tr ng-repeat="event in minion.events.values()">
+                  <td>{{event.tag}}</td>
+                  <td>{{event.data | json}}</td>
+                </tr> 
+              </table>
             </div>
           </tab>
           <tab heading="Command">
@@ -416,9 +426,9 @@
               </dl>
             </div>
           </tab>
-          <tab heading="Fun">
+          <tab heading="Command">
             <div class="span12">
-              <p class="lead">Module Funtion Details</p>
+              <span>{{job.cmd.fun}} {{job.cmd.tgt}}</span><span ng-repeat="arg in job.cmd.arg">&nbsp;{{arg}}</span>
             </div>
           </tab>
           <tab heading="Event">

@@ -129,17 +129,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 mode: 'async'
                 fun: ''
                 tgt: '*'
-                args: ['']
+                arg: ['']
             
             size: (obj) ->
                 return _.size(obj)
             
             addArg: () ->
-                @cmd.args.push('')
+                @cmd.arg.push('')
                 
             delArg: () ->
-                if @cmd.args.length > 1
-                    @cmd.args = @cmd.args[0..-2]
+                if @cmd.arg.length > 1
+                    @cmd.arg = @cmd.arg[0..-2]
 
             getCmd: () ->
                 cmd =
@@ -148,9 +148,20 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     mode: @cmd.mode,
                     tgt: @cmd.tgt,
 
-                    arg: (arg for arg in @cmd.args when arg isnt '')
+                    arg: (arg for arg in @cmd.arg when arg isnt '')
                 ]
                 return cmd
+            
+            humanize: (cmds) ->
+                unless cmds
+                    cmds = @getCmd()
+                fun = ""
+                for cmd in cmds
+                    fun = "#{cmd.fun} #{cmd.tgt}"
+                    for arg in cmd.arg
+                        fun = fun + " #{arg}"
+                    fun = fun + ","
+                return fun
 
         $scope.action = (cmd) ->
             $scope.commanding = true
