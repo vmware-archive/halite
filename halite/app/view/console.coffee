@@ -99,7 +99,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.filterage.express = (minion) ->
                     return minion.grains.get(name).toString().match(regex)
             return true
-
+        
+        $scope.eventReverse = true
+        $scope.jobReverse = true
+        $scope.commandReverse = false
+        
         $scope.sortage =
             targets: ["id", "grains", "ping", "active"]
             target: "id"
@@ -119,7 +123,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             result = if result? then result else false
             return result
         
-        $scope.reverse = true
         $scope.sortJobs = (job) ->
             result = job.jid
             result = if result? then result else false
@@ -131,7 +134,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return result
         
         $scope.sortCommands = (command) ->
-            result = comand.name
+            result = command.name
             result = if result? then result else false
             return result
         

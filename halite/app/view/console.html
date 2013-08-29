@@ -391,7 +391,7 @@
 <!--<div class="container-fluid">-->
 <div class="row-fluid monitor" ng-show="monitorMode == 'job'">
   <div class="span12" >
-    <div class="slat" ng-repeat="job in jobs.values() | orderBy:sortJobs:reverse">
+    <div class="slat" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
@@ -449,7 +449,7 @@
 <!--<div class="container-fluid">-->
 <div class="row-fluid monitor" ng-show="monitorMode == 'event'">
   <div class="span12" >
-    <div class="slat" ng-repeat="event in events.values() | orderBy:$index:reverse">
+    <div class="slat" ng-repeat="event in events.values().reverse()">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="label pull-left" title="Event Tag">
@@ -488,11 +488,11 @@
 <!--<div class="container-fluid">-->
 <div class="row-fluid monitor" ng-show="monitorMode == 'command'">
   <div class="span12" >
-    <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommand:reverse">
+    <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="pull-left" title="Event Tag">
-          <bold  style="font-size: larger">{{command.name}}</bold>
+          <button  class="btn">{{command.name}}</button>
         </span>
         <div class="pull-right">
           <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
@@ -504,7 +504,7 @@
       </div>
       <div class="slat-body" ng-show="!collapsed">
         <div class="span12">
-          <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:reverse">
+          <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
             <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
               ng-class="job.done?'':'label-info'">
               <bold  style="font-size: larger">{{job.jid}}</bold>
