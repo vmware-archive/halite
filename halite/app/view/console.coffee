@@ -42,9 +42,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             AppData.set('events', new Itemizer())
         $scope.events = AppData.get('events')
         
-        $scope.snagCommand = (name) -> #get or create Command
+        $scope.snagCommand = (name, cmds) -> #get or create Command
             unless $scope.commands.get(name)?
-                $scope.commands.set(name, new Commander(name))
+                $scope.commands.set(name, new Commander(name, cmds))
             return ($scope.commands.get(name))
         
         $scope.snagJob = (jid, cmd) -> #get or create Jobber
@@ -267,7 +267,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.commanding = true
             if not cmds
                 cmds = $scope.command.getCmds()
-            command = $scope.snagCommand($scope.humanize(cmds))
+            command = $scope.snagCommand($scope.humanize(cmds), cmds)
             
             SaltApiSrvc.action($scope, cmds )
             .success (data, status, headers, config ) ->

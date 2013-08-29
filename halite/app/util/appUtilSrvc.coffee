@@ -376,10 +376,10 @@ class Runner extends Jobber
 appUtilSrvc.value "Runner", Runner
 
 class Commander
-    constructor: (@name) ->
+    constructor: (@name, @cmds) ->
         @jobs = new Itemizer()
         return @
-
+        
 appUtilSrvc.value "Commander", Commander  
 
 ###

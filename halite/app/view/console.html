@@ -492,7 +492,7 @@
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="pull-left" title="Event Tag">
-          <button  class="btn">{{command.name}}</button>
+          <button class="btn" ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}</button>
         </span>
         <div class="pull-right">
           <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
