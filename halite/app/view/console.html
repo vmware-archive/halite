@@ -10,7 +10,7 @@
           <div class="btn-group">
             <div class="input-prepend">
               <div class="btn-group">
-                <button class="btn" ng-click="fetchPings(searchTarget)" 
+                <button class="btn" ng-click="ply(actions.Test.ping)" 
                   title="Ping minions that match target">
                   <i class="icon-bullhorn" 
                     ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'icon-refresh';">
@@ -21,17 +21,18 @@
                 </button>
                 <ul class="dropdown-menu">
                   <li class="nav-header">State</li>
-                  <li><a ng-href="">highstate</a></li>
-                  <li><a ng-href="">show_highstate</a></li>
-                  <li><a ng-href="">show_lowstate</a></li>
+                  <li ng-repeat="(name, cmd) in actions.State track by $index">
+                    <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
+                  </li>
                   <li class="divider"></li>
-                  <li class="nav-header">TBD</li>
-                  <li><a ng-href="">TBD</a></li>
-                  <li><a ng-href="">TBD</a></li>
+                  <li class="nav-header">Test</li>
+                  <li ng-repeat="(name, cmd) in actions.Test track by $index">
+                    <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
+                  </li>
                 </ul>
               </div>
               <input type="text" class="input-large" placeholder="Enter target pattern" 
-                ng-model="searchTarget" title="Minion search target pattern">
+                ng-model="commandTarget" title="Minion command target pattern">
             </div>
           </div>
           
@@ -51,9 +52,7 @@
             </button>
             <ul class="dropdown-menu">
               <li ng-repeat="(name, cmds) in command.history track by $index">
-                <a ng-href="" ng-click="action(cmds)" >
-                  {{name}}
-                </a>
+                <a ng-href="" ng-click="action(cmds)">{{name}}</a>
               </li>
             </ul>
           </div>
@@ -519,3 +518,4 @@
   </div><!--/span-->
 </div><!--/row-->
 <!--</div>--><!--/container-->
+

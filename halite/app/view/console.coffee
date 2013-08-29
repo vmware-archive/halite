@@ -64,7 +64,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.minions.set(mid, new Minioner(mid))
             return ($scope.minions.get(mid))
         
-        $scope.searchTarget = ""
+        $scope.commandTarget = ""
         
         $scope.filterage =
             grains: ["any", "id", "host", "domain", "server_id"]
@@ -136,23 +136,86 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return result
         
         
+        $scope.blah =
+            a: 1
+            b: 2
+            c: 3
+        
         $scope.actions =
             State:
                 highstate:
-                    mode: 'sync'
+                    mode: 'async'
                     tgt: '*'
                     fun: 'state.highstate'
                 show_highstate:
-                    mode: 'sync'
+                    mode: 'async'
                     tgt: '*'
                     fun: 'state.show_highstate'
-                running:
-                    mode: 'sync'
+                show_lowstate:
+                    mode: 'async'
                     tgt: '*'
                     fun: 'state.running'
+                running:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'state.running'
+            Test:
+                ping:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.ping'
+                echo:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.echo'
+                    arg: ['Hello World']
+                conf_test:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.conf_test'
+                fib:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.fib'
+                    arg: [8]
+                collatz:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.collatz'
+                    arg: [8]
+                sleep:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.sleep'
+                    arg: ['5']
+                rand_sleep:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.rand_sleep'
+                    arg: ['max=10']
+                get_opts:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.get_opts'
+                providers:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.providers'
+                version:
+                    mode: 'async'
+                    tgt: '*'
+                    fun: 'test.version'
+                versions_information:
+                    mode: 'async'
+                    tgt: '*'
         
-        $scope.runAction = (group, name) ->
-            cmd = $scope.actions[group][name]
+        $scope.ply = (cmds) ->
+            target = if $scope.commandTarget isnt "" then $scope.commandTarget else "*"
+            unless angular.isArray(cmds)
+                cmds = [cmds]
+            for cmd in cmds
+                cmd.tgt = target
+            $scope.action(cmds)
                 
         $scope.command =
             result: {}
@@ -179,7 +242,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 [
                     fun: @cmd.fun,
                     mode: @cmd.mode,
-                    tgt: @cmd.tgt,
+                    tgt: if @cmd.tgt isnt "" then @cmd.tgt else "*",
                     arg: (arg for arg in @cmd.arg when arg isnt '')
                 ]
                 return cmds
@@ -188,13 +251,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 unless cmds
                     cmds = @getCmds()
                 return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
-                    when part isnt '').join(' ') for cmd in cmds).join(','))
+                    when part isnt '').join(' ') for cmd in cmds).join(',').trim())
         
         $scope.humanize = (cmds) ->
             unless angular.isArray(cmds)
                 cmds = [cmds]
             return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
-                    when part isnt '').join(' ') for cmd in cmds).join(','))
+                    when part isnt '').join(' ') for cmd in cmds).join(',').trim())
         
         
         $scope.action = (cmds) ->

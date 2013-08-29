@@ -265,7 +265,7 @@ class Jobber
         unless cmd
             cmd = @cmd
         return ((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
-                    when part isnt '').join(' '))
+                    when part isnt '').join(' ').trim())
     
     checkDone: () ->
         # active is true or null ie not false
