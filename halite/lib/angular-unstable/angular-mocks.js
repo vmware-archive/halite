@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.0rc1
+ * @license AngularJS v1.2.0-8e48c4f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  *
@@ -316,7 +316,7 @@ angular.mock.$LogProvider = function() {
   }
 
   this.debugEnabled = function(flag) {
-	  if (isDefined(flag)) {
+	  if (angular.isDefined(flag)) {
 		  debug = flag;
 		  return this;
 	  } else {

@@ -1,3 +1,44 @@
+
+
+.tight {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+kvl {
+  padding: 0;
+  margin: 0px 0 10px 0px;
+  display: block;
+}
+
+kvl.indent {
+  margin-left: 12px;
+}
+
+kvi {
+  line-height: 20px;
+  display: block;
+}
+
+kvi.key {
+  font-weight: bold;
+  font-style: italic;
+}
+
+kvi.val {
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+n {
+  font-weight: normal;
+  display: inline;
+}
+
+
+
 .animate-fade.ng-hide-add, 
 .animate-fade.ng-hide-remove {
   -webkit-transition: all linear 0.25s;
@@ -15,16 +56,6 @@
 .animate-fade.ng-hide-remove, /* starting animation for hide */
 .animate-fade.ng-hide-add.ng-hide-add-active { /* terminal animation for show */
   opacity: 0;
-}
-
-n {
-  font-weight: normal;
-  display: inline;
-}
-
-dl.tight {
-  margin-top: 7px;
-  margin-bottom: 7px;
 }
 
 .monitor {

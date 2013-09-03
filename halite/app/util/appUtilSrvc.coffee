@@ -238,6 +238,13 @@ class Resulter
         if @error
             return 'error'
         return 'return'
+    
+    results:  () ->
+        unless @return? or @error
+            return []
+        if @error
+            return [@error]
+        return [@return]
 
 appUtilSrvc.value "Resulter", Resulter  
 

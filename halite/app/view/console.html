@@ -416,20 +416,17 @@
         <tabset>
           <tab heading="Result">
             <div class="span12" ng-if="job.results">
-              <dl class="tight" ng-repeat="result in job.results.values()">
-                <dt><i>{{result.id}}: </i><i class="btn btn-mini fa-icon-ellipsis-horizontal" 
+              <kvl ng-repeat="result in job.results.values()">
+                <kvi><b><i>{{result.id}}: </i></b><i class="btn btn-mini fa-icon-ellipsis-horizontal" 
                     ng-init="extended=false" ng-click="extended = !extended"></i>
-                  <span ng-show="extended" ng-repeat="key in resultKeys"><n><i>{{key}}: </i>
-                  {{result[key]}}{{!$last?', ':''}}</n></span>
-                </dt>
-                <dd>
-                    <p>Normal</p>
-                    <p>{{result.id}}</p>
-                    <p>{{result | json}}</p>
-                    <p>{{job.results.values() | json}}</p>
-                </dd>
-                <dd ng-init="ensual='Tester'" ng-include="'result_nested.html'"></dd>
-              </dl>
+                  <span ng-show="extended" ng-repeat="key in resultKeys">
+                    <i>{{key}}: </i>{{result[key]}}{{!$last?", ":""}}
+                  </span>
+                  <span ng-repeat="result in result.results()" 
+                    ng-include="'result_nested.html'">
+                  </span>
+                </kvi>
+              </kvl>
             </div>
           </tab>
           <tab heading="Event">
@@ -527,13 +524,50 @@
 <!--</div>--><!--/container-->
 
 
-
 <script type="text/ng-template" id="result_nested.html">
-  <p>Template</p>
-  <p>{{ensual}}</p>
-  <p>{{result.id}}</p>
-  <p>{{result | json}}</p>
-  <p>{{job.results.values() | json}}</p>
+  <span ng-switch on="expandMode(result)">
+    <span ng-switch-when="lone"><n>{{result}}</n></span>
+    <span ng-switch-when="vect">
+      <span ng-repeat="value in result track by $index">
+        <n>{{value}}{{!$last ? " ," : ""}}</n>
+      </span>
+    </span>
+    <kvl class="indent tight" ng-switch-when="list">[
+      <kvi ng-repeat="result in result track by $index">
+        <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
+      </kvi>
+      ]
+    </kvl>
+    <kvl class="indent" ng-switch-when="dict">
+      <kvi ng-repeat="(key, result) in result track by $index">
+        <b><i>{{key}}: </i></b>
+        <span ng-include="'result_nested.html'"></span>
+      </kvi>
+    </kvl>
+    <span ng-switch-default>Whoops</span>
+  </span>
 </script>
 
-
+<script type="text/ng-template" id="result_nested_list.html">
+  <span ng-switch on="expandMode(result)">
+    <span ng-switch-when="lone"><n>{{result}}</n></span>
+    <span ng-switch-when="vect">
+      <span ng-repeat="value in result track by $index">
+        <n>{{value}}{{!$last ? " ," : ""}}</n>
+      </span>
+    </span>
+    <kvl class="indent tight" ng-switch-when="list">[
+      <kvi ng-repeat="result in result track by $index">
+        <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
+      </kvi>
+      ]
+    </kvl>
+    <kvl class="indent tight" ng-switch-when="dict">
+      <kvi ng-repeat="(key, result) in result track by $index">
+        <b><i>{{key}}: </i></b>
+        <span ng-include="'result_nested.html'"></span>
+      </kvi>
+    </kvl>
+    <span ng-switch-default>Whoops</span>
+  </span>
+</script>
