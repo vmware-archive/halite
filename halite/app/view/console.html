@@ -1,4 +1,5 @@
 
+
 <div class="row-fluid">
   <div class="span12">
 
@@ -415,13 +416,19 @@
         <tabset>
           <tab heading="Result">
             <div class="span12" ng-if="job.results">
-              <dl class="dl-horizontal" ng-repeat="result in job.results.items()">
-                <dt>{{result.key}}</dt>
+              <dl class="tight" ng-repeat="result in job.results.values()">
+                <dt><i>{{result.id}}: </i><i class="btn btn-mini fa-icon-ellipsis-horizontal" 
+                    ng-init="extended=false" ng-click="extended = !extended"></i>
+                  <span ng-show="extended" ng-repeat="key in resultKeys"><n><i>{{key}}: </i>
+                  {{result[key]}}{{!$last?', ':''}}</n></span>
+                </dt>
                 <dd>
-                  <span ng-repeat="key in resultKeys">{{key}}: {{result.val[key]}}, </span>
-                  <span ng-if="result.val.error">error: {{result.val.error}}</span>
-                  <span ng-if="result.val.return">return: {{result.val.return | json}}</span>
+                    <p>Normal</p>
+                    <p>{{result.id}}</p>
+                    <p>{{result | json}}</p>
+                    <p>{{job.results.values() | json}}</p>
                 </dd>
+                <dd ng-init="ensual='Tester'" ng-include="'result_nested.html'"></dd>
               </dl>
             </div>
           </tab>
@@ -518,4 +525,15 @@
   </div><!--/span-->
 </div><!--/row-->
 <!--</div>--><!--/container-->
+
+
+
+<script type="text/ng-template" id="result_nested.html">
+  <p>Template</p>
+  <p>{{ensual}}</p>
+  <p>{{result.id}}</p>
+  <p>{{result | json}}</p>
+  <p>{{job.results.values() | json}}</p>
+</script>
+
 

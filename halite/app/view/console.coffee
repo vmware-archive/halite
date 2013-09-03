@@ -24,7 +24,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.eventing = false
         $scope.commanding = false
         $scope.historing = false
-        
             
         if !AppData.get('commands')?
             AppData.set('commands', new Itemizer())
@@ -138,12 +137,18 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             result = if result? then result else false
             return result
         
+        $scope.resultKeys = ["retcode", "fail", "success", "done"]
         
-        $scope.blah =
-            a: 1
-            b: 2
-            c: 3
-        
+        $scope.expandMode = (ensual) ->
+            if angular.isArray(ensual)
+                for x in ensual
+                    if angular.isObject(x)
+                        return 'list'
+                return 'vect'
+            else if angular.isObject(ensual)
+                return 'dict'
+            return 'lone'
+                
         $scope.actions =
             State:
                 highstate:
@@ -261,7 +266,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 cmds = [cmds]
             return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
                     when part isnt '').join(' ') for cmd in cmds).join(',').trim())
-        
         
         $scope.action = (cmds) ->
             $scope.commanding = true
@@ -395,8 +399,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             job = $scope.snagJob(jid, cmd)
             job.initResults(result.minions)
             return job
-        
-        $scope.resultKeys = ["done", "fail", "success", "retcode" ]
         
         $scope.processJobEvent = (jid, kind, edata) ->
             job = $scope.jobs.get(jid)

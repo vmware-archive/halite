@@ -231,6 +231,13 @@ class Resulter
         @return = null
         @retcode = null
         return @
+    
+    mode:  () ->
+        unless @return? or @error
+            return ''
+        if @error
+            return 'error'
+        return 'return'
 
 appUtilSrvc.value "Resulter", Resulter  
 

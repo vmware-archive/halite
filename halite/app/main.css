@@ -17,6 +17,15 @@
   opacity: 0;
 }
 
+n {
+  font-weight: normal;
+  display: inline;
+}
+
+dl.tight {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
 
 .monitor {
   margin: 5px 0px 0px 0px;
