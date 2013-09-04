@@ -576,9 +576,6 @@
       </span>
     </span>
     <span ng-switch-when="list">
-      <i class="btn btn-small" ng-class="expanded.value ? 'fa-icon-caret-down':'fa-icon-caret-right'"
-        ng-init="expanded={'value': true}" ng-click="expanded.value = !expanded.value">
-      </i>
       <kvl class="indent tight" ng-show="expanded.value">[
         <kvi ng-repeat="result in result track by $index">
           <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
@@ -587,9 +584,6 @@
       </kvl>
     </span>
     <span ng-switch-when="dict">
-      <i class="btn btn-small" ng-class="expanded.value ? 'fa-icon-caret-down':'fa-icon-caret-right'"
-        ng-init="expanded={'value': true}" ng-click="expanded.value = !expanded.value">
-      </i>
       <kvl class="indent tight" ng-show="expanded.value">
         <kvi ng-repeat="(key, result) in result track by $index">
           <b><i>{{key}}: </i></b>
