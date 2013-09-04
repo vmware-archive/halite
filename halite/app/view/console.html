@@ -180,7 +180,7 @@
         title="Click to toggle grains display">
         <span class="label pull-left" title="Minion Id: Green=grains, Orange=no grains" 
           ng-class="minion.grains.keys().length?'label-info':'label-warning'">
-          <bold  style="font-size: larger">{{minion.id}}</bold>
+          <b style="font-size: larger">{{minion.id}}</b>
         </span>
         <div class="pull-right">
           <span class="badge" title="Latest active status: Green=up, Red=down"
@@ -397,7 +397,7 @@
         title="Click to toggle results display">
         <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
           ng-class="job.done?'':'label-info'">
-          <bold  style="font-size: larger">{{job.jid}}</bold>
+          <b  style="font-size: larger">{{job.jid}}</b>
         </span>
         <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
         <div class="pull-right">
@@ -417,13 +417,18 @@
           <tab heading="Result">
             <div class="span12" ng-if="job.results">
               <kvl ng-repeat="result in job.results.values()">
-                <kvi><b><i>{{result.id}}: </i></b><i class="btn btn-mini fa-icon-ellipsis-horizontal" 
-                    ng-init="extended=false" ng-click="extended = !extended"></i>
-                  <span ng-show="extended" ng-repeat="key in resultKeys">
-                    <i>{{key}}: </i>{{result[key]}}{{!$last?", ":""}}
+                <kvi>
+                  <span class="label" ng-class="result.done?'':'label-info'">
+                    {{result.id}}
                   </span>
-                  <span ng-repeat="result in result.results()" 
-                    ng-include="'result_nested.html'">
+                  <span class="badge" ng-class="result.fail?'badge-important':'badge-success'">
+                    <i ng-if="result.retcode == null" class="icon-certificate icon-white"></i>
+                    <b ng-if="result.retcode != null">{{result.retcode}}</b>
+                  </span>
+                  <span>
+                    <span ng-repeat="result in result.results()" 
+                      ng-include="'result_nested.html'">
+                    </span>
                   </span>
                 </kvi>
               </kvl>
@@ -457,7 +462,7 @@
       <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
         title="Click to toggle results display">
         <span class="label pull-left" title="Event Tag">
-          <bold  style="font-size: larger">{{event.tag}}</bold>
+          <b style="font-size: larger">{{event.tag}}</b>
         </span>
         <span title="Module function">&nbsp;&nbsp;{{humanize(event.data)}}</span>
         <div class="pull-right">
@@ -511,7 +516,7 @@
           <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
             <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
               ng-class="job.done?'':'label-info'">
-              <bold  style="font-size: larger">{{job.jid}}</bold>
+              <b style="font-size: larger">{{job.jid}}</b>
             </span>
             <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
           </p>  
@@ -526,48 +531,72 @@
 
 <script type="text/ng-template" id="result_nested.html">
   <span ng-switch on="expandMode(result)">
-    <span ng-switch-when="lone"><n>{{result}}</n></span>
-    <span ng-switch-when="vect">
+    <span ng-switch-when="lone" >
+      <n>{{result}}</n>
+    </span>
+    <span ng-switch-when="vect" >
       <span ng-repeat="value in result track by $index">
         <n>{{value}}{{!$last ? " ," : ""}}</n>
       </span>
     </span>
-    <kvl class="indent tight" ng-switch-when="list">[
-      <kvi ng-repeat="result in result track by $index">
-        <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
-      </kvi>
-      ]
-    </kvl>
-    <kvl class="indent" ng-switch-when="dict">
-      <kvi ng-repeat="(key, result) in result track by $index">
-        <b><i>{{key}}: </i></b>
-        <span ng-include="'result_nested.html'"></span>
-      </kvi>
-    </kvl>
+    <span ng-switch-when="list"> 
+      <i class="btn btn-small fa-icon-ellipsis-horizontal" 
+        ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
+      </i>
+      <kvl class="indent tight" ng-show="expanded.value">[
+        <kvi ng-repeat="result in result track by $index">
+          <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
+        </kvi>
+        ]
+      </kvl>
+    </span>
+    <span ng-switch-when="dict" >
+      <i class="btn btn-small fa-icon-ellipsis-horizontal" 
+        ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
+      </i>
+      <kvl class="indent" ng-show="expanded.value">
+        <kvi ng-repeat="(key, result) in result track by $index">
+          <b><i>{{key}}: </i></b>
+          <span ng-include="'result_nested.html'"></span>
+        </kvi>
+      </kvl>
+    </span>
     <span ng-switch-default>Whoops</span>
   </span>
 </script>
 
 <script type="text/ng-template" id="result_nested_list.html">
   <span ng-switch on="expandMode(result)">
-    <span ng-switch-when="lone"><n>{{result}}</n></span>
+    <span ng-switch-when="lone" >
+      <n>{{result}}</n>
+    </span>
     <span ng-switch-when="vect">
       <span ng-repeat="value in result track by $index">
         <n>{{value}}{{!$last ? " ," : ""}}</n>
       </span>
     </span>
-    <kvl class="indent tight" ng-switch-when="list">[
-      <kvi ng-repeat="result in result track by $index">
-        <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
-      </kvi>
-      ]
-    </kvl>
-    <kvl class="indent tight" ng-switch-when="dict">
-      <kvi ng-repeat="(key, result) in result track by $index">
-        <b><i>{{key}}: </i></b>
-        <span ng-include="'result_nested.html'"></span>
-      </kvi>
-    </kvl>
+    <span ng-switch-when="list">
+      <i class="btn btn-small fa-icon-ellipsis-horizontal" 
+        ng-init="expanded={'value': true}" ng-click="expanded.value = !expanded.value">
+      </i>
+      <kvl class="indent tight" ng-show="expanded.value">[
+        <kvi ng-repeat="result in result track by $index">
+          <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
+        </kvi>
+        ]
+      </kvl>
+    </span>
+    <span ng-switch-when="dict">
+      <i class="btn btn-small fa-icon-ellipsis-horizontal" 
+        ng-init="expanded={'value': true}" ng-click="expanded.value = !expanded.value">
+      </i>
+      <kvl class="indent tight" ng-show="expanded.value">
+        <kvi ng-repeat="(key, result) in result track by $index">
+          <b><i>{{key}}: </i></b>
+          <span ng-include="'result_nested.html'"></span>
+        </kvi>
+      </kvl>
+    </span>
     <span ng-switch-default>Whoops</span>
   </span>
 </script>
