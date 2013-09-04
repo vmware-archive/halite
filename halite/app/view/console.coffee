@@ -387,7 +387,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.startRun = (tag, cmd) ->
             console.log "Start Run #{$scope.humanize(cmd)}"
             console.log tag
-            parts = tag.split(".")
+            parts = tag.split("/")
             jid = parts[2]
             job = $scope.snagRunner(jid, cmd)
             return job
@@ -444,8 +444,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processSaltEvent = (edata) ->
             console.log "Process Salt Event: "
             console.log edata
+            date = new Date()          
+            stamp = [   "/#{date.getUTCFullYear()}",
+                        "-#{('00' + date.getUTCMonth()).slice(-2)}",
+                        "-#{('00' + date.getUTCDate()).slice(-2)}",
+                        "_#{('00' + date.getUTCHours()).slice(-2)}",
+                        ":#{('00' + date.getUTCMinutes()).slice(-2)}",
+                        ":#{('00' + date.getUTCSeconds()).slice(-2)}",
+                        ".#{('000' + date.getUTCMilliseconds()).slice(-3)}"].join("")
+            edata.tag = edata.tag + stamp
             $scope.events.set(edata.tag, edata)
-            parts = edata.tag.split(".") # split on "." character
+            parts = edata.tag.split("/") # split on "/" character
             if parts[0] is 'salt'
                 if parts[1] is 'job'
                     jid = parts[2]
@@ -478,13 +487,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                  else if parts[1] is 'key'
                     $scope.processKeyEvent(edata)
                     
-                    
             return edata
             
         $scope.openEventStream = () ->
             $scope.eventing = true
             $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
-                $scope.processSaltEvent, "salt.")
+                $scope.processSaltEvent, "salt/")
             .then (data) ->
                 console.log "Opened Event Stream: "
                 console.log data
