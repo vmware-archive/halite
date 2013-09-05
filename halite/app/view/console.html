@@ -2,7 +2,6 @@
 
 <div class="row-fluid">
   <div class="span12">
-
     <alert type="'error'" close="closeAlert()" ng-cloak ng-show="!!$parent.errorMsg">Error! {{errorMsg}}</alert>
     <div class="box">
       <form class="form-inline">
@@ -39,12 +38,12 @@
           
           <div class="btn-group">
             <button class="btn"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
-              title="Execute lowstate command">
+              title="Execute salt command">
               <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display" 
                 ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
             </button>
             <button class="btn dropdown-toggle" 
-              ng-class="command.size(command.history)==0?'disabled':''"
+              ng-disabled="command.size(command.history)==0"
               title="Execute saved lowstate command">
               <i class="fa-icon-book" 
                 ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-book';">
@@ -79,7 +78,7 @@
           </div>
         </div>
       </form> 
-      <form class="form-inline animate-fade" name="commandForm" ng-show="!collapsed">
+      <form class="form-inline animate-fade" name="commandForm" ng-show="!collapsed" ng-cloak>
         <div class="controls" >
           <label class="control-label">Function<br/>
             <input type="text" class="input-large" placeholder="Enter module.function"
@@ -112,7 +111,7 @@
       </form>
     </div>
     
-    <form class="form-inline box" >
+    <form class="form-inline box">
       <div class="btn-toolbar">
         <label>Monitor &nbsp;</label>
         <div class="btn-group">
