@@ -179,7 +179,6 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$rootScope', '$location', '$route',
             
             return msg
 
-
         return true
 ]
 

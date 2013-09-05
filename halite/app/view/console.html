@@ -64,8 +64,8 @@
                 ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
               </i>
             </button>
-            <button class="btn" ng-click="fetchGrains(searchTarget)" 
-              title="Fetch grains from minions that match target">
+            <button class="btn" ng-click="fetchGrains()" 
+              title="Fetch grains from all minions">
               <i class="fa-icon-briefcase" 
                 ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-briefcase';">
               </i>
@@ -79,11 +79,11 @@
           </div>
         </div>
       </form> 
-      <form class="form-inline animate-fade"  ng-show="!collapsed">
+      <form class="form-inline animate-fade" name="commandForm" ng-show="!collapsed">
         <div class="controls" >
           <label class="control-label">Function<br/>
             <input type="text" class="input-large" placeholder="Enter module.function"
-              ng-model="command.cmd.fun" title="Module function">
+              ng-model="command.cmd.fun" title="Module function" required>
           </label>
           <label class="control-label">Target<br/>
             <input type="text" class="input-medium" placeholder="Enter minion target pattern"
@@ -103,10 +103,10 @@
                 ng-click="command.addArg()"><i class="fa-icon-plus"></i></button>
             </div>
           </label>
-          <button class="btn" type="submit" ng-click="action()">
-            Execute <i class="fa-icon-play" 
+          <button class="btn" type="submit" ng-click="action()" ng-disabled="commandForm.$invalid">
+            <i class="fa-icon-play" 
                 ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
-              </i>
+              </i>Execute 
           </button>
         </div>
       </form>
@@ -171,6 +171,105 @@
   </div><!--/span-->
 </div><!--/row-->
 
+<!--<div class="container-fluid">-->
+<div class="row-fluid monitor" ng-show="monitorMode == 'command'">
+  <div class="span12" >
+    <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
+      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+        title="Click to toggle results display">
+        <span class="pull-left" title="Event Tag">
+          <button class="btn" ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}</button>
+        </span>
+        <div class="pull-right">
+          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
+            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
+              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
+          </a> 
+        </div>  
+        <div class="clearfix"></div>
+      </div>
+      <div class="slat-body" ng-show="!collapsed">
+        <div class="span12">
+          <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
+            <span class="label pull-left" title="Job Id: Gray=done, Blue=not yet done" 
+              ng-class="job.done?'':'label-info'">
+              <b style="font-size: larger">{{job.jid}}</b>
+            </span>
+            <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
+            <span class="badge pull-right" title="Failure status: Green=success, Red=fail"
+              ng-class="job.fail?'badge-important':'badge-success'">
+              <i class="fa-icon-certificate icon-white"></i>
+            </span>
+          </p>  
+        </div>
+        <div class="clearfix"></div>
+      </div><!--/slat-body-->
+    </div> <!--/slat-->
+  </div><!--/span-->
+</div><!--/row-->
+<!--</div>--><!--/container-->
+
+<!--<div class="container-fluid">-->
+<div class="row-fluid monitor" ng-show="monitorMode == 'job'">
+  <div class="span12" >
+    <div class="slat" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
+      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+        title="Click to toggle results display">
+        <span class="label pull-left" title="Job Id: Gray=done, Blue=not yet done" 
+          ng-class="job.done?'':'label-info'">
+          <b  style="font-size: larger">{{job.jid}}</b>
+        </span>
+        <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
+        <div class="pull-right">
+          <span class="badge" title="Failure status: Green=success, Red=fail"
+            ng-class="job.fail?'badge-important':'badge-success'">
+            <i class="fa-icon-certificate icon-white"></i>
+          </span>
+          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
+            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
+              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
+          </a> 
+        </div>  
+        <div class="clearfix"></div>
+      </div>
+      <div class="slat-body" ng-show="!collapsed">
+        <tabset>
+          <tab heading="Result">
+            <div class="span12" ng-if="job.results">
+              <kvl ng-repeat="result in job.results.values()">
+                <kvi>
+                  <span class="label" ng-class="result.done?'':'label-info'">
+                    {{result.id}}
+                  </span>
+                  <span class="badge" ng-class="result.fail?'badge-important':'badge-success'">
+                    <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
+                    <b ng-if="result.retcode != null">{{result.retcode}}</b>
+                  </span>
+                  <span ng-repeat="ensual in result.results()" 
+                    ng-include="'ensual_nested.html'">
+                  </span>
+                </kvi>
+              </kvl>
+            </div>
+          </tab>
+          <tab heading="Event">
+            <div class="span12">
+              <kvl ng-repeat="event in job.events.values().reverse()">
+                <kvi>
+                  <span><b><i>{{event.tag}}</i></b></span>
+                  <span ng-repeat="ensual in ensuals(event.data)" 
+                    ng-include="'ensual_nested.html'">
+                  </span>
+                </kvi>
+              </kvl>
+            </div>
+          </tab>
+        </tabset>
+      </div><!--/slat-body-->
+    </div> <!--/slat-->
+  </div><!--/span-->
+</div><!--/row-->
+<!--</div>--><!--/container-->
 
 <!--<div class="container-fluid">-->
 <div class="row-fluid monitor"  ng-show="monitorMode == 'minion'">
@@ -321,9 +420,9 @@
           <tab heading="IP">
             <div class="span6">
               <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr ng-repeat="ip in minion.grains.get('ip_interfaces').items()">
-                  <td>{{ip.key}}</td>
-                  <td>{{ip.val.join(', ')}}</td>
+                <tr ng-repeat="(key, val) in minion.grains.get('ip_interfaces') track by $index">
+                  <td>{{key}}</td>
+                  <td>{{val.join(', ')}}</td>
                 </tr> 
               </table>
             </div>
@@ -362,23 +461,35 @@
               
             </div>
           </tab>
+          <tab heading="Grain">
+            <div class="span12">
+              <kvl ng-repeat="grain in minion.grains.items()">
+                <kvi>
+                  <span><b><i>{{grain.key}}: </i></b></span>
+                  <span ng-repeat="ensual in ensuals(grain.val)" 
+                    ng-include="'ensual_nested.html'">
+                  </span>
+                </kvi>
+              </kvl>
+              <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
+            </div>
+          </tab>
           <tab heading="Event">
             <div class="span12">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr>
-                  <th>tag</th>
-                  <th>data</th>
-                </tr> 
-                <tr ng-repeat="event in minion.events.values()">
-                  <td>{{event.tag}}</td>
-                  <td>{{event.data | json}}</td>
-                </tr> 
-              </table>
+              <kvl ng-repeat="event in minion.events.values().reverse()">
+                <kvi>
+                  <span><b><i>{{event.tag}}</i></b></span>
+                  <span ng-repeat="ensual in ensuals(event.data)" 
+                    ng-include="'ensual_nested.html'">
+                  </span>
+                </kvi>
+              </kvl>
+              <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
             </div>
           </tab>
           <tab heading="Command">
             <div class="span12">
-              <p class="lead">Commands</p>
+              <p>Commands associated with this minion</p>
             </div>
           </tab>
           
@@ -390,136 +501,32 @@
 <!--</div>--><!--/container-->
 
 <!--<div class="container-fluid">-->
-<div class="row-fluid monitor" ng-show="monitorMode == 'job'">
-  <div class="span12" >
-    <div class="slat" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
-      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
-        title="Click to toggle results display">
-        <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
-          ng-class="job.done?'':'label-info'">
-          <b  style="font-size: larger">{{job.jid}}</b>
-        </span>
-        <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
-        <div class="pull-right">
-          <span class="badge" title="Failure status: Green=success, Red=fail"
-            ng-class="job.fail?'badge-important':'badge-success'">
-            <i class="fa-icon-certificate icon-white"></i>
-          </span>
-          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </a> 
-        </div>  
-        <div class="clearfix"></div>
-      </div>
-      <div class="slat-body" ng-show="!collapsed">
-        <tabset>
-          <tab heading="Result">
-            <div class="span12" ng-if="job.results">
-              <kvl ng-repeat="result in job.results.values()">
-                <kvi>
-                  <span class="label" ng-class="result.done?'':'label-info'">
-                    {{result.id}}
-                  </span>
-                  <span class="badge" ng-class="result.fail?'badge-important':'badge-success'">
-                    <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
-                    <b ng-if="result.retcode != null">{{result.retcode}}</b>
-                  </span>
-                  <span>
-                    <span ng-repeat="result in result.results()" 
-                      ng-include="'result_nested.html'">
-                    </span>
-                  </span>
-                </kvi>
-              </kvl>
-            </div>
-          </tab>
-          <tab heading="Event">
-            <div class="span12">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr>
-                  <th>tag</th>
-                  <th>data</th>
-                </tr> 
-                <tr ng-repeat="event in job.events.values()">
-                  <td>{{event.tag}}</td>
-                  <td>{{event.data | json}}</td>
-                </tr> 
-              </table>
-            </div>
-          </tab>
-        </tabset>
-      </div><!--/slat-body-->
-    </div> <!--/slat-->
-  </div><!--/span-->
-</div><!--/row-->
-<!--</div>--><!--/container-->
-
-<!--<div class="container-fluid">-->
 <div class="row-fluid monitor" ng-show="monitorMode == 'event'">
   <div class="span12" >
     <div class="slat" ng-repeat="event in events.values().reverse()">
-      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
+      <div class="slat-head" ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value"
         title="Click to toggle results display">
         <span class="label pull-left" title="Event Tag">
           <b style="font-size: larger">{{event.tag}}</b>
         </span>
         <span title="Module function">&nbsp;&nbsp;{{humanize(event.data)}}</span>
         <div class="pull-right">
-          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
+          <a href="" ng-click="expanded.value = !expanded.value; $event.stopPropagation();">
             <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
+              ng-class="!expanded.value?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
           </a> 
         </div>  
         <div class="clearfix"></div>
       </div>
-      <div class="slat-body" ng-show="!collapsed">
-        
+      <div class="slat-body" ng-show="expanded.value">
         <div class="span12">
-          <table class="table table-striped table-bordered table-hover table-condensed">
-            <tr>
-              <th>tag</th>
-              <th>data</th>
-            </tr> 
-            <tr>
-              <td>{{event.tag}}</td>
-              <td>{{event.data | json}}</td>
-            </tr> 
-          </table>
-        </div>
-        <div class="clearfix"></div>
-      </div><!--/slat-body-->
-    </div> <!--/slat-->
-  </div><!--/span-->
-</div><!--/row-->
-<!--</div>--><!--/container-->
-
-<!--<div class="container-fluid">-->
-<div class="row-fluid monitor" ng-show="monitorMode == 'command'">
-  <div class="span12" >
-    <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
-      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
-        title="Click to toggle results display">
-        <span class="pull-left" title="Event Tag">
-          <button class="btn" ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}</button>
-        </span>
-        <div class="pull-right">
-          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </a> 
-        </div>  
-        <div class="clearfix"></div>
-      </div>
-      <div class="slat-body" ng-show="!collapsed">
-        <div class="span12">
-          <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
-            <span class="label pull-left" title="Job Id: Green=done, Blue=not yet done" 
-              ng-class="job.done?'':'label-info'">
-              <b style="font-size: larger">{{job.jid}}</b>
-            </span>
-            <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
-          </p>  
+          <kvl>
+            <kvi>
+              <span ng-repeat="ensual in ensuals(event.data)" 
+                ng-include="'ensual_nested_list.html'">
+              </span>
+            </kvi>
+          </kvl>
         </div>
         <div class="clearfix"></div>
       </div><!--/slat-body-->
@@ -529,35 +536,35 @@
 <!--</div>--><!--/container-->
 
 
-<script type="text/ng-template" id="result_nested.html">
-  <span ng-switch on="expandMode(result)">
+<script type="text/ng-template" id="ensual_nested.html">
+  <span ng-switch on="expandMode(ensual)">
     <span ng-switch-when="lone" >
-      <n>{{result}}</n>
+      <n>{{ensual}}</n>
     </span>
-    <span ng-switch-when="vect" >
-      <span ng-repeat="value in result track by $index">
+    <span ng-switch-when="vect" >[
+      <span ng-repeat="value in ensual track by $index">
         <n>{{value}}{{!$last ? " ," : ""}}</n>
-      </span>
+      </span>]
     </span>
     <span ng-switch-when="list"> 
-      <i class="btn btn-small" ng-class="expanded.value ? 'fa-icon-caret-down':'fa-icon-caret-right'"
+      <i class="btn btn-small" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
       <kvl class="indent tight" ng-if="expanded.value">[
-        <kvi ng-repeat="result in result track by $index">
-          <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
+        <kvi ng-repeat="ensual in ensual track by $index">
+          <span ng-include="'ensual_nested_list.html'"></span>{{!$last?",":""}}
         </kvi>
         ]
       </kvl>
     </span>
     <span ng-switch-when="dict" >
-      <i class="btn btn-small" ng-class="expanded.value ? 'fa-icon-caret-down':'fa-icon-caret-right'"
+      <i class="btn btn-small" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
       <kvl class="indent" ng-if="expanded.value">
-        <kvi ng-repeat="(key, result) in result track by $index">
+        <kvi ng-repeat="(key, ensual) in ensual track by $index">
           <b><i>{{key}}: </i></b>
-          <span ng-include="'result_nested.html'"></span>
+          <span ng-include="'ensual_nested.html'"></span>
         </kvi>
       </kvl>
     </span>
@@ -565,29 +572,29 @@
   </span>
 </script>
 
-<script type="text/ng-template" id="result_nested_list.html">
-  <span ng-switch on="expandMode(result)">
+<script type="text/ng-template" id="ensual_nested_list.html">
+  <span ng-switch on="expandMode(ensual)">
     <span ng-switch-when="lone" >
-      <n>{{result}}</n>
+      <n>{{ensual}}</n>
     </span>
-    <span ng-switch-when="vect">
-      <span ng-repeat="value in result track by $index">
+    <span ng-switch-when="vect">[
+      <span ng-repeat="value in ensual track by $index">
         <n>{{value}}{{!$last ? " ," : ""}}</n>
-      </span>
+      </span>]
     </span>
     <span ng-switch-when="list">
       <kvl class="indent tight" ng-if="expanded.value">[
-        <kvi ng-repeat="result in result track by $index">
-          <span ng-include="'result_nested_list.html'"></span>{{!$last?",":""}}
+        <kvi ng-repeat="ensual in ensual track by $index">
+          <span ng-include="'ensual_nested_list.html'"></span>{{!$last?",":""}}
         </kvi>
         ]
       </kvl>
     </span>
     <span ng-switch-when="dict">
       <kvl class="indent tight" ng-if="expanded.value">
-        <kvi ng-repeat="(key, result) in result track by $index">
+        <kvi ng-repeat="(key, ensual) in ensual track by $index">
           <b><i>{{key}}: </i></b>
-          <span ng-include="'result_nested.html'"></span>
+          <span ng-include="'ensual_nested.html'"></span>
         </kvi>
       </kvl>
     </span>

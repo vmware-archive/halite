@@ -147,6 +147,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             else if angular.isObject(ensual)
                 return 'dict'
             return 'lone'
+        
+        $scope.ensuals = (ensual) ->
+            #makes and array so we can create new scope with ng-repeat
+            #work around to recursive scope expression for ng-include
+            return ([ensual])
                 
         $scope.actions =
             State:
@@ -383,7 +388,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 unless result.fail
                     grains = result.return
                     minion = $scope.snagMinion(mid)
-                    minion.grains.reload(grains, true)
+                    minion.grains.reload(grains, false)
             $scope.graining = false
             return job   
 
