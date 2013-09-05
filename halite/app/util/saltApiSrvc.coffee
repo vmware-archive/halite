@@ -57,7 +57,11 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    $scope.errorMsg = "Run Failed!"
+                    error = data?.error
+                    if status == 401
+                        $scope.errorMsg = "Please Login! #{error}"
+                    else
+                        $scope.errorMsg = "Run Failed! #{error}"
                     return true
                 )
             action: ($scope, cmds) ->
@@ -79,7 +83,11 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
                     return true
                 )
                 .error((data, status, headers, config) ->
-                    $scope.errorMsg = "Action Failed!"
+                    error = data?.error
+                    if status == 401
+                        $scope.errorMsg = "Please Login! #{error}"
+                    else
+                        $scope.errorMsg = "Action Failed! #{error}"
                     return true
                 )
             login: ($scope, username, password) ->

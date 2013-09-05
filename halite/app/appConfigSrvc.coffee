@@ -28,11 +28,11 @@ configuration =
                 template: "/static/app/view/console.html"
                 controller: "ConsoleCtlr"
             ,
-                label: "command"
-                route: "/app/command"
-                url: "/app/command/"
-                template: "/static/app/view/command.html"
-                controller: "CommandCtlr"
+                label: "project"
+                route: "/app/project"
+                url: "/app/project/"
+                template: "/static/app/view/project.html"
+                controller: "ProjectCtlr"
             ]
     preferences:
         debug: false

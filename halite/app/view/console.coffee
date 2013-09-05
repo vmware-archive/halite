@@ -508,7 +508,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 $scope.eventing = false
             , (data) ->
                 console.log "Error Opening Event Stream"
-                console.log data
+                #console.log data
+                if SessionStore.get('loggedIn') == false
+                    $scope.errorMsg = "Cannot open event stream! Must login first!"
+                else
+                    $scope.errorMsg = "Cannot open event stream!"
                 $scope.eventing = false
                 return data
             return true
