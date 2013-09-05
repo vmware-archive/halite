@@ -23,7 +23,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.statusing = false
         $scope.eventing = false
         $scope.commanding = false
-        $scope.historing = false
             
         if !AppData.get('commands')?
             AppData.set('commands', new Itemizer())
@@ -82,7 +81,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return true
         
         $scope.setFilterExpress = () ->
-            console.log "setFilterExpress"
+            #console.log "setFilterExpress"
             if $scope.filterage.grain is "any"
                 #$scope.filterage.express = $scope.filterage.target
                 regex = RegExp($scope.filterage.target, "i")
@@ -322,12 +321,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.statusing = true   
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
+                #$scope.statusing = false
                 result = data.return?[0]
                 if result
+                    
                     job = $scope.startRun(result, cmd)
                     job.commit($q).then (donejob) ->
                         $scope.assignActives(donejob)
                         $scope.$emit("Marshall")
+                    
                 return true
             .error (data, status, headers, config) ->
                 $scope.statusing = false        
@@ -364,12 +366,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.graining = true
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
+                #$scope.graining = false
                 result = data.return?[0]
                 if result
                     job = $scope.startJob(result, cmd)
                     job.commit($q).then (donejob) ->
                         $scope.assignGrains(donejob)
-                    #$scope.graining = false
+                    
                 return true
             .error (data, status, headers, config) ->
                 $scope.graining = false
@@ -385,16 +388,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return job   
 
         $scope.startRun = (tag, cmd) ->
-            console.log "Start Run #{$scope.humanize(cmd)}"
-            console.log tag
+            #console.log "Start Run #{$scope.humanize(cmd)}"
+            #console.log tag
             parts = tag.split("/")
             jid = parts[2]
             job = $scope.snagRunner(jid, cmd)
             return job
                         
         $scope.startJob = (result, cmd) ->
-            console.log "Start Job #{$scope.humanize(cmd)}"
-            console.log result
+            #console.log "Start Job #{$scope.humanize(cmd)}"
+            #console.log result
             jid = result.jid
             job = $scope.snagJob(jid, cmd)
             job.initResults(result.minions)
@@ -442,8 +445,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return minion
             
         $scope.processSaltEvent = (edata) ->
-            console.log "Process Salt Event: "
-            console.log edata
+            #console.log "Process Salt Event: "
+            #console.log edata
             date = new Date()          
             stamp = [   "/#{date.getUTCFullYear()}",
                         "-#{('00' + date.getUTCMonth()).slice(-2)}",
@@ -494,8 +497,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
                 $scope.processSaltEvent, "salt/")
             .then (data) ->
-                console.log "Opened Event Stream: "
-                console.log data
+                #console.log "Opened Event Stream: "
+                #console.log data
                 $scope.$emit('Activate')
                 $scope.eventing = false
             , (data) ->
@@ -506,26 +509,26 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             return true
         
         $scope.closeEventStream = () ->
-            console.log "Closing Event Stream"
+            #console.log "Closing Event Stream"
             SaltApiEvtSrvc.close()
             return true
         
         $scope.authListener = (event, loggedIn) ->
-            console.log "Received #{event.name}"
-            console.log event
+            #console.log "Received #{event.name}"
+            #console.log event
             if loggedIn
                 $scope.openEventStream()
             else
                 $scope.closeEventStream()
             
         $scope.activateListener = (event) ->
-            console.log "Received #{event.name}"
-            console.log event
+            #console.log "Received #{event.name}"
+            #console.log event
             $scope.fetchActives()
         
         $scope.marshallListener = (event) ->
-            console.log "Received #{event.name}"
-            console.log event
+            #console.log "Received #{event.name}"
+            #console.log event
             $scope.fetchGrains()
             
         $scope.$on('ToggleAuth', $scope.authListener)

@@ -291,8 +291,8 @@ class Jobber
         @fail = _((result.fail for result in @results.values() when\
             result.active and result.done )).any()
         
-        console.log "Job Done. Fail = #{@fail}"
-        console.log @
+        #console.log "Job Done. Fail = #{@fail}"
+        #console.log @
         
         if @errors.length > 0
             @defer?.reject @errors
@@ -362,7 +362,7 @@ class Runner extends Jobber
         return @
     
     processRetEvent: (data) ->
-        console.log "Run Ret Event"
+        #console.log "Run Ret Event"
         result = @results.get('master')
         result.done = true
         @done = true
@@ -376,8 +376,8 @@ class Runner extends Jobber
             result.error = data.ret
             @errors.push(data.ret)
         
-        console.log "Run Done. Fail = #{@fail}"
-        console.log @
+        #console.log "Run Done. Fail = #{@fail}"
+        #console.log @
         
         if @errors.length > 0
             @defer?.reject(@errors)

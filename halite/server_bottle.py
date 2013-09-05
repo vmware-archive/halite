@@ -48,7 +48,11 @@ def loadWebUI(app):
     @app.route('/app') # /app
     @app.route('/') # /
     def appGet(path=''):
-        return bottle.static_file('main.html', root=STATIC_APP_PATH)  
+        return bottle.static_file('main.html', root=STATIC_APP_PATH)
+    
+    @app.route('/static/lib/<filepath:re:.*\.(woff)>')
+    def staticFontWoffGet(filepath):
+        return bottle.static_file(filepath, root=STATIC_LIB_PATH, mimetype='application/font-woff')    
         
     @app.route('/static/app/<filepath:path>')
     def staticAppGet(filepath):
@@ -280,7 +284,7 @@ def loadSaltApi(app):
         bottle.response.set_header('Cache-Control',  'no-cache')
     
         # Set client-side auto-reconnect timeout, ms.
-        yield 'retry: 100\n\n'
+        yield 'retry: 250\n\n'
     
         while True:
             data =  client.get_event(wait=0.025, tag=tag, full=True)

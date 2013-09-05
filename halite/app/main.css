@@ -107,8 +107,7 @@ n {
 .icon-blue { color: blue;}
 .icon-green {color: green;}
 .icon-red { color: red; }
-
-.icon-white {color: white;}
+.icon-black {color: black;}
 
 /* Additional sizes for bootstrap labels and badges not in default bootstrap*/
 .label-mini,
