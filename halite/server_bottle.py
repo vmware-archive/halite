@@ -442,14 +442,18 @@ if __name__ == "__main__":
         except ImportError as ex: #gevent support not available
             args.server = 'wsgiref' # use default server
     
-    sslOptions = dict(wsgiref={}) #no ssl for wsgiref
-    sslOptions['paste'] = {'ssl_pem': '/etc/pki/tls/certs/localhost.pem'}
-    sslOptions['gevent'] = {'keyfile': '/etc/pki/tls/certs/localhost.key', 
-                                'certfile': '/etc/pki/tls/certs/localhost.crt',
-                                }
-
-    options = dict(**sslOptions[args.server]) # retrieve ssl options for server
-    #options = dict()
+    keyfile = '/etc/pki/tls/certs/localhost.key'
+    certfile = '/etc/pki/tls/certs/localhost.crt'
+    pemfile = '/etc/pki/tls/certs/localhost.pem'
+    sslOptions = {}
+    sslOptions['paste'] = {'ssl_pem': pemfile}
+    sslOptions['gevent'] = {'keyfile': keyfile, 'certfile': certfile}
+    sslOptions['cherrypy'] = {'keyfile': keyfile, 'certfile': certfile}
+    
+    options = {}
+    if args.server in sslOptions:
+        options.update(**sslOptions[args.server]) # retrieve ssl options for server
+    
     
     import bottle
     
