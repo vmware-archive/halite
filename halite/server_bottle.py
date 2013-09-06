@@ -442,6 +442,14 @@ if __name__ == "__main__":
         except ImportError as ex: #gevent support not available
             args.server = 'wsgiref' # use default server
     
+    sslOptions = dict(wsgiref={}) #no ssl for wsgiref
+    sslOptions['paste'] = {'ssl_pem': '/etc/pki/tls/certs/localhost.pem'}
+    sslOptions['gevent'] = {'keyfile': '/etc/pki/tls/certs/localhost.key', 
+                                'certfile': '/etc/pki/tls/certs/localhost.crt',
+                                }
+
+    options = dict(**sslOptions[args.server]) # retrieve ssl options for server
+    #options = dict()
     
     import bottle
     
@@ -454,7 +462,9 @@ if __name__ == "__main__":
     app = rebase(base=args.base)
     
     logger.info("Running web application with server %s on %s:%s" %
-                    (args.server, args.host, args.port))    
+                    (args.server, args.host, args.port))
+    logger.info("Server options: \n%s" % (options))
+    
      
     bottle.run( app=app,
                 server=args.server,
@@ -463,4 +473,5 @@ if __name__ == "__main__":
                 debug=True, 
                 reloader=False, 
                 interval=1,
-                quiet=False)
+                quiet=False,
+                **options)
