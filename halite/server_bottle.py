@@ -114,13 +114,13 @@ def loadWebUI(app):
         
         return dict(result = "Sent Ping")
     
-    @app.get('/stream/basic')
+    @app.get('/stream')
     def streamBasicGet():
         """ Create server sent event stream with counter"""
         bottle.response.set_header('Content-Type',  'text/event-stream') #text
         bottle.response.set_header('Cache-Control',  'no-cache')
         # Set client-side auto-reconnect timeout, ms.
-        yield 'retry: 100\n\n'
+        yield 'retry: 1000\n\n'
         yield 'data: START\n\n'
         n = 1
         end = time.time() + 600 # Keep connection alive no more then... (s)
