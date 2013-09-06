@@ -462,7 +462,6 @@ if __name__ == "__main__":
     loadErrors(app)
     loadWebUI(app)
     loadSaltApi(app)
-    #app = remount(base=args.base)
     app = rebase(base=args.base)
     
     logger.info("Running web application with server %s on %s:%s" %
