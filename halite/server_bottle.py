@@ -1,6 +1,6 @@
 #!/usr/local/bin/python2.7
 
-""" Runs wsgi web server using bottle framework
+''' Runs wsgi web server using bottle framework
     
     To get usage
     
@@ -13,10 +13,9 @@
     and routes below are relative to this root path so
     "/" is http://localhost:port/
      
-"""
+'''
 import sys
 import os
-import argparse
 import time
 import datetime
 import hashlib
@@ -26,8 +25,9 @@ try:
 except ImportError as ex:
     import json
 
-
 import aiding
+
+gevented = False
 
 logger = aiding.getLogger(name="Bottle")
 
@@ -40,7 +40,7 @@ STATIC_LIB_PATH =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib
 
 
 def loadWebUI(app):
-    """ Load endpoints for bottle app"""
+    ''' Load endpoints for bottle app'''
         
     #catch all for page refreshes of any app url
     @app.route('/app/<path:path>') # /app/<path>
@@ -64,10 +64,11 @@ def loadWebUI(app):
     
     @app.get('/test') 
     def testGet():
-        """ Test endpoint for bottle application
-            Shows location of this file
-            shows all routes in current bottle app
-        """
+        '''
+        Test endpoint for bottle application
+        Shows location of this file
+        Shows all routes in current bottle app
+        '''
         bottle.response.set_header('content-type', 'text/plain')
         content =  "Web app file is located at %s" % os.path.dirname(os.path.abspath(__file__))
         siteMap = ""
@@ -88,9 +89,10 @@ def loadWebUI(app):
     @app.get('/echo')
     @app.get('/echo/<action>')
     def echoGet(action=None):
-        """ Ajax test endpoint for web application service
-            Echos back query args and content
-        """
+        '''
+        Ajax test endpoint for web application service
+        Echos back query args and content
+        '''
         #convert to json serializible dict
         query = { key: val for key, val in bottle.request.query.items()}
         
@@ -104,7 +106,7 @@ def loadWebUI(app):
     
     @app.get('/ping') 
     def pingGet():
-        """ Send salt ping"""
+        ''' Send salt ping'''
         import salt.client
         import salt.config
         __opts__ = salt.config.client_config(
@@ -115,8 +117,8 @@ def loadWebUI(app):
         return dict(result = "Sent Ping")
     
     @app.get('/stream')
-    def streamBasicGet():
-        """ Create server sent event stream with counter"""
+    def streamGet():
+        ''' Create server sent event stream with counter'''
         bottle.response.set_header('Content-Type',  'text/event-stream') #text
         bottle.response.set_header('Cache-Control',  'no-cache')
         # Set client-side auto-reconnect timeout, ms.
@@ -132,57 +134,24 @@ def loadWebUI(app):
         yield "data: END\n\n"
         
 def tokenify(cmd, token=None):
-    """ If token is not None Then assign token to 'token' key of dict cmd and return cmd
-        Otherwise return cmd
-    """
+    '''
+    If token is not None Then assign token to 'token' key of dict cmd and return cmd
+    Otherwise return cmd
+    '''
     if token is not None:
         cmd['token'] = token
     return cmd
 
 def loadSaltApi(app):
-    '''
-    Load endpoint for Salt-API
-    '''
+    ''' Load endpoints for Salt-API '''
     from salt.exceptions import EauthAuthenticationError
     import salt.client.api
-    #import salt.auth
-    #import salt.config
-    #import salt.utils
-    #import saltapi
-    #_opts = salt.config.client_config(
-                    #os.environ.get('SALT_MASTER_CONFIG', '/etc/salt/master'))
     
     sleep = gevent.sleep if gevented else time.sleep
     
-    corsRoutes = ['/login', '/logout',
-                  '/signature', '/signature/<token>', 
-                  '/run', 'run/<token>',
-                  '/event/<token>',
-                  '/fire', '/fire/<token>'
-                  ]
-    
-    @app.hook('after_request')
-    def enableCors():
-        """ Add CORS headers to each response
-            Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
-        """
-        #bottle.response.set_header('Access-Control-Allow-Credentials', 'true')
-        bottle.response.set_header('Access-Control-Max-Age:', '3600')
-        bottle.response.set_header('Access-Control-Allow-Origin', '*')
-        bottle.response.set_header('Access-Control-Allow-Methods',
-                            'PUT, GET, POST, DELETE, OPTIONS')
-        bottle.response.set_header('Access-Control-Allow-Headers', 
-            'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, X-Auth-Token')
-    
-    @app.route(corsRoutes, method='OPTIONS')
-    def allowOption(path=None):
-        """ Respond to OPTION request method
-        """
-        return {}
-    
     @app.post('/login') 
     def loginPost():
-        """ Login and respond with login credentials"""
+        ''' Login and respond with login credentials'''
         data = bottle.request.json
         if not data:
             bottle.abort(400, "Login data missing.")        
@@ -202,9 +171,10 @@ def loadSaltApi(app):
     
     @app.post('/logout') 
     def logoutPost():
-        """ Logout
-            {return: "Logout suceeded."}
-        """
+        '''
+        Logout
+        {return: "Logout suceeded."}
+        '''
         token = bottle.request.get_header('X-Auth-Token')
         if token:
             result = {"return": "Logout suceeded."}
@@ -214,9 +184,10 @@ def loadSaltApi(app):
     
     @app.post(['/signature', '/signature/<token>'])
     def signaturePost(token = None):
-        """ Fetch module function signature(s) with either credentials in post data
-            or token from url or token from X-Auth-Token header
-        """
+        '''
+        Fetch module function signature(s) with either credentials in post data
+        or token from url or token from X-Auth-Token header
+        '''
         if not token:
             token = bottle.request.get_header('X-Auth-Token')
         
@@ -239,9 +210,10 @@ def loadSaltApi(app):
     
     @app.post(['/run', '/run/<token>'])
     def runPost(token = None):
-        """ Execute salt command with either credentials in post data
-            or token from url or token from X-Auth-Token headertoken 
-        """
+        '''
+        Execute salt command with either credentials in post data
+        or token from url or token from X-Auth-Token headertoken 
+        '''
         if not token:
             token = bottle.request.get_header('X-Auth-Token')
         
@@ -264,12 +236,12 @@ def loadSaltApi(app):
         
     @app.get('/event/<token>')
     def eventGet(token):
-        """
-            Create server sent event stream from salt
-            and authenticate with the given token
-            Also optional query arg tag allows with
-            filter events based on tag
-        """
+        '''
+        Create server sent event stream from salt
+        and authenticate with the given token
+        Also optional query arg tag allows with
+        filter events based on tag
+        '''
         if not token:
             bottle.abort(401, "Missing token.")
         
@@ -295,15 +267,15 @@ def loadSaltApi(app):
              
     @app.post(['/fire', '/fire/<token>'])
     def firePost(token=None):
-        """
-            Fire event(s)
-            Each event is a dict of the form
-            {
-              tag: 'tagstring',
-              data: {datadict},
-            }
-            Post body is either list of events or single event
-        """
+        '''
+        Fire event(s)
+        Each event is a dict of the form
+        {
+          tag: 'tagstring',
+          data: {datadict},
+        }
+        Post body is either list of events or single event
+        '''
         if not token:
             token = bottle.request.get_header('X-Auth-Token')        
         if not token:
@@ -328,13 +300,47 @@ def loadSaltApi(app):
         bottle.response.set_header('Content-Type',  'application/json')
         return json.dumps(results)
         
+    return app
+
+def loadCors(app):
+    '''
+    Load support for CORS Cross Origin Resource Sharing
+    '''
+    corsRoutes = ['/login', '/logout',
+                  '/signature', '/signature/<token>', 
+                  '/run', 'run/<token>',
+                  '/event/<token>',
+                  '/fire', '/fire/<token>'
+                  ]
+    
+    @app.hook('after_request')
+    def enableCors():
+        '''
+        Add CORS headers to each response
+        Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+        '''
+        #bottle.response.set_header('Access-Control-Allow-Credentials', 'true')
+        bottle.response.set_header('Access-Control-Max-Age:', '3600')
+        bottle.response.set_header('Access-Control-Allow-Origin', '*')
+        bottle.response.set_header('Access-Control-Allow-Methods',
+                            'PUT, GET, POST, DELETE, OPTIONS')
+        bottle.response.set_header('Access-Control-Allow-Headers', 
+            'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, X-Auth-Token')
+    
+    @app.route(corsRoutes, method='OPTIONS')
+    def allowOption(path=None):
+        '''
+        Respond to OPTION request method
+        '''
+        return {}
     
     return app
 
 def loadErrors(app):
-    """ Load decorated Error functions for bottle web application
-        Error functions do not automatically jsonify dicts so must manually do so.
-    """
+    '''
+    Load decorated Error functions for bottle web application
+    Error functions do not automatically jsonify dicts so must manually do so.
+    '''
 
     @app.error(400)
     def error400(ex):
@@ -348,7 +354,7 @@ def loadErrors(app):
     
     @app.error(404)
     def error404(ex):
-        """ Use json 404 if request accepts json otherwise use html"""
+        ''' Use json 404 if request accepts json otherwise use html'''
         if 'application/json' not in bottle.request.get_header('Accept', ""):
             bottle.response.set_header('content-type', 'text/html')
             return bottle.tonat(bottle.template(bottle.ERROR_PAGE_TEMPLATE, e=ex))
@@ -367,9 +373,10 @@ def loadErrors(app):
         return json.dumps(dict(error=ex.body))
 
 def remount(base):
-    """ Remount current app to new app at base mountpoint such as '/demo'
-        This enables different root path such as required by web server proxy
-    """
+    '''
+    Remount current app to new app at base mountpoint such as '/demo'
+    This enables different root path such as required by web server proxy
+    '''
     if not base: # no remount needed
         return bottle.app()
     oldApp = bottle.app.pop() # remove current app
@@ -378,7 +385,7 @@ def remount(base):
     return newApp
 
 def rebase(base):
-    """ Create new app using current app routes prefixed with base"""
+    ''' Create new app using current app routes prefixed with base'''
     if not base: #no rebase needed
         return bottle.app()
     
@@ -390,70 +397,59 @@ def rebase(base):
         route.reset() #reapply plugins on next call
     return newApp
 
-if __name__ == "__main__":
-    """Process command line args """
+def startServer(level='info',
+                server='paste',
+                host='0.0.0.0',
+                port='8080',
+                base='',
+                cors=False, 
+                tls=False, 
+                certpath='/etc/pki/tls/certs/localhost.crt',
+                keypath='/etc/pki/tls/certs/localhost.key',
+                pempath='/etc/pki/tls/certs/localhost.pem',
+                **kwas
+                ):
+    '''
+    Starts up and runs web application server and salt api server
+    Parameters:
+        level = logging level string, default is 'info'
+        server = server name string, default is 'paste'
+        host = host address or domain name string, default is '0.0.0.0'
+        port = port number string, default is '8080'
+        base = url path base prefix string, default is ''
+        cors = enable CORS if truthy, default is False
+        tls = use tls/ssl if Truthy, default is False
+        certpath = pathname string to ssl certificate file, default is
+                   '/etc/pki/tls/certs/localhost.crt'
+        keypath = pathname string to ssl private key file, default is
+                   '/etc/pki/tls/certs/localhost.key'
+        pempath = pathname string to ssl pem file with both cert and private key,
+                   default is '/etc/pki/tls/certs/localhost.pem'
+        kwas = additional keyword arguments dict that are passed as server options           
+    Does not return.
+    '''
+    #so when using gevent can monkey patch before import bottle
+    global gevented, gevent, bottle 
     
-    levels = aiding.LOGGING_LEVELS #map of strings to logging levels
-    
-    d = "Runs localhost wsgi service on given host address and port. "
-    d += "\nDefault host:port is 0.0.0.0:8080."
-    d += "\n(0.0.0.0 is any interface on localhost)"
-    p = argparse.ArgumentParser(description = d)
-    p.add_argument('-l','--level',
-                    action='store',
-                    default='info',
-                    choices=levels.keys(),
-                    help="Logging level.")
-    p.add_argument('-s','--server', 
-                    action = 'store',
-                    nargs='?', 
-                    const='wsgiref', 
-                    default='wsgiref',
-                    help = "Wsgi server type.")
-    p.add_argument('-a','--host', 
-                    action = 'store',
-                    nargs='?', 
-                    const='0.0.0.0', 
-                    default='0.0.0.0',
-                    help = "Wsgi server ip host address.")
-    p.add_argument('-p','--port', 
-                    action = 'store',
-                    nargs='?', 
-                    const='8080', 
-                    default='8080',
-                    help = "Wsgi server ip port.")    
-    p.add_argument('-b','--base',
-                    action = 'store',
-                    nargs='?', 
-                    const = '',
-                    default = '',
-                    help = "Base Url for client side web application.")    
-    
-    args = p.parse_args()
-    
-    logger.setLevel(levels[args.level])
+    logger.setLevel(aiding.LOGGING_LEVELS[level])
     gevented = False
-    if args.server in ['gevent']:
+    if server in ['gevent']:
         try:
             import gevent
             from gevent import monkey
             monkey.patch_all()
             gevented = True
         except ImportError as ex: #gevent support not available
-            args.server = 'wsgiref' # use default server
+            args.server = 'paste' # use default server
     
-    keyfile = '/etc/pki/tls/certs/localhost.key'
-    certfile = '/etc/pki/tls/certs/localhost.crt'
-    pemfile = '/etc/pki/tls/certs/localhost.pem'
-    sslOptions = {}
-    sslOptions['paste'] = {'ssl_pem': pemfile}
-    sslOptions['gevent'] = {'keyfile': keyfile, 'certfile': certfile}
-    sslOptions['cherrypy'] = {'keyfile': keyfile, 'certfile': certfile}
+    tlsOptions = {}
+    tlsOptions['paste'] = {'ssl_pem': pempath}
+    tlsOptions['gevent'] = {'keyfile': keypath, 'certfile': certpath}
+    tlsOptions['cherrypy'] = {'keyfile': keypath, 'certfile': certpath}
     
-    options = {}
-    if args.server in sslOptions:
-        options.update(**sslOptions[args.server]) # retrieve ssl options for server
-    
+    options = dict(**kwas)
+    if tls and args.server in tlsOptions:
+        options.update(**tlsOptions[args.server]) # retrieve ssl options for server
     
     import bottle
     
@@ -462,19 +458,114 @@ if __name__ == "__main__":
     loadErrors(app)
     loadWebUI(app)
     loadSaltApi(app)
+    if cors:
+        loadCors(app)
     app = rebase(base=args.base)
     
-    logger.info("Running web application with server %s on %s:%s" %
-                    (args.server, args.host, args.port))
-    logger.info("Server options: \n%s" % (options))
+    logger.info("Running web application server '{0}' on {1}:{2}.".format(
+        server, host, port))
     
+    if base:
+        logger.info("URL paths rebased after base '{0}".format(base))
+    logger.info("CORS is {0}.".format('enabled' if cors else 'disabled'))
+    logger.info("TLS/SSL is {0}.".format('enabled' if tls else 'disabled'))
+    logger.info("Server options: \n{0}".format(options))
      
     bottle.run( app=app,
-                server=args.server,
-                host=args.host,
-                port=args.port,
+                server=server,
+                host=host,
+                port=port,
                 debug=True, 
                 reloader=False, 
                 interval=1,
                 quiet=False,
-                **options)
+                **options)    
+
+
+def parseArgs():
+    '''
+    Process command line args using argparse or if not available the optparse
+       in a backwards compatible way
+       
+    Returns tuple of (args, remnants) where args is object with attributes
+       corresponding to named arguments and remnants is list of remaining
+       unnamed positional arguments
+    '''
+    
+    try: # make backwards compatible with deprecated optparse
+        from argparse import ArgumentParser as Parser
+        Parser.add = Parser.add_argument
+        Parser.add_group =  Parser.add_argument_group
+        Parser.parse = Parser.parse_known_args
+    except ImportError as ex:
+        from optparse import OptionParser as Parser
+        Parser.add =  Parser.add_option
+        Parser.add_group = Parser.add_option_group
+        Parser.parse =  Parser.parse_args
+    
+    d = "Runs localhost web application wsgi service on given host address and port. "
+    d += "\nDefault host:port is 0.0.0.0:8080."
+    d += "\n(0.0.0.0 is any interface on localhost)"
+    p = Parser(description = d)
+    p.add('-l','--level',
+            action='store',
+            default='info',
+            choices=aiding.LOGGING_LEVELS.keys(),
+            help="Logging level.")
+    p.add('-s','--server', 
+            action = 'store',
+            default='paste',
+            help = "Web application WSGI server type.")
+    p.add('-a','--host', 
+            action = 'store',
+            default='0.0.0.0',
+            help = "Web application WSGI server ip host address.")
+    p.add('-p','--port', 
+            action = 'store',
+            default='8080',
+            help = "Web application WSGI server ip port.")    
+    p.add('-b','--base',
+            action = 'store',
+            default = '',
+            help = "Base Url path prefix for client side web application.")
+    p.add('-x','--cors',
+            action = 'store_true',
+            default = False,
+            help = "Enable CORS Cross Origin Resource Sharing on server.")    
+    p.add('-t','--tls',
+            action = 'store_true',
+            default = False,
+            help = "Use TLS/SSL (https).")
+    p.add('-c','--cert',
+            action = 'store',
+            default = '/etc/pki/tls/certs/localhost.crt',
+            help = "File path to tls/ssl cacert certificate file.")
+    p.add('-k','--key',
+            action = 'store',
+            default = '/etc/pki/tls/certs/localhost.key',
+            help = "File path to tls/ssl private key file.")
+    p.add('-e','--pem',
+            action = 'store',
+            default = '/etc/pki/tls/certs/localhost.pem',
+            help = "File path to tls/ssl pem file with both cert and key.")    
+    return (p.parse())   
+
+
+if __name__ == "__main__":
+    '''
+    Processes command line arguments and then runs web application server
+    
+    Invoke with '-h' command line option to get usage string
+    '''
+    args, remnants = parseArgs()
+    startServer(level=args.level,
+                server=args.server,
+                host=args.host,
+                port=args.port, 
+                base=args.base,
+                cors=args.cors,
+                tls=args.tls,
+                certpath=args.cert,
+                keypath=args.key,
+                pempath=args.pem
+                 )
