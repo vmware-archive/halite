@@ -2,10 +2,10 @@ mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
-    'Minioner', 'Resulter', 'Jobber', 'Runner', 'Commander',
+    'Minioner', 'Resulter', 'Jobber', 'Runner', 'Wheeler', 'Commander',
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
     ($scope, $location, $route, $q, Configuration, AppData, AppPref, 
-    Item, Itemizer, Minioner, Resulter, Jobber, Runner, Commander,
+    Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, Commander,
     SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
@@ -54,6 +54,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.snagRunner = (jid, cmd) -> #get or create Runner
             if not $scope.jobs.get(jid)?
                 job = new Runner(jid, cmd)
+                $scope.jobs.set(jid, job)
+            return ($scope.jobs.get(jid))
+        
+        $scope.snagWheel = (jid, cmd) -> #get or create Wheeler
+            if not $scope.jobs.get(jid)?
+                job = new Wheeler(jid, cmd)
                 $scope.jobs.set(jid, job)
             return ($scope.jobs.get(jid))
         
@@ -432,6 +438,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                 job.processRetEvent(data)
             return job
         
+        $scope.processWheelEvent = (jid, kind, edata) ->
+            job = $scope.jobs.get(jid)
+            job.processEvent(edata)
+            data = edata.data
+            if kind == 'new'
+                job.processNewEvent(data)
+            else if kind == 'ret'
+                job.processRetEvent(data)
+            return job
+        
         $scope.processMinionEvent = (mid, edata) ->
             minion = $scope.snagMinion(mid)
             minion.processEvent(edata)
@@ -449,9 +465,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     $scope.minions.del(mid)
             return minion
             
-        $scope.processSaltEvent = (edata) ->
-            #console.log "Process Salt Event: "
-            #console.log edata
+        $scope.stamp = () ->
             date = new Date()          
             stamp = [   "/#{date.getUTCFullYear()}",
                         "-#{('00' + date.getUTCMonth()).slice(-2)}",
@@ -460,7 +474,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         ":#{('00' + date.getUTCMinutes()).slice(-2)}",
                         ":#{('00' + date.getUTCSeconds()).slice(-2)}",
                         ".#{('000' + date.getUTCMilliseconds()).slice(-3)}"].join("")
-            edata.tag = edata.tag + stamp
+            return stamp
+            
+        $scope.processSaltEvent = (edata) ->
+            #console.log "Process Salt Event: "
+            #console.log edata
+            if not edata.data.__stamp__?
+                edata.data.__stamp__ = $scope.stamp()
+            edata.tag = [edata.tag, edata.data.__stamp__].join("/")
             $scope.events.set(edata.tag, edata)
             parts = edata.tag.split("/") # split on "/" character
             if parts[0] is 'salt'
@@ -483,6 +504,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     $scope.snagRunner(jid, edata.data)
                     kind = parts[3]
                     $scope.processRunEvent(jid, kind, edata)
+                
+                else if parts[1] is 'wheel'
+                    jid = parts[2]
+                    if jid != edata.data.jid
+                        console.log "Bad wheel event"
+                        $scope.errorMsg = "Bad wheel event: JID #{jid} not match #{edata.data.jid}"
+                        return false
+                    $scope.snagWheel(jid, edata.data)
+                    kind = parts[3]
+                    $scope.processWheelEvent(jid, kind, edata)
                     
                 else if parts[1] is 'minion' or parts[1] is 'syndic'
                     mid = parts[2]

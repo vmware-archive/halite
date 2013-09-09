@@ -352,8 +352,6 @@ class Jobber
             @errors.push(result['error'])
         return @
     
-    
-
 appUtilSrvc.value "Jobber", Jobber
 
 class Runner extends Jobber
@@ -388,6 +386,10 @@ class Runner extends Jobber
         return @
 
 appUtilSrvc.value "Runner", Runner
+
+class Wheeler extends Runner
+
+appUtilSrvc.value "Wheeler", Wheeler
 
 class Commander
     constructor: (@name, @cmds) ->
