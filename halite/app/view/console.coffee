@@ -256,26 +256,34 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     @cmd.arg = @cmd.arg[0..-2]
 
             getCmds: () ->
-                cmds =
-                [
-                    fun: @cmd.fun,
-                    mode: @cmd.mode,
-                    tgt: if @cmd.tgt isnt "" then @cmd.tgt else "*",
-                    arg: (arg for arg in @cmd.arg when arg isnt '')
-                ]
+                if @cmd.fun.split(".").length == 3 # runner or wheel not minion job
+                    cmds =
+                    [
+                        fun: @cmd.fun,
+                        mode: @cmd.mode,
+                        arg: (arg for arg in @cmd.arg when arg isnt '')
+                    ]
+                else 
+                    cmds =
+                    [
+                        fun: @cmd.fun,
+                        mode: @cmd.mode,
+                        tgt: if @cmd.tgt isnt "" then @cmd.tgt else "*",
+                        arg: (arg for arg in @cmd.arg when arg isnt '')
+                    ]
                 return cmds
             
             humanize: (cmds) ->
                 unless cmds
                     cmds = @getCmds()
                 return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
-                    when part isnt '').join(' ') for cmd in cmds).join(',').trim())
+                    when part? and part isnt '').join(' ') for cmd in cmds).join(',').trim())
         
         $scope.humanize = (cmds) ->
             unless angular.isArray(cmds)
                 cmds = [cmds]
             return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
-                    when part isnt '').join(' ') for cmd in cmds).join(',').trim())
+                    when part? and part isnt '').join(' ') for cmd in cmds).join(',').trim())
         
         $scope.action = (cmds) ->
             $scope.commanding = true
@@ -291,11 +299,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                         parts = cmds[index].fun.split(".") # split on "." character
                         if parts.length == 3 
                             if parts[0] =='runner'
-                                job = $scope.startRun(result, cmds[index])
+                                job = $scope.startRun(result, cmds[index]) #runner result is tag
                                 command.jobs.set(job.jid, job)
                             else if parts[0] == 'wheel'
-                                console.log "Wheel"
-                                console.log result
+                                job = $scope.startWheel(result, cmds[index])
+                                command.jobs.set(job.jid, job)
                         else
                             job = $scope.startJob(result, cmds[index])
                             command.jobs.set(job.jid, job)
@@ -333,10 +341,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
                 #$scope.statusing = false
-                result = data.return?[0]
+                result = data.return?[0] #result is tag
                 if result
                     
-                    job = $scope.startRun(result, cmd)
+                    job = $scope.startRun(result, cmd) #runner result is tag
                     job.commit($q).then (donejob) ->
                         $scope.assignActives(donejob)
                         $scope.$emit("Marshall")
@@ -397,7 +405,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                     minion.grains.reload(grains, false)
             $scope.graining = false
             return job   
-
+        
+        $scope.startWheel = (result, cmd) ->
+            console.log "Start Wheel #{$scope.humanize(cmd)}"
+            console.log result
+            job = $scope.snagWheel(result.jid, cmd)
+            return job    
+        
         $scope.startRun = (tag, cmd) ->
             #console.log "Start Run #{$scope.humanize(cmd)}"
             #console.log tag

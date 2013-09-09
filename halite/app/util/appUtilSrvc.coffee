@@ -279,7 +279,7 @@ class Jobber
         unless cmd
             cmd = @cmd
         return ((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
-                    when part isnt '').join(' ').trim())
+                    when part? and part isnt '').join(' ').trim())
     
     checkDone: () ->
         # active is true or null ie not false
@@ -354,13 +354,29 @@ class Jobber
     
 appUtilSrvc.value "Jobber", Jobber
 
-class Runner extends Jobber
+class Bosser extends Jobber
     constructor: (@jid, @cmd) ->
         super(jid, cmd, ['master']) #one result with id 'master'
         return @
+        
+    processNewEvent: (data) ->
+        console.log "Run/Wheel New Event"
+        console.log data
+        
+        @initResults(data.minions)
+        @cmd =
+            mode: 'async'
+            fun: data.fun
+        if data.tgt
+            @cmd['tgt'] = data.tgt
+        if data.arg
+            @cmd['arg'] = data.arg
+        return @
     
     processRetEvent: (data) ->
-        #console.log "Run Ret Event"
+        console.log "Run/Wheel Ret Event"
+        console.log data
+        
         result = @results.get('master')
         result.done = true
         @done = true
@@ -374,8 +390,8 @@ class Runner extends Jobber
             result.error = data.ret
             @errors.push(data.ret)
         
-        #console.log "Run Done. Fail = #{@fail}"
-        #console.log @
+        console.log "Run/Wheel Done. Fail = #{@fail}"
+        console.log @
         
         if @errors.length > 0
             @defer?.reject(@errors)
@@ -385,10 +401,10 @@ class Runner extends Jobber
         @promise = null
         return @
 
+class Runner extends Bosser
 appUtilSrvc.value "Runner", Runner
 
-class Wheeler extends Runner
-
+class Wheeler extends Bosser
 appUtilSrvc.value "Wheeler", Wheeler
 
 class Commander
