@@ -460,7 +460,7 @@ def startServer(level='info',
     loadSaltApi(app)
     if cors:
         loadCors(app)
-    app = rebase(base=args.base)
+    app = rebase(base=base)
     
     logger.info("Running web application server '{0}' on {1}:{2}.".format(
         server, host, port))

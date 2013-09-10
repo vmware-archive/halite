@@ -302,7 +302,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
                                 job = $scope.startRun(result, cmds[index]) #runner result is tag
                                 command.jobs.set(job.jid, job)
                             else if parts[0] == 'wheel'
-                                job = $scope.startWheel(result, cmds[index])
+                                job = $scope.startWheel(result, cmds[index]) #runner result is tag
                                 command.jobs.set(job.jid, job)
                         else
                             job = $scope.startJob(result, cmds[index])
@@ -406,10 +406,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
             $scope.graining = false
             return job   
         
-        $scope.startWheel = (result, cmd) ->
+        $scope.startWheel = (tag, cmd) ->
             console.log "Start Wheel #{$scope.humanize(cmd)}"
-            console.log result
-            job = $scope.snagWheel(result.jid, cmd)
+            console.log tag
+            parts = tag.split("/")
+            jid = parts[2]
+            job = $scope.snagWheel(jid, cmd)
             return job    
         
         $scope.startRun = (tag, cmd) ->
@@ -493,9 +495,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
         $scope.processSaltEvent = (edata) ->
             #console.log "Process Salt Event: "
             #console.log edata
-            if not edata.data.__stamp__?
-                edata.data.__stamp__ = $scope.stamp()
-            edata.tag = [edata.tag, edata.data.__stamp__].join("/")
+            if not edata.data._stamp?
+                edata.data._stamp = $scope.stamp()
+            edata.tag = [edata.tag, edata.data._stamp].join("/")
             $scope.events.set(edata.tag, edata)
             parts = edata.tag.split("/") # split on "/" character
             if parts[0] is 'salt'
