@@ -34,6 +34,12 @@ Installation quickstart
 
         git clone https://github.com/saltstack/halite
 
+2. Run halite/halite/server_bottle.py with -h option to get parameters
+
+.. code-block:: bash
+  ./server_bottle.py -h
+  ./server_bottle.py 
+
 More Details comming. TBD
 
 Documentation
