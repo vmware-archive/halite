@@ -60,7 +60,13 @@ More Details comming. TBD
 Documentation
 =============
 
-.. image:: screenshot.png
+.. image:: HomeConsole.png
+.. image:: CommandForm.png
+.. image:: JobMonitor.png
+.. image:: JobMonitorEvent.png
+.. image:: MinonMonitor.png
+.. image:: EventMonitor.png
+.. image:: Preferences.png
 
 Browser requirements
 --------------------
