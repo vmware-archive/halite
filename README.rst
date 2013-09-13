@@ -34,11 +34,26 @@ Installation quickstart
 
         git clone https://github.com/saltstack/halite
 
-2. Run halite/halite/server_bottle.py with -h option to get parameters
 
+2. Run halite/halite/server_bottle.py (use with -h option to get parameters)
+   The simplest approach is to run the server with it dynamically generating
+   the main web app load page (main.html) in coffescript mode, where the coffeescript
+   is transpiled to javascript on the fly. In each case the appropriate server package
+   must be installed.
+   
 .. code-block:: bash
-  ./server_bottle.py -h
-  ./server_bottle.py 
+  
+    $ ./server_bottle.py -d -C -l debug -s cherrypy
+    
+    $ ./server_bottle.py -d -C -l debug -s paste
+
+    $ ./server_bottle.py -d -C -l debug -s gevent
+    
+
+
+
+3. Navigate html5 compliant browser to http://localhost:8080/app
+
 
 More Details comming. TBD
 
@@ -74,6 +89,12 @@ Client side web application requirements:
 * Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
 * Jasmine unit test framework (http://pivotal.github.io/jasmine/)
 
+Optional dependencies 
+* Cheerypy web server (http://http://www.cherrypy.org/)
+* Paste web server (http://pythonpaste.org/)
+* Gevent web server(http://www.gevent.org/)
+
+For nodejs testing
 * Express javascript web server
 
 
