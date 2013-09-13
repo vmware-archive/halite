@@ -6,6 +6,27 @@ Halite
 very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
 list.
 
+This is version 0.0.3 which is substantially changed from the previous version.
+Any application based on the previous version will be broken.
+
+This version is substantially different. Notable changes include:
+1. Use of a new unified api in salt/client/api.py for talking to salt.
+   Does not use Salt-API. The rest service is integral to halite.
+2. Use of Server Sent Events (SSE) to receive realtime streaming of events 
+  from the Salt Event Bus.
+3. Use of Bottle web framework included with choice of WSGI web servers. The server must
+  be multithreaded or gevented or the equivalent in order to support SSE. The tested
+  servers are paste, cherrypy, and gevent
+4. Simplified web API that is a thin wrapper around salt/client/api.py
+
+This version of Halite is meant to work out of the box with an install option for 
+SaltStack. The PyPi  (PIP) version of Halite is a minified version that is meant
+to be installed along side Salt to provide a minimal out of the box UI for Salt.
+
+The repository is meant for development of custom versions of the UI that would
+be deployed with different servers, different configurations, etc and for development
+of future features for the Salt packaged version.
+
 Installation quickstart
 =======================
 
@@ -13,38 +34,7 @@ Installation quickstart
 
         git clone https://github.com/saltstack/halite
 
-2.  Generate an ``index.html`` file::
-
-        cd halite/halite
-        ./genindex.py -C
-
-3.  Install `salt-api`_ 0.8.2 or greater.
-4.  Follow the instructions for installing CherryPy and configuring the
-    `rest_cherrypy`_ module.
-5.  Configure the ``app`` and ``static`` settings to point at the files in your
-    halite clone. For example::
-
-        rest_cherrypy:
-          port: 8000
-          debug: True
-          static: /path/to/halite/halite
-          app: /path/to/halite/halite/index.html
-
-    .. note::
-
-        The above configuration is for local use only and does not use HTTPS.
-        Your Salt authentication credentials will be sent in the clear.
-
-        Follow the `rest_cherrypy`_ module installation instructions to disable
-        ``debug`` and generate self-signed SSL certiifcates, or use existing
-        SSL certificates, for non-local usage.
-
-6.  Start ``salt-api``::
-
-        salt-api
-
-7.  Open a browser and navigate to http://localhost:8000/app (substitute
-    whatever ``port`` and ``app`` prefix you configured).
+More Details comming. TBD
 
 Documentation
 =============
@@ -54,19 +44,14 @@ Documentation
 Browser requirements
 --------------------
 
-Support for ES5 and HTML5 is required. This means any modern browser or IE9+.
+Support for ES5 and HTML5 is required. This means any modern browser or IE10+.
 
 Server requirements
 -------------------
 
-* This app requires the `rest_cherrypy`_ module in ``salt-api`` to
-  communicate with a running Salt installation via a REST API.
 * The static media for this app is server-agnostic and may be served from any
   web server at a configurable URL prefix.
-* This app uses the HTML5 history API and so the ``index.html`` should
-  should be served from a base URL that otherwise ignores the rest of the URL
-  path. In other words, if the base URL that serves the ``index.html`` file
-  is ``/app``, then ``/app/some/path`` should also serve that same file.
+* This app uses the HTML5 history API.
 
 Libraries used
 --------------
@@ -76,32 +61,16 @@ Client side web application requirements:
 * AngularJS framework (http://angularjs.org/)
 * Bootstrap layout CSS (http://twbs.github.io/bootstrap/)
 * AngularUI framework (http://angular-ui.github.io/)
+* Underscore JS module (http://underscorejs.org/‎)
+* Underscore string JS module (http://epeli.github.io/underscore.string/)
+* Font Awesome Bootstrap Icon Fonts  (http://fortawesome.github.io/Font-Awesome/)
+* CoffeeScript Python/Ruby like javascript transpiler (http://coffeescript.org/)
 * Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
 * Jasmine unit test framework (http://pivotal.github.io/jasmine/)
-* CoffeeScript Python/Ruby like javascript transpiler
-  (http://coffeescript.org/)
+
 * Express javascript web server
-* Less CSS compiler
 
-``genindex.py``
----------------
 
-The ``halite/genindex.py`` script is used to generate an HTML file that will
-bootstrap the app containing configurable paths to all required static JS/CSS
-assets. See the output of ``genindex.py --help`` for available options.
-
-.. note:: Updating your halite clone
-
-    ``genindex.py`` should be run and the ``index.html`` file regnerated any
-    time any static assets are added or removed.
-
-For development ``genindex.py -C`` will build the ``index.html`` file
-referencing the ``.coffee`` files which will be transpiled directly by the
-browser.
-
-For production builds, JavaScript files should first be generated via ``coffee
--c halite/app``, then ``genindex.py`` will produce a production-ready build of
-``index.html``.
 
 Testing
 -------
@@ -125,5 +94,3 @@ tested at once.
 .. ............................................................................
 
 .. _`halite`: https://github.com/saltstack/halite
-.. _`salt-api`: https://github.com/saltstack/salt-api
-.. _`rest_cherrypy`: http://salt-api.readthedocs.org/en/latest/ref/netapis/all/saltapi.netapi.rest_cherrypy.html
