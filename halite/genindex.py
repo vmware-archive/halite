@@ -43,7 +43,7 @@ def parse_args():
                     help="Directory containing the source (Coffee/CSS) files.")
     p.add_option('-t', '--tmpl',
                     action='store',
-                    default='mold/main.html',
+                    default='mold/main_jinja.html',
                     help="Location of the template file to render.")
     p.add_option('-C', '--coffee',
                     action='store_true',

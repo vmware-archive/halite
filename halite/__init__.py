@@ -31,7 +31,6 @@ def start():
             'server': 'paste',
             'host': '0.0.0.0',
             'port': '8080',
-            'base': '',
             'cors': False,
             'tls': True,
             'certpath': '/etc/pki/tls/certs/localhost.crt',

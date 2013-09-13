@@ -1,16 +1,16 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
-mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q',
+mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$templateCache'
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
     'Minioner', 'Resulter', 'Jobber', 'Runner', 'Wheeler', 'Commander',
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
-    ($scope, $location, $route, $q, Configuration, AppData, AppPref, 
+    ($scope, $location, $route, $q, $templateCache, Configuration, AppData, AppPref, 
     Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, Commander,
     SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
-
+        
         #console.log("ConsoleCtlr")
         $scope.errorMsg = ""
         $scope.closeAlert = () ->

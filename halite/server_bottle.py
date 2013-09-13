@@ -37,9 +37,10 @@ STATIC_APP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app'
 # Third party static web libraries
 STATIC_LIB_PATH =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
 
+# Main templates directory
+MOLD_DIR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mold')
 
-
-def loadWebUI(app):
+def loadWebUI(app, devel=False, coffee=False):
     ''' Load endpoints for bottle app'''
         
     #catch all for page refreshes of any app url
@@ -48,6 +49,12 @@ def loadWebUI(app):
     @app.route('/app') # /app
     @app.route('/') # /
     def appGet(path=''):
+        if devel:
+            return(  createStaticMain(    kind='bottle', 
+                                            base=args.base,
+                                            coffee=args.coffee,
+                                            devel=args.devel,
+                                            save=False,))
         return bottle.static_file('main.html', root=STATIC_APP_PATH)
     
     @app.route('/static/lib/<filepath:re:.*\.(woff)>')
@@ -397,6 +404,46 @@ def rebase(base):
         route.reset() #reapply plugins on next call
     return newApp
 
+    
+def createStaticMain(kind='bottle', 
+                     moldPath=MOLD_DIR_PATH,
+                     base="",
+                     devel=False,
+                     coffee=False,
+                     save=False, 
+                     path=os.path.join(STATIC_APP_PATH, 'main.html')):
+    """
+    Generate and return main.html using template filepath mold and optionally
+    write to filepath path is save
+    
+    """
+    data = dict(baseUrl=base,
+                mini=".min" if not devel else "",
+                coffee = coffee )
+       
+    #get lists of app scripts and styles filenames
+    scripts, sheets = aiding.getFiles( top=STATIC_APP_PATH,
+                                       prefix='',
+                                       coffee = coffee)
+    data['scripts'] = scripts
+    data['sheets'] = sheets
+    
+    content =  ''
+    mainMoldPath = os.path.join(moldPath, 'main_{0}.html'.format(kind))
+    with open(mainMoldPath, "ru") as fp:
+        mold = fp.read()                                
+        if kind == 'bottle':
+            content = bottle.SimpleTemplate(mold).render(**data)
+        #elif kind == 'mustache':
+            #content = staching.render(mold, data)
+    
+    if content and save:
+        with open(path, 'w+') as fp:
+            fp.write(content)
+    
+    return content
+    
+
 def startServer(level='info',
                 server='paste',
                 host='0.0.0.0',
@@ -407,6 +454,8 @@ def startServer(level='info',
                 certpath='/etc/pki/tls/certs/localhost.crt',
                 keypath='/etc/pki/tls/certs/localhost.key',
                 pempath='/etc/pki/tls/certs/localhost.pem',
+                devel=False,
+                coffee=False, 
                 **kwas
                 ):
     '''
@@ -425,6 +474,10 @@ def startServer(level='info',
                    '/etc/pki/tls/certs/localhost.key'
         pempath = pathname string to ssl pem file with both cert and private key,
                    default is '/etc/pki/tls/certs/localhost.pem'
+        devel = generate main.html if truthy on each request in support of development
+                   default is False
+        coffee = generate main.html to load and compile coffeescript if truthy when
+                   devel is true. Default is False
         kwas = additional keyword arguments dict that are passed as server options           
     Does not return.
     '''
@@ -456,7 +509,7 @@ def startServer(level='info',
     app = bottle.default_app() # create bottle app
     
     loadErrors(app)
-    loadWebUI(app)
+    loadWebUI(app, devel=devel, coffee=coffee)
     loadSaltApi(app)
     if cors:
         loadCors(app)
@@ -547,7 +600,26 @@ def parseArgs():
     p.add('-e','--pem',
             action = 'store',
             default = '/etc/pki/tls/certs/localhost.pem',
-            help = "File path to tls/ssl pem file with both cert and key.")    
+            help = "File path to tls/ssl pem file with both cert and key.")
+    p.add('-g','--gen',
+            action = 'store_true',
+            default = False,
+            help = ("Generate web app load file. Default is 'app/main.html'"
+                    " or if provided the file specified by -f option."))
+    p.add('-f','--load',
+            action = 'store',
+            default = 'app/main.html',
+            help = "Filepath to save generated web app load file upon -g option.")
+    p.add('-C','--coffee',
+            action = 'store_true',
+            default = False,
+            help = "Upon -g option generate to load coffeescript.")
+    p.add('-d','--devel',
+                action = 'store_true',
+                default = False,
+                help = "Development mode.")    
+    
+    
     return (p.parse())   
 
 
@@ -558,6 +630,19 @@ if __name__ == "__main__":
     Invoke with '-h' command line option to get usage string
     '''
     args, remnants = parseArgs()
+    logger.setLevel(aiding.LOGGING_LEVELS[args.level]) # set bottle app logger from args
+    
+    if args.gen:
+        import bottle
+        logger.info("Generating %s from template only." % args.load)
+        createStaticMain(   kind='bottle', 
+                            base=args.base,
+                            devel=args.devel,
+                            coffee=args.coffee,
+                            save=True, 
+                            path=os.path.abspath(args.load))
+        sys.exit()    
+    
     startServer(level=args.level,
                 server=args.server,
                 host=args.host,
@@ -567,5 +652,7 @@ if __name__ == "__main__":
                 tls=args.tls,
                 certpath=args.cert,
                 keypath=args.key,
-                pempath=args.pem
+                pempath=args.pem,
+                devel=args.devel,
+                coffee=args.coffee, 
                  )
