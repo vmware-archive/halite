@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/env python
 
 ''' Runs wsgi web server using bottle framework
     
