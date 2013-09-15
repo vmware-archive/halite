@@ -493,7 +493,7 @@ def startServer(level='info',
             monkey.patch_all()
             gevented = True
         except ImportError as ex: #gevent support not available
-            args.server = 'paste' # use default server
+            server = 'paste' # use default server
 
     tlsOptions = {}
     tlsOptions['paste'] = {'ssl_pem': pempath}
@@ -501,8 +501,8 @@ def startServer(level='info',
     tlsOptions['cherrypy'] = {'keyfile': keypath, 'certfile': certpath}
 
     options = dict(**kwas)
-    if tls and args.server in tlsOptions:
-        options.update(**tlsOptions[args.server]) # retrieve ssl options for server
+    if tls and server in tlsOptions:
+        options.update(**tlsOptions[server]) # retrieve ssl options for server
 
     import bottle
 
