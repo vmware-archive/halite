@@ -1,11 +1,11 @@
-""" halite package for Salt UI client side web application 
-    
-    
+'''
+halite package for Salt UI client side web application 
+'''
 
-"""
+# Import Python libs
 import os
 
-def start():
+def start(hopts=None):
     '''
     Wrapper to start up and run server. Reads in the master config and supplies
     halite parameters to configure the server.
@@ -15,17 +15,16 @@ def start():
     by Salt to provide out of the box WUI capability. For different installations
     use the appropriate server executable file such as server_bottle.py
     '''
-
     import salt.config
     import salt.syspaths
     from . import server_bottle
-    
-    hopts = salt.config.client_config(
-                os.environ.get(
-                    'SALT_MASTER_CONFIG',
-                     os.path.join(salt.syspaths.CONFIG_DIR, 'master'))).get('halite')
-    print hopts
-    
+
+    if not hopts:
+        hopts = salt.config.client_config(
+                    os.environ.get(
+                        'SALT_MASTER_CONFIG',
+                         os.path.join(salt.syspaths.CONFIG_DIR, 'master'))).get('halite')
+
     kwparms = {
             'level': 'info',
             'server': 'paste',
@@ -37,14 +36,10 @@ def start():
             'keypath': '/etc/pki/tls/certs/localhost.key',
             'pempath': '/etc/pki/tls/certs/localhost.pem',
         }
-    
+
     if hopts:
         for key in kwparms.keys():
             if key in hopts:
                 kwparms[key] = hopts[key]
-    
-    print kwparms
-    server_bottle.startServer(**kwparms)
-                        
-    
 
+    server_bottle.startServer(**kwparms)
