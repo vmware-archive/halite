@@ -113,12 +113,11 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$rootScope', '$location', '$route',
         
         $scope.logoutUser = () ->
             $scope.errorMsg = ""
-            #console.log "Logging out #{$scope.username}"
-            
             $scope.username = null
-            
             $scope.loggedIn = false
-            
+            $scope.login =
+                username: ""
+                password: ""
             
             $scope.saltApiLogoutPromise = SaltApiSrvc.logout $scope
             $scope.saltApiLogoutPromise.success (data, status, headers, config) ->

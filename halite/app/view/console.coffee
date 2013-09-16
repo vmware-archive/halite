@@ -569,6 +569,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             SaltApiEvtSrvc.close()
             return true
         
+        $scope.clearSaltData = () ->
+            AppData.set('commands', new Itemizer())
+            $scope.commands = AppData.get('commands')
+            AppData.set('jobs', new Itemizer())
+            $scope.jobs = AppData.get('jobs')
+            AppData.set('minions', new Itemizer())
+            $scope.minions = AppData.get('minions')
+            AppData.set('events', new Itemizer())
+            $scope.events = AppData.get('events')
+        
         $scope.authListener = (event, loggedIn) ->
             #console.log "Received #{event.name}"
             #console.log event
@@ -576,6 +586,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                 $scope.openEventStream()
             else
                 $scope.closeEventStream()
+                $scope.clearSaltData()
+            return true
+                
             
         $scope.activateListener = (event) ->
             #console.log "Received #{event.name}"
