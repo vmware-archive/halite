@@ -11,12 +11,15 @@ Any application based on the previous version will be broken.
 
 This version is substantially different. Notable changes include:
 1. Use of a new unified api in salt/client/api.py for talking to salt.
-   Does not use Salt-API. The rest service is integral to halite.
+Does not use Salt-API. The rest service is integral to halite.
+
 2. Use of Server Sent Events (SSE) to receive realtime streaming of events 
-  from the Salt Event Bus.
+from the Salt Event Bus.
+
 3. Use of Bottle web framework included with choice of WSGI web servers. The server must
-  be multithreaded or gevented or the equivalent in order to support SSE. The tested
-  servers are paste, cherrypy, and gevent
+be multithreaded or gevented or the equivalent in order to support SSE. The tested
+servers are paste, cherrypy, and gevent
+
 4. Simplified web API that is a thin wrapper around salt/client/api.py
 
 This version of Halite is meant to work out of the box with an install option for 
@@ -31,7 +34,7 @@ Installation quickstart
 =======================
 
 1. Setup permissions for users who will use Halite
-  for example in master config
+For example in master config:
   
 .. code-block:: bash  
   saltwui:
@@ -117,37 +120,41 @@ Monitors
 The bottom section of the console view has monitor view buttons. Each button will
 show panels with the associated information.
 
-  * Command Monitor
+* Command Monitor
+
+Shows panels, one per command that has been executed by this user on this console. 
+Clicking on a panel will expand to show the associated job ids that have been 
+run with this command and the  completion status via an icon. 
+Red is fail, Green is success.
+Clicking on the button on the panel will rerun the command.
   
-  Shows panels, one per command that has been executed by this user on this console. 
-  Clicking on a panel will expand to show the associated job ids that have been 
-  run with this command and the  completion status via an icon. 
-  Red is fail, Green is success.
-  Clicking on the button on the panel will rerun the command.
 .. image:: screenshots/CommandMonitor.png
   
-  * Job Monitor
+* Job Monitor
+
+Shows panels, one per job that has been run by any minion associated with this
+master. Clicking on the panel with expand to show Result and Event tabs.
+Selecting the result tab will show the returner and return data
+for each minion targeted by the job.
   
-  Shows panels, one per job that has been run by any minion associated with this
-  master. Clicking on the panel with expand to show Result and Event tabs.
-  Selecting the result tab will show the returner and return data
-  for each minion targeted by the job.
 .. image:: screenshots/JobMonitor.png
 
-  Selecting the Event tab will show the
-  events associated with the job.
+Selecting the Event tab will show the events associated with the job.
+  
 .. image:: screenshots/JobMonitorEvent.png
   
-  * Minion Monitor
+* Minion Monitor
+
+Shows panels, one per minion that have keys associated with this master. The minion
+panels have icons to show the up/down status of the minion and the grains status.
+Selecting tabs will show grains data as well as minion (not job) generated events.
   
-  Shows panels, one per minion that have keys associated with this master. The minion
-  panels have icons to show the up/down status of the minion and the grains status.
-  Selecting tabs will show grains data as well as minion (not job) generated events.
 .. image:: screenshots/MinonMonitor.png
   
-  * Event Monitor
+* Event Monitor
+
+Shows panels, one per event associated with this Master.
   
-  Shows panels, one per event associated with this Master.
 .. image:: screenshots/EventMonitor.png
   
 More Details comming. TBD
