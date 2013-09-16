@@ -4,4 +4,4 @@ if __name__ == "__main__":
     '''
     import  halite
     
-    halite.start()
+    halite.start(debug=True)

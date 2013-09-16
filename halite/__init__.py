@@ -5,7 +5,8 @@ halite package for Salt UI client side web application
 # Import Python libs
 import os
 
-def start(hopts=None):
+
+def start(hopts=None, debug=None):
     '''
     Wrapper to start up and run server. Reads in the master config and supplies
     halite parameters to configure the server.
@@ -17,7 +18,12 @@ def start(hopts=None):
     '''
     import salt.config
     import salt.syspaths
+    
+    from .aiding import getLogger, LOGGING_LEVELS
     from . import server_bottle
+
+    logger = getLogger(name="Halite", level=LOGGING_LEVELS['debug'] )    
+    
 
     if not hopts:
         hopts = salt.config.client_config(
@@ -41,5 +47,8 @@ def start(hopts=None):
         for key in kwparms.keys():
             if key in hopts:
                 kwparms[key] = hopts[key]
-
+    
+    if debug:
+        logger.debug('Halite: Starting server with options. \n{0}'.format(kwparms))
+    
     server_bottle.startServer(**kwparms)
