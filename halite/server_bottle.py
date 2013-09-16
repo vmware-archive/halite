@@ -31,14 +31,17 @@ gevented = False
 
 logger = aiding.getLogger(name="Bottle")
 
+# Halite package directory
+HALITE_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+
 # Web application specific static files
-STATIC_APP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app')
+STATIC_APP_PATH = os.path.join(HALITE_DIR_PATH, 'app')
 
 # Third party static web libraries
-STATIC_LIB_PATH =  os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
+STATIC_LIB_PATH =  os.path.join(HALITE_DIR_PATH, 'lib')
 
 # Main templates directory
-MOLD_DIR_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mold')
+MOLD_DIR_PATH = os.path.join(HALITE_DIR_PATH, 'mold')
 
 def loadWebUI(app, devel=False, coffee=False):
     ''' Load endpoints for bottle app'''
@@ -615,9 +618,9 @@ def parseArgs():
             default = False,
             help = "Upon -g option generate to load coffeescript.")
     p.add('-d','--devel',
-                action = 'store_true',
-                default = False,
-                help = "Development mode.")
+            action = 'store_true',
+            default = False,
+            help = "Development mode.")
 
 
     return (p.parse())
@@ -635,12 +638,15 @@ if __name__ == "__main__":
     if args.gen:
         import bottle
         logger.info("Generating %s from template only." % args.load)
+        load = args.load
+        if not os.path.isabs(load):
+            load = os.path.normpath(os.path.join(HALITE_DIR_PATH, args.load))
         createStaticMain(   kind='bottle',
                             base=args.base,
                             devel=args.devel,
                             coffee=args.coffee,
                             save=True,
-                            path=os.path.abspath(args.load))
+                            path=os.path.abspath(load))
         sys.exit()
 
     startServer(level=args.level,
