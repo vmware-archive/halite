@@ -33,7 +33,7 @@ Installation quickstart
 1. Setup permissions for users who will use Halite
   for example in master config
   
-.. code-block:: yaml  
+.. code-block:: bash  
   saltwui:
       - .*
       - '@runner'
