@@ -95,12 +95,14 @@ Client side web application requirements:
 * Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
 * Jasmine unit test framework (http://pivotal.github.io/jasmine/)
 
-Optional dependencies 
-* Cheerypy web server (http://http://www.cherrypy.org/)
+Optional dependencies: 
+
+* Cherrypy web server (http://http://www.cherrypy.org/)
 * Paste web server (http://pythonpaste.org/)
 * Gevent web server(http://www.gevent.org/)
 
-For nodejs testing
+For nodejs testing:
+
 * Express javascript web server
 
 
