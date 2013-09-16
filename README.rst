@@ -30,12 +30,27 @@ of future features for the Salt packaged version.
 Installation quickstart
 =======================
 
-1.  Clone the Halite repository::
+1. Setup permissions for users who will use Halite
+  for example in master config
+  
+.. code-block:: yaml  
+  saltwui:
+      - .*
+      - '@runner'
+      - '@wheel'
 
-        git clone https://github.com/saltstack/halite
+  Halite uses the runner manage.status to get the status of minions so runner
+  permissions are required.  Currently halite allows but does not require any 
+  wheel modules.
+
+2.  Clone the Halite repository::
+
+.. code-block:: bash
+
+  git clone https://github.com/saltstack/halite
 
 
-2. Run halite/halite/server_bottle.py (use with -h option to get parameters)
+3. Run halite/halite/server_bottle.py (use with -h option to get parameters)
    The simplest approach is to run the server with it dynamically generating
    the main web app load page (main.html) in coffescript mode, where the coffeescript
    is transpiled to javascript on the fly. In each case the appropriate server package
@@ -51,22 +66,92 @@ Installation quickstart
     
 
 
+4. Navigate html5 compliant browser to http://localhost:8080/app
 
-3. Navigate html5 compliant browser to http://localhost:8080/app
+6. Login
 
-
-More Details comming. TBD
+The default eauth method is 'pam'. To change go to the preferences page.
 
 Documentation
 =============
 
-.. image:: screenshots/HomeConsole.png
-.. image:: screenshots/CommandForm.png
-.. image:: screenshots/JobMonitor.png
-.. image:: screenshots/JobMonitorEvent.png
-.. image:: screenshots/MinonMonitor.png
-.. image:: screenshots/EventMonitor.png
+Preferences
+-----------
+
+Click on the SaltStack logo to go to the preferences page
+
 .. image:: screenshots/Preferences.png
+
+On this page one can change the eauth method to something other than 'pam' such
+as 'ldap'.
+Enter the new eauth method string into the field saltApi.eauth and hit update.
+Now refresh the browser page and the new eauth method will be enabled. Login.
+  
+Commands
+----------
+
+To navigate to the console view click on the 'console' tab. 
+
+.. image:: screenshots/HomeConsole.png
+
+The top section of the Console view has controls for entering basic salt commands.
+The target field will target minions with the command selected. There is ping button
+with the bullhorn icon and the action menu has some preselected common commands.
+
+Expanded Commands
+-----------------
+
+.. image:: screenshots/CommandForm.png
+
+Click on the downward chevron button to expand the command form with additional
+fields for entering any salt module function. To enter "runner" functions prepend
+"runner." to the function name. For example, "runner.manage.status". To enter wheel
+functions prepend "wheel." to the wheel function name. For example, "wheel.config.values".
+For commands that require arguments enter them in the arguments fiels. Click the "plus"
+button to add addition arguments.
+Click on the Execute button or press the Return key to execute the command.
+
+Monitors
+---------
+ 
+The bottom section of the console view has monitor view buttons. Each button will
+show panels with the associated information.
+
+  * Command Monitor
+  
+  Shows panels, one per command that has been executed by this user on this console. 
+  Clicking on a panel will expand to show the associated job ids that have been 
+  run with this command and the  completion status via an icon. 
+  Red is fail, Green is success.
+  Clicking on the button on the panel will rerun the command.
+.. image:: screenshots/CommandMonitor.png
+  
+  * Job Monitor
+  
+  Shows panels, one per job that has been run by any minion associated with this
+  master. Clicking on the panel with expand to show Result and Event tabs.
+  Selecting the result tab will show the returner and return data
+  for each minion targeted by the job.
+.. image:: screenshots/JobMonitor.png
+
+  Selecting the Event tab will show the
+  events associated with the job.
+.. image:: screenshots/JobMonitorEvent.png
+  
+  * Minion Monitor
+  
+  Shows panels, one per minion that have keys associated with this master. The minion
+  panels have icons to show the up/down status of the minion and the grains status.
+  Selecting tabs will show grains data as well as minion (not job) generated events.
+.. image:: screenshots/MinonMonitor.png
+  
+  * Event Monitor
+  
+  Shows panels, one per event associated with this Master.
+.. image:: screenshots/EventMonitor.png
+  
+More Details comming. TBD
+
 
 Browser requirements
 --------------------
