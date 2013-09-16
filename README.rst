@@ -149,7 +149,7 @@ Shows panels, one per minion that have keys associated with this master. The min
 panels have icons to show the up/down status of the minion and the grains status.
 Selecting tabs will show grains data as well as minion (not job) generated events.
   
-.. image:: screenshots/MinonMonitor.png
+.. image:: screenshots/MinionMonitor.png
   
 * Event Monitor
 
