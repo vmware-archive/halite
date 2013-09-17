@@ -39,10 +39,12 @@ For example in master config:
   
 .. code-block:: bash  
 
-  saltwui:
-      - .*
-      - '@runner'
-      - '@wheel'
+  external_auth:
+    pam:
+      myusername:
+          - .*
+          - '@runner'
+          - '@wheel'
 
 Halite uses the runner manage.status to get the status of minions so runner
 permissions are required.  Currently halite allows but does not require any 
