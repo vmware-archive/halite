@@ -1,0 +1,42 @@
+# Puppetdb: Installer: Arch
+
+post_install() {
+  echo "######################################################"
+  echo "Installation quickstart"
+  echo "######################################################"
+  echo "step 1: please install a supported WSGI webserver"
+  echo "- python2-cherrypy"
+  echo "- python2-paste"
+  echo "- python2-gevent"
+  echo " "
+  echo "step 2: modify external_auth params in master config"
+  echo " "
+  echo "external_auth:"
+  echo "  pam:"
+  echo "    myusername:"
+  echo "      - .*"
+  echo "      - '@runner'"
+  echo "      - '@wheel'"
+  echo " "
+  echo "step 3: add halite params in master config"
+  echo " "
+  echo "halite:"
+  echo "  level: info"
+  echo "  server: paste # wsgi server of choice (cherrypy/paste/gevent)"
+  echo "  host: 0.0.0.0"
+  echo "  port: 8080 #portnumber of choice (default 8080)"
+  echo "  cors: False (cros site compilation)"
+  echo "  tls: True"
+  echo "  certpath: /etc/pki/tls/certs/localhost.crt"
+  echo "  keypath: /etc/pki/tls/certs/localhost.key"
+  echo "  pempath: /etc/pki/tls/certs/localhost.pem"
+  echo " "
+  echo "step 4: restart salt-master daemon"
+  echo "step 5: point browser to https://0.0.0.0:8080"
+  echo "######################################################"
+}
+
+post_upgrade () {
+  post_install
+}
+# vim:set ts=2 sw=2 et:
