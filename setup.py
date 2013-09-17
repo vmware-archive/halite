@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'halite',
-    version = '0.0.7', 
+    version = '0.0.8', 
     description = 'SaltStack Web UI',
     url = 'https://github.com/saltstack/halite',
     author='SaltStack Inc',
