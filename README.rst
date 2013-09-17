@@ -55,10 +55,11 @@ wheel modules.
 
 
 3. Run halite/halite/server_bottle.py (use with -h option to get parameters)
-   The simplest approach is to run the server with it dynamically generating
-   the main web app load page (main.html) in coffescript mode, where the coffeescript
-   is transpiled to javascript on the fly. In each case the appropriate server package
-   must be installed.
+
+The simplest approach is to run the server with it dynamically generating
+the main web app load page (main.html) in coffescript mode, where the coffeescript
+is transpiled to javascript on the fly. In each case the appropriate server package
+must be installed.
    
 .. code-block:: bash
   
@@ -199,7 +200,110 @@ For nodejs testing:
 * Express javascript web server
 
 
+Deployment
+-------------
 
+There are two approaches to deploying Halite. 
+
+1) Use it from Salt. 
+The 0.17 release of salt will run halite automatically if the Halite package is
+installed. So for example after installing SaltStack one can install the Halite
+python package with
+
+.. code-block:: bash
+
+  $ pip install -U halite
+  
+Configure the master config for halite as follows.
+
+.. code-block:: bash
+
+  halite:
+      level: 'debug'
+      server: 'cherrypy'
+      host: '0.0.0.0'
+      port: '8080'
+      cors: False
+      tls: True
+      certpath: '/etc/pki/tls/certs/localhost.crt'
+      keypath: '/etc/pki/tls/certs/localhost.key'
+      pempath: '/etc/pki/tls/certs/localhost.pem'
+      
+You will also need to configure the eauth method to be used by users of the WUI. 
+See quickstart above for an example.
+
+Install the appropriate http wsgi server selected in the master config above. In
+this case its "cherrypy". The other tested servers are "paste" and "gevent". The server
+must be multi-threaded, asynchronous, or multi-processing in order to support
+the Server Sent Event streaming connnection used by the WUI.
+
+Restart the SaltStack Master and navigate your html5 compliant browser to 
+https://localhost:8080/app or however you have configured your master above.
+
+If you have problems look for "Halite:" in the saltstack master log output.
+
+2) Customized Deployment
+
+The Halite github repository provides a skeleton framework for building your own custom
+deployment. One can run the default bottle.py framwork form the command line thusly
+
+.. code-block:: bash
+
+  $ ./server_bottly.py -g 
+  $ ./server_bottle.py -s cherrypy
+  
+ 
+or from a python application
+
+.. code-block:: python
+
+  import halite
+  
+  halite.start()
+
+
+The full set of options is given by
+
+.. code-block:: bash
+
+  $ ./server_bottle.py -h
+  usage: server_bottle.py [-h] [-l {info,debug,critical,warning,error}]
+                        [-s SERVER] [-a HOST] [-p PORT] [-b BASE] [-x] [-t]
+                        [-c CERT] [-k KEY] [-e PEM] [-g] [-f LOAD] [-C] [-d]
+
+  Runs localhost web application wsgi service on given host address and port.
+  Default host:port is 0.0.0.0:8080. (0.0.0.0 is any interface on localhost)
+  
+  optional arguments:
+    -h, --help            show this help message and exit
+    -l {info,debug,critical,warning,error}, --level {info,debug,critical,warning,error}
+                          Logging level.
+    -s SERVER, --server SERVER
+                          Web application WSGI server type.
+    -a HOST, --host HOST  Web application WSGI server ip host address.
+    -p PORT, --port PORT  Web application WSGI server ip port.
+    -b BASE, --base BASE  Base Url path prefix for client side web application.
+    -x, --cors            Enable CORS Cross Origin Resource Sharing on server.
+    -t, --tls             Use TLS/SSL (https).
+    -c CERT, --cert CERT  File path to tls/ssl cacert certificate file.
+    -k KEY, --key KEY     File path to tls/ssl private key file.
+    -e PEM, --pem PEM     File path to tls/ssl pem file with both cert and key.
+    -g, --gen             Generate web app load file. Default is 'app/main.html'
+                          or if provided the file specified by -f option.
+    -f LOAD, --load LOAD  Filepath to save generated web app load file upon -g
+                          option.
+    -C, --coffee          Upon -g option generate to load coffeescript.
+    -d, --devel           Development mode.
+
+To deploy with apache modify server_bottle.startServer so it creates the app but
+does not call bottle.run on it but passes it to MOD_WSGI. 
+See http://bottlepy.org/docs/dev/deployment.html for other details.
+
+To do a custom deployment with some other framework like Django etc. would involve
+replicating the endpoints from server_bottle. 
+
+  
+  
 Testing
 -------
 
