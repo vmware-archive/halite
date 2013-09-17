@@ -7,9 +7,22 @@ very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
 list.
 
 This version 0.0.3+ is substantially changed from the prior versions.
-Any application based on a prior version will be broken.
+Any application based on a prior version will be broken. This version only works
+with the develop branch of Salt. The changes to Salt needed to support this version
+of Halite will be rolled into the upcoming 0.17 release of Salt. If one is not
+comfortable working off the develop branch, please wait until the 0.17 release.
+
+To install the develop branch of Salt:
+
+.. code-block:: bash  
+
+  $ git clone -b develop https://github.com/saltstack/salt.git
+  $ cd salt && python setup.py install
+  $ salt-master --version
+  $ salt-master -l debug
 
 This version is substantially different. Notable changes include:
+
 1. Use of a new unified api in salt/client/api.py for talking to salt.
 Does not use Salt-API. The rest service is now integral to halite.
 
