@@ -23,17 +23,17 @@ To install the develop branch of Salt:
 
 This version is substantially different. Notable changes include:
 
-1. Use of a new unified api in salt/client/api.py for talking to salt.
+* Use of a new unified api in salt/client/api.py for talking to salt.
 Does not use Salt-API. The rest service is now integral to halite.
 
-2. Use of Server Sent Events (SSE) to receive realtime streaming of events 
+* Use of Server Sent Events (SSE) to receive realtime streaming of events 
 from the Salt Event Bus.
 
-3. Use of Bottle web framework included with choice of WSGI web servers. The server must
+* Use of Bottle web framework included with choice of WSGI web servers. The server must
 be multithreaded or gevented or the equivalent in order to support SSE. The tested
 servers are "paste", "cherrypy", and "gevent".
 
-4. Simplified web API that is a thin wrapper around salt/client/api.py.
+* Simplified web API that is a thin wrapper around salt/client/api.py.
 
 This version of Halite is designed to work out of the box with SaltStack when 
 the PyPi package version of Halite is installed. The PyPi (PIP) version of Halite 
@@ -52,7 +52,7 @@ and also for development of future features for the Salt packaged version.
 Installation quickstart
 =======================
 
-1. Setup permissions for users who will use Halite
+* Setup permissions for users who will use Halite
 For example in master config:
   
 .. code-block:: bash  
@@ -68,14 +68,14 @@ Halite uses the runner manage.status to get the status of minions so runner
 permissions are required.  Currently halite allows but does not require any 
 wheel modules.
 
-2.  Clone the Halite repository::
+* Clone the Halite repository::
 
 .. code-block:: bash
 
   git clone https://github.com/saltstack/halite
 
 
-3. Run halite/halite/server_bottle.py (use with -h option to get parameters)
+* Run halite/halite/server_bottle.py (use with -h option to get parameters)
 
 The simplest approach is to run the server with it dynamically generating
 the main web app load page (main.html) in coffescript mode, where the coffeescript
@@ -92,10 +92,9 @@ must be installed.
     
 
 
-4. Navigate html5 compliant browser to http://localhost:8080/app
+* Navigate html5 compliant browser to http://localhost:8080/app
 
-6. Login
-
+* Login
 The default eauth method is 'pam'. To change go to the preferences page.
 
 Documentation
