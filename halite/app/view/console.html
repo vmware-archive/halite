@@ -280,6 +280,11 @@
           ng-class="minion.grains.keys().length?'label-info':'label-warning'">
           <b style="font-size: larger">{{minion.id}}</b>
         </span>
+        <div class="btn-group">
+          <button type="button" class="btn" ng-model="minionMode" btn-radio="'grain'">Grain</button>
+          <button type="button" class="btn" ng-model="minionMode" btn-radio="'event'">Event</button>
+          <button type="button" class="btn" ng-model="minionMode" btn-radio="'command'">Command</button>
+        </div>
         <div class="pull-right">
           <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-success':'badge-important'">
@@ -292,207 +297,35 @@
         </div>  
         <div class="clearfix"></div>
       </div>
-      <div class="slat-body animate-fade" ng-show="!collapsed">
-        <tabset>
-          <tab heading="Info">
-            <div class="span4">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr>
-                  <td>id</td>
-                  <td>{{minion.grains.get("id")}}</td>
-                </tr> 
-                <tr>
-                  <td>host</td>
-                  <td>{{minion.grains.get("host")}}</td>
-                </tr> 
-                <tr>
-                  <td>domain</td>
-                  <td>{{minion.grains.get("domain")}}</td>
-                </tr> 
-                <tr>
-                  <td>fqdn</td>
-                  <td>{{minion.grains.get("fqdn")}}</td>
-                </tr> 
-                <tr>
-                  <td>nodename</td>
-                  <td>{{minion.grains.get("nodename")}}</td>
-                </tr> 
-                <tr>
-                  <td>localhost</td>
-                  <td>{{minion.grains.get("id")}}</td>
-                </tr>    
-                <tr>
-                  <td>server_id</td>
-                  <td>{{minion.grains.get("server_id")}}</td>
-                </tr>
-                <tr>
-                  <td>master</td>
-                  <td>{{minion.grains.get("master")}}</td>
-                </tr> 
-                <tr>
-                  <td>ipv4</td>
-                  <td>{{minion.grains.get("ipv4")[0]}}</td>
-                </tr> 
-              </table>
-            </div>
-            <div class="span4">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr>
-                  <td>saltversion</td>
-                  <td>{{minion.grains.get("saltversion")}}</td>
-                </tr> 
-                <tr>
-                  <td>pythonversion</td>
-                  <td>{{minion.grains.get("pythonversion").join(".")}}</td>
-                </tr> 
-                <tr>
-                  <td>shell</td>
-                  <td>{{minion.grains.get("shell")}}</td>
-                </tr> 
-                <tr>
-                  <td>defaultencoding</td>
-                  <td>{{minion.grains.get("defaultencoding")}}</td>
-                </tr> 
-                <tr>
-                  <td>defaultlanguage</td>
-                  <td>{{minion.grains.get("defaultlanguage")}}</td>
-                </tr> 
-                <tr>
-                  <td>os</td>
-                  <td>{{minion.grains.get("os")}}</td>
-                </tr> 
-                <tr>
-                  <td>os_family</td>
-                  <td>{{minion.grains.get("os_family")}}</td>
-                </tr>    
-                <tr>
-                  <td>kernel</td>
-                  <td>{{minion.grains.get("kernel")}}</td>
-                </tr>
-                <tr>
-                  <td>kernelrelease</td>
-                  <td>{{minion.grains.get("kernelrelease")}}</td>
-                </tr> 
-              </table>
-            </div>
-            <div class="span4">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr>
-                  <td>ps</td>
-                  <td>{{minion.grains.get("ps")}}</td>
-                </tr> 
-                <tr>
-                  <td>virtual</td>
-                  <td>{{minion.grains.get("virtual")}}</td>
-                </tr> 
-                <tr>
-                  <td>cpu_model</td>
-                  <td>{{minion.grains.get("cpu_model")}}</td>
-                </tr> 
-                <tr>
-                  <td>cpuarch</td>
-                  <td>{{minion.grains.get("cpuarch")}}</td>
-                </tr> 
-                <tr>
-                  <td>num_cpus</td>
-                  <td>{{minion.grains.get("num_cpus")}}</td>
-                </tr> 
-                <tr>
-                  <td>cpu_flags</td>
-                  <td>{{minion.grains.get("cpu_flags").join()}}</td>
-                </tr>    
-                <tr>
-                  <td>num_gpus</td>
-                  <td>{{minion.grains.get("num_gpus")}}</td>
-                </tr>
-                <tr>
-                  <td>gpus</td>
-                  <td>{{minion.grains.get("gpus").join()}}</td>
-                </tr> 
-                <tr>
-                  <td>mem_total</td>
-                  <td>{{minion.grains.get("mem_total")}}</td>
-                </tr> 
-              </table>
-            </div>
-          </tab>
-          <tab heading="IP">
-            <div class="span6">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr ng-repeat="(key, val) in minion.grains.get('ip_interfaces') track by $index">
-                  <td>{{key}}</td>
-                  <td>{{val.join(', ')}}</td>
-                </tr> 
-              </table>
-            </div>
-            <div class="span6">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr ng-repeat="ip in minion.grains.get('ipv4')">
-                  <td>ipv4 {{$index}}</td>
-                  <td>{{ip}}</td>
-                </tr> 
-              </table>
-            </div>
-          </tab>
-          <tab heading="Path">
-            <div class="span12">
-              <table class="table table-striped table-bordered table-hover table-condensed">
-                <tr>
-                  <td>path</td>
-                  <td>{{minion.grains.get("path")}}</td>
-                </tr> 
-                <tr>
-                  <td>saltpath</td>
-                  <td>{{minion.grains.get("saltpath")}}</td>
-                </tr> 
-                <tr>
-                  <td>pythonpath</td>
-                  <td>
-                    <table class="table table-striped table-bordered table-hover table-condensed">
-                      <tr ng-repeat="path in minion.grains.get('pythonpath')">
-                        <td>{{path}}</td>
-                      </tr> 
-                    </table>
-                  </td>
-                </tr> 
-                
-              </table>
-              
-            </div>
-          </tab>
-          <tab heading="Grain">
-            <div class="span12">
-              <kvl ng-repeat="grain in minion.grains.items()">
-                <kvi>
-                  <span><b><i>{{grain.key}}: </i></b></span>
-                  <span ng-repeat="ensual in ensuals(grain.val)" 
-                    ng-include="'ensual_nested.html'">
-                  </span>
-                </kvi>
-              </kvl>
-              <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
-            </div>
-          </tab>
-          <tab heading="Event">
-            <div class="span12">
-              <kvl ng-repeat="event in minion.events.values().reverse()">
-                <kvi>
-                  <span><b><i>{{event.tag}}</i></b></span>
-                  <span ng-repeat="ensual in ensuals(event.data)" 
-                    ng-include="'ensual_nested.html'">
-                  </span>
-                </kvi>
-              </kvl>
-              <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
-            </div>
-          </tab>
-          <tab heading="Command">
-            <div class="span12">
-              <p>Commands associated with this minion</p>
-            </div>
-          </tab>
-          
-        </tabset>
+      <div class="slat-body animate-fade" ng-show="!collapsed" >
+        <div class="span12" ng-show="minionMode == 'grain'">
+          <kvl ng-repeat="grain in minion.grains.items()">
+            <kvi>
+              <span><b><i>{{grain.key}}: </i></b></span>
+              <span ng-repeat="ensual in ensuals(grain.val)" 
+                ng-include="'ensual_nested.html'">
+              </span>
+            </kvi>
+          </kvl>
+          <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
+        </div>
+        
+        <div class="span12" ng-show="minionMode == 'event'">
+          <kvl ng-repeat="event in minion.events.values().reverse()">
+            <kvi>
+              <span><b><i>{{event.tag}}</i></b></span>
+              <span ng-repeat="ensual in ensuals(event.data)" 
+                ng-include="'ensual_nested.html'">
+              </span>
+            </kvi>
+          </kvl>
+          <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
+        </div>
+
+        <div class="span12" ng-show="minionMode == 'command'">
+          <p>Commands associated with this minion</p>
+        </div>
+
       </div><!--/slat-body-->
     </div> <!--/slat-->
   </div><!--/span-->
