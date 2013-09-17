@@ -6,29 +6,30 @@ Halite
 very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
 list.
 
-This is version 0.0.3 which is substantially changed from the previous version.
-Any application based on the previous version will be broken.
+This version 0.0.3+ is substantially changed from the prior versions.
+Any application based on a prior version will be broken.
 
 This version is substantially different. Notable changes include:
 1. Use of a new unified api in salt/client/api.py for talking to salt.
-Does not use Salt-API. The rest service is integral to halite.
+Does not use Salt-API. The rest service is now integral to halite.
 
 2. Use of Server Sent Events (SSE) to receive realtime streaming of events 
 from the Salt Event Bus.
 
 3. Use of Bottle web framework included with choice of WSGI web servers. The server must
 be multithreaded or gevented or the equivalent in order to support SSE. The tested
-servers are paste, cherrypy, and gevent
+servers are "paste", "cherrypy", and "gevent".
 
 4. Simplified web API that is a thin wrapper around salt/client/api.py
 
 This version of Halite is meant to work out of the box with an install option for 
-SaltStack. The PyPi  (PIP) version of Halite is a minified version that is meant
+SaltStack with the PyPi package version of Halite. 
+The PyPi (PIP) version of Halite is a minified version that is meant
 to be installed along side Salt to provide a minimal out of the box UI for Salt.
 
-The repository is meant for development of custom versions of the UI that would
-be deployed with different servers, different configurations, etc and for development
-of future features for the Salt packaged version.
+This purpose of ths repository is to enable development of custom versions of the 
+UI that could be deployed with different servers, different configurations, etc 
+and also for development of future features for the Salt packaged version.
 
 Installation quickstart
 =======================
@@ -311,8 +312,20 @@ The full set of options is given by
     -C, --coffee          Upon -g option generate to load coffeescript.
     -d, --devel           Development mode.
 
-To deploy with apache modify server_bottle.startServer so it creates the app but
-does not call bottle.run on it but passes it to MOD_WSGI. 
+The http server provides two functions.
+
+1) Provide content delivery network for the base load of the web application static
+content such as html and javascript files.
+
+2) Provide dynamic rest api interface to salt/client/api.py module that is used by
+the web application via ajax and SSE connections. Because SSE and CORS 
+(Cross Origin Resource Sharing is not univesally supported even among HTML5 compliant
+browsers, a single server serves both the static content and the rest API). 
+An alternative approach would be to to use a web socket to stream the events. 
+This would not require CORS. This may bea future option for Halite.
+
+To deploy with apache, modify server_bottle.startServer so it creates the app but
+does not call bottle.run on it but returns it to MOD_WSGI. 
 See (http://bottlepy.org/docs/dev/deployment.html) for other details in using bottle.py
 with Apache and Mod_wsgi.
 
