@@ -33,12 +33,17 @@ from the Salt Event Bus.
 be multithreaded or gevented or the equivalent in order to support SSE. The tested
 servers are "paste", "cherrypy", and "gevent".
 
-4. Simplified web API that is a thin wrapper around salt/client/api.py
+4. Simplified web API that is a thin wrapper around salt/client/api.py.
 
-This version of Halite is meant to work out of the box with an install option for 
-SaltStack with the PyPi package version of Halite. 
-The PyPi (PIP) version of Halite is a minified version that is meant
-to be installed along side Salt to provide a minimal out of the box UI for Salt.
+This version of Halite is designed to work out of the box with SaltStack when 
+the PyPi package version of Halite is installed. The PyPi (PIP) version of Halite 
+is a minified version tailored for this purpose. (https://pypi.python.org/pypi/halite)
+
+To pip install Halite.
+
+.. code-block:: bash  
+  
+  $ pip install -U halite
 
 This purpose of ths repository is to enable development of custom versions of the 
 UI that could be deployed with different servers, different configurations, etc 
