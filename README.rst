@@ -229,9 +229,9 @@ Configure the master config for halite as follows.
       keypath: '/etc/pki/tls/certs/localhost.key'
       pempath: '/etc/pki/tls/certs/localhost.pem'
       
-The cherrypy and gevent servers require the certpath and keypath files to run tls/ssl.
+The "cherrypy" and "gevent" servers require the certpath and keypath files to run tls/ssl.
 The .crt file holds the public cert and the .key file holds the private key. Whereas
-the paster server requires a single .pem file that contains both the cert and key.
+the "paste" server requires a single .pem file that contains both the cert and key.
 This can be created simply by concatenating the .crt and .key files.
 
 If you want to use a self signed cert you can create one using the Salt .tls module
