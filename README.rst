@@ -229,6 +229,22 @@ Configure the master config for halite as follows.
       keypath: '/etc/pki/tls/certs/localhost.key'
       pempath: '/etc/pki/tls/certs/localhost.pem'
       
+The cherrypy and gevent servers require the certpath and keypath files to run tls/ssl.
+The .crt file holds the public cert and the .key file holds the private key. Whereas
+the paster server requires a single .pem file that contains both the cert and key.
+This can be created simply by concatenating the .crt and .key files.
+
+If you want to use a self signed cert you can create one using the Salt .tls module
+
+.. code-block:: bash
+
+  salt '*' tls.create_ca_signed_cert test localhost
+  
+When using self signed certs, browsers will need approval before accepting the cert.
+If the web application page has been cached with a non https version of the app then
+the browser cache will have to be cleared before it will recognize and prompt to
+accept the self signed certificate.
+
 You will also need to configure the eauth method to be used by users of the WUI. 
 See quickstart above for an example.
 
@@ -297,7 +313,8 @@ The full set of options is given by
 
 To deploy with apache modify server_bottle.startServer so it creates the app but
 does not call bottle.run on it but passes it to MOD_WSGI. 
-See http://bottlepy.org/docs/dev/deployment.html for other details.
+See (http://bottlepy.org/docs/dev/deployment.html) for other details in using bottle.py
+with Apache and Mod_wsgi.
 
 To do a custom deployment with some other framework like Django etc. would involve
 replicating the endpoints from server_bottle. 
