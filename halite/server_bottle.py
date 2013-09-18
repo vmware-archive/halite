@@ -104,7 +104,7 @@ def loadWebUI(app, devel=False, coffee=False):
         Echos back query args and content
         '''
         #convert to json serializible dict
-        query = { key: val for key, val in bottle.request.query.items()}
+        query = dict(bottle.request.query.items())
 
         data = dict(verb='GET',
                     url=bottle.request.url,
