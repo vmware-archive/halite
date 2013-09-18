@@ -1,9 +1,17 @@
 
-
 .tight {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+
+.narrow {
+    padding: 0px;
+}
+
+.wide {
+    padding: 6px 4px;
+}
+
 
 kvl {
   padding: 0;
@@ -58,6 +66,12 @@ n {
   opacity: 0;
 }
 
+
+.form.tight {
+    margin: 0px;
+    padding: 0px;
+}
+
 .monitor {
   margin: 5px 0px 0px 0px;
 }
@@ -65,14 +79,13 @@ n {
 .box { 
   border: 1px solid #888;
   border-radius: 3px;
-  padding: 2px 4px;
+  padding: 3px 4px;
   margin: 0px 0px -1px 0px;
 }
 
 .box.no-border {
   border: 0px solid #888;
 }
-
 
 .top-border {
     border-top: 1px solid #888;
@@ -103,7 +116,14 @@ n {
   /*overflow: auto;*/
 }
 
-
+  
+.icon-mono {
+    display: inline-block;
+    width: 12px;
+    text-align: center
+    line-height: inherit;
+    vertical-align: middle;
+}
 
 .filter-active {background: #ccc}
 

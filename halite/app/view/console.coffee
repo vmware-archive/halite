@@ -16,7 +16,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
             
-        $scope.monitorMode = "command"
+        $scope.monitorMode = null
         
         $scope.graining = false
         $scope.pinging = false
