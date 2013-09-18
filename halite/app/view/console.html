@@ -110,63 +110,68 @@
         </div>
       </form>
     </div>
-    
-    <form class="form-inline box">
-      <div class="btn-toolbar">
-        <label>Monitor &nbsp;</label>
-        <div class="btn-group">
-          <button type="button" class="btn" ng-model="monitorMode" btn-radio="'command'">Command</button>
-          <button type="button" class="btn" ng-model="monitorMode" btn-radio="'job'">Job</button>
-          <button type="button" class="btn" ng-model="monitorMode" btn-radio="'minion'">Minion</button>
-          <button type="button" class="btn" ng-model="monitorMode" btn-radio="'event'">Event</button>
-        </div>
-        
-        <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
+    <div class="box">
+      <form class="form-inline" name="monitorForm">
+        <div class="btn-toolbar">
+          <label>Monitor &nbsp;</label>
           <div class="btn-group">
-            <div class="input-append">
-              <input type="text" class="input-large" placeholder="Enter filter string" 
-                ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
-              <div class="btn-group">
-                <button class="btn dropdown-toggle leftmost" title="Select grain to filter against">
-                  <i class="fa-icon-filter"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="grain in filterage.grains track by $index">
-                    <a ng-href="" ng-click="setFilterGrain($index)" 
-                      ng-class="filterage.grain==grain?'filter-active':''">
-                      {{grain}}
-                    </a>
-                  </li>
-                </ul>
-                <button class="btn disabled" title="Filter against this grain">in {{filterage.grain}}
-                </button>
+            <button type="button" class="btn" ng-model="monitorMode" btn-radio="'command'">Command</button>
+            <button type="button" class="btn" ng-model="monitorMode" btn-radio="'job'">Job</button>
+            <button type="button" class="btn" ng-model="monitorMode" btn-radio="'minion'">Minion</button>
+            <button type="button" class="btn" ng-model="monitorMode" btn-radio="'event'">Event</button>
+          </div>
+          
+          <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
+            <div class="btn-group">
+              <div class="input-append">
+                <input type="text" class="input-large" placeholder="Enter filter string" 
+                  ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
+                <div class="btn-group">
+                  <button class="btn dropdown-toggle leftmost" title="Select grain to filter against">
+                    <i class="fa-icon-filter"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="grain in filterage.grains track by $index">
+                      <a ng-href="" ng-click="setFilterGrain($index)" 
+                        ng-class="filterage.grain==grain?'filter-active':''">
+                        {{grain}}
+                      </a>
+                    </li>
+                  </ul>
+                  <button class="btn disabled" title="Filter against this grain">in {{filterage.grain}}
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </label>
-        
-        <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
-          <div class="btn-group" >
-            <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
-              <i class="fa-icon-list"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li ng-repeat="target in sortage.targets track by $index">
-                <a ng-href="" ng-click="setSortTarget($index)" 
-                  ng-class="sortage.target==target?'filter-active':''">
-                  {{target}}
-                </a>
-              </li>
-            </ul>
-            <button class="btn disabled" title="Sort by this trait">by {{sortage.target}}
-            </button>
-            <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
-              <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
-            </button>
-          </div>
-        </label>
-      </div>
-    </form>
+          </label>
+          
+          <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
+            <div class="btn-group" >
+              <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
+                <i class="fa-icon-list"></i>
+              </button>
+              <ul class="dropdown-menu">
+                <li ng-repeat="target in sortage.targets track by $index">
+                  <a ng-href="" ng-click="setSortTarget($index)" 
+                    ng-class="sortage.target==target?'filter-active':''">
+                    {{target}}
+                  </a>
+                </li>
+              </ul>
+              <button class="btn disabled" title="Sort by this trait">by {{sortage.target}}
+              </button>
+              <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
+                <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
+              </button>
+            </div>
+          </label>
+        </div>
+      </form><!--monitorForm-->
+    </div> <!--/box-->
+  </div><!--/span-->
+</div><!--/row-->
+      
+    </div><!--box-->
   </div><!--/span-->
 </div><!--/row-->
 
@@ -270,35 +275,36 @@
 </div><!--/row-->
 <!--</div>--><!--/container-->
 
-<!--<div class="container-fluid">-->
 <div class="row-fluid monitor"  ng-show="monitorMode == 'minion'">
-  <div class="span12" >
-    <div class="slat" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
-      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
-        title="Click to toggle grains display">
-        <span class="label pull-left" title="Minion Id: Green=grains, Orange=no grains" 
-          ng-class="minion.grains.keys().length?'label-info':'label-warning'">
-          <b style="font-size: larger">{{minion.id}}</b>
-        </span>
-        <div class="btn-group">
-          <button type="button" class="btn" ng-model="minionMode" btn-radio="'grain'">Grain</button>
-          <button type="button" class="btn" ng-model="minionMode" btn-radio="'event'">Event</button>
-          <button type="button" class="btn" ng-model="minionMode" btn-radio="'command'">Command</button>
-        </div>
-        <div class="pull-right">
-          <span class="badge" title="Latest active status: Green=up, Red=down"
+  <div class="span12 box" >
+    <div class="box no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
+      <div class="pull-left">
+        <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-success':'badge-important'">
             <i class="fa-icon-fire icon-white"></i>
           </span>
-          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle grains disoplay" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </a> 
-        </div>  
-        <div class="clearfix"></div>
+        <span class="label" title="Minion Id: Blue=grains, Orange=no grains" 
+          ng-class="minion.grains.keys().length?'label-info':'label-warning'">
+          <span style="font-size: larger">{{minion.id}}</span>
+        </span>
+        <span class="btn-group">
+          <button type="button" class="btn btn-small"  ng-model="minionMode" 
+              ss-toggle-union="'grain'">Grain 
+            <i ng-class="minionMode ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-small" ng-model="minionMode" 
+              ss-toggle-union="'event'">Event
+            <i ng-class="minionMode ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-small" ng-model="minionMode" 
+              ss-toggle-union="'command'">Command
+            <i ng-class="minionMode ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+        </span>
       </div>
-      <div class="slat-body animate-fade" ng-show="!collapsed" >
-        <div class="span12" ng-show="minionMode == 'grain'">
+      <div class="clearfix"></div>
+      <div class="top-border bottom-border" ng-show="minionMode">
+        <div class="span12 animate-fade " ng-show="minionMode == 'grain'">
           <kvl ng-repeat="grain in minion.grains.items()">
             <kvi>
               <span><b><i>{{grain.key}}: </i></b></span>
@@ -310,7 +316,7 @@
           <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
         </div>
         
-        <div class="span12" ng-show="minionMode == 'event'">
+        <div class="span12 animate-fade" ng-show="minionMode == 'event'">
           <kvl ng-repeat="event in minion.events.values().reverse()">
             <kvi>
               <span><b><i>{{event.tag}}</i></b></span>
@@ -319,18 +325,17 @@
               </span>
             </kvi>
           </kvl>
-          <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
+          <p ng-if="minion.events.keys().length==0">No minion events"</p>
         </div>
 
-        <div class="span12" ng-show="minionMode == 'command'">
-          <p>Commands associated with this minion</p>
+        <div class="span12 animate-fade " ng-show="minionMode == 'command'">
+          <p>Not implemented yet/p>
         </div>
-
-      </div><!--/slat-body-->
-    </div> <!--/slat-->
-  </div><!--/span-->
+        <div class="clearfix"></div>
+      </div><!--collapsed-->
+    </div> <!--/box repeated-->
+  </div><!--/span box-->
 </div><!--/row-->
-<!--</div>--><!--/container-->
 
 <!--<div class="container-fluid">-->
 <div class="row-fluid monitor" ng-show="monitorMode == 'event'">

@@ -65,8 +65,23 @@ n {
 .box { 
   border: 1px solid #888;
   border-radius: 3px;
-  padding: 0px 4px;
+  padding: 2px 4px;
   margin: 0px 0px -1px 0px;
+}
+
+.box.no-border {
+  border: 0px solid #888;
+}
+
+
+.top-border {
+    border-top: 1px solid #888;
+    margin-top: 5px;
+    
+}
+.bottom-border {
+    border-bottom: 1px solid #888;
+    margin-bottom: 5px;
 }
 
 .slat { 
