@@ -208,3 +208,70 @@ appDrtv.directive 'ssToggleUnion',
         
         return ddo
     ]
+
+
+###
+ss-dropdown-toggle ssDropDownToggle
+Dropdown toggle
+Eventually replace this with ui-bootstrap when it reaches the 0.7 release
+which will be bootstrap 3 compatible
+
+Apparently the way it works is that a click toggles on the class "open"
+on the parent element of the dropdown-toggle element.
+Via css this results in the sibling element with class "dropdown-menu" 
+becoming visible.
+
+Also the click binds to the click the closeMenu function
+So a click on a menu item propagates upto the click for closemenu
+and then is not propagated further.
+
+  <li class="dropdown">
+    <a class="dropdown-toggle">My Dropdown Menu</a>
+    <ul class="dropdown-menu">
+      <li ng-repeat="choice in dropChoices">
+        <a ng-href="{{choice.href}}">{{choice.text}}</a>
+      </li>
+    </ul>
+  </li>
+###
+
+
+appDrtv.directive 'ss-dropdown-toggle', 
+    ['$document', '$location', ($document, $location) ->
+        openElement = null
+        closeMenu = angular.noop
+        ddo =
+            restrict: 'CA',
+            link: ($scope, elm, attrs) ->
+                $scope.$watch '$location.path', () -> closeMenu()
+                    
+                elm.parent().bind 'click', () -> closeMenu()
+                elm.bind 'click', (event) ->
+                    elementWasOpen = (elm == openElement)
+                    event.preventDefault()
+                    event.stopPropagation()
+          
+                    if !!openElement then closeMenu()
+          
+                    if !elementWasOpen
+                        elm.parent().addClass('open');
+                        openElement = elm;
+                        
+                        closeMenu = (event) ->
+                            if event
+                                event.preventDefault()
+                                event.stopPropagation()
+                            
+                            $document.unbind 'click', closeMenu
+                            elm.parent().removeClass 'open'
+                            closeMenu = angular.noop
+                            openElement = null
+                            return true
+                            
+                        $document.bind 'click', closeMenu
+                    return true
+                    
+                return true
+                
+        return ddo
+      ]
