@@ -104,7 +104,7 @@ def loadWebUI(app, devel=False, coffee=False):
         Echos back query args and content
         '''
         #convert to json serializible dict
-        query = { key: val for key, val in bottle.request.query.items()}
+        query = dict(bottle.request.query.items())
 
         data = dict(verb='GET',
                     url=bottle.request.url,
@@ -433,7 +433,7 @@ def createStaticMain(kind='bottle',
 
     content =  ''
     mainMoldPath = os.path.join(moldPath, 'main_{0}.html'.format(kind))
-    with open(mainMoldPath, "ru") as fp:
+    with open(mainMoldPath, "r") as fp:
         mold = fp.read()
         if kind == 'bottle':
             content = bottle.SimpleTemplate(mold).render(**data)
