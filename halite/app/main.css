@@ -12,6 +12,9 @@
     padding: 6px 4px;
 }
 
+.larger-font-size {
+  font-size: larger;
+}
 
 kvl {
   padding: 0;

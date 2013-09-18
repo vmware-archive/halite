@@ -187,105 +187,105 @@
   </div><!--/span-->
 </div><!--/row-->
 
-<!--<div class="container-fluid">-->
-<div class="row-fluid monitor" ng-show="monitorMode == 'command'">
-  <div class="span12" >
-    <div class="slat" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
-      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
-        title="Click to toggle results display">
-        <span class="pull-left" title="Event Tag">
-          <button class="btn" ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}</button>
+<div class="row-fluid" ng-show="monitorMode == 'command'">
+  <div class="span12 box wide" >
+    <div class="box no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
+      <div class="pull-left">
+        <span class="pull-left" title="Command Function. Click to run again.">
+          <button class="btn btn-small" 
+            ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}
+          </button>
         </span>
-        <div class="pull-right">
-          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </a> 
-        </div>  
-        <div class="clearfix"></div>
+        <span class="btn-group">
+          <button type="button" class="btn btn-small"  ng-model="commandMode" 
+              ss-toggle-union="'job'">
+            <i class="icon-mono" 
+                ng-class="commandMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'">
+            </i>
+          </button>
+        </span>
       </div>
-      <div class="slat-body" ng-show="!collapsed">
-        <div class="span12">
-          <p ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
-            <span class="label pull-left" title="Job Id: Gray=done, Blue=not yet done" 
-              ng-class="job.done?'':'label-info'">
-              <b style="font-size: larger">{{job.jid}}</b>
-            </span>
-            <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
-            <span class="badge pull-right" title="Failure status: Green=success, Red=fail"
-              ng-class="job.fail?'badge-important':'badge-success'">
+      <div class="clearfix"></div>
+      <div class="box top-border bottom-border animate-fade" ng-show="commandMode">
+        <div class="span12" ng-if="commandMode == 'job'">
+          <div ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
+            <span class="badge" title="Failure status: Green=success, Red=fail"
+                ng-class="job.fail?'badge-important':'badge-success'">
               <i class="fa-icon-certificate icon-white"></i>
             </span>
-          </p>  
+            <span class="label" title="Job Id: Black=done, Blue=not yet done" 
+                ng-class="job.done?'label-inverse':'label-info'">
+              <span class="larger-font-size">{{job.jid}}</span>
+            </span>
+            <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
+          </div>  
         </div>
         <div class="clearfix"></div>
-      </div><!--/slat-body-->
-    </div> <!--/slat-->
-  </div><!--/span-->
+      </div><!--/box-->
+    </div> <!--/box-->
+  </div><!--/span box-->
 </div><!--/row-->
-<!--</div>--><!--/container-->
 
-<!--<div class="container-fluid">-->
-<div class="row-fluid monitor" ng-show="monitorMode == 'job'">
-  <div class="span12" >
-    <div class="slat" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
-      <div class="slat-head" ng-init="collapsed=true" ng-click="collapsed = !collapsed" 
-        title="Click to toggle results display">
-        <span class="label pull-left" title="Job Id: Gray=done, Blue=not yet done" 
-          ng-class="job.done?'':'label-info'">
-          <b  style="font-size: larger">{{job.jid}}</b>
-        </span>
-        <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
-        <div class="pull-right">
-          <span class="badge" title="Failure status: Green=success, Red=fail"
+<div class="row-fluid" ng-show="monitorMode == 'job'">
+  <div class="span12 box wide" >
+    <div class="box no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
+      <div class="pull-left">
+        <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-important':'badge-success'">
             <i class="fa-icon-certificate icon-white"></i>
-          </span>
-          <a href="" ng-click="collapsed = !collapsed; $event.stopPropagation();">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </a> 
-        </div>  
-        <div class="clearfix"></div>
+        </span>
+        <span class="label" title="Job Id: Black=done, Blue=not yet done" 
+          ng-class="job.done?'label-inverse':'label-info'">
+          <span  class="larger-font-size">{{job.jid}}</span>
+        </span>&nbsp;
+        <span class="label label-inverse" title="Module function">
+          <span  class="larger-font-size">{{job.name}}</span>
+        </span>
+        <span class="btn-group">
+          <button type="button" class="btn btn-small"  ng-model="jobMode" 
+            ss-toggle-union="'result'">Result<i class="icon-mono" 
+                ng-class="jobMode=='result' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-small" ng-model="jobMode" 
+            ss-toggle-union="'event'">Event<i class="icon-mono" 
+              ng-class="jobMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+        </span>
       </div>
-      <div class="slat-body" ng-show="!collapsed">
-        <tabset>
-          <tab heading="Result">
-            <div class="span12" ng-if="job.results">
-              <kvl ng-repeat="result in job.results.values()">
-                <kvi>
-                  <span class="label" ng-class="result.done?'':'label-info'">
-                    {{result.id}}
-                  </span>
-                  <span class="badge" ng-class="result.fail?'badge-important':'badge-success'">
-                    <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
-                    <b ng-if="result.retcode != null">{{result.retcode}}</b>
-                  </span>
-                  <span ng-repeat="ensual in result.results()" 
-                    ng-include="'ensual_nested.html'">
-                  </span>
-                </kvi>
-              </kvl>
-            </div>
-          </tab>
-          <tab heading="Event">
-            <div class="span12">
-              <kvl ng-repeat="event in job.events.values().reverse()">
-                <kvi>
-                  <span><b><i>{{event.tag}}</i></b></span>
-                  <span ng-repeat="ensual in ensuals(event.data)" 
-                    ng-include="'ensual_nested.html'">
-                  </span>
-                </kvi>
-              </kvl>
-            </div>
-          </tab>
-        </tabset>
-      </div><!--/slat-body-->
-    </div> <!--/slat-->
-  </div><!--/span-->
+      <div class="clearfix"></div>
+      <div class="box top-border bottom-border animate-fade" ng-show="jobMode">
+        <div class="span12 " ng-if="jobMode == 'result'">
+          <kvl ng-repeat="result in job.results.values()">
+            <kvi>
+              <span class="label" ng-class="result.done?'':'label-info'">
+                {{result.id}}
+              </span>
+              <span class="badge" ng-class="result.fail?'badge-important':'badge-success'">
+                <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
+                <b ng-if="result.retcode != null">{{result.retcode}}</b>
+              </span>
+              <span ng-repeat="ensual in result.results()" 
+                ng-include="'ensual_nested.html'">
+              </span>
+            </kvi>
+          </kvl>
+        </div>
+        <div class="clearfix"></div>
+        <div class="span12" ng-if="jobMode == 'event'">
+          <kvl ng-repeat="event in job.events.values().reverse()">
+            <kvi>
+              <span>{{event.tag}}</span>
+              <span ng-repeat="ensual in ensuals(event.data)" 
+                ng-include="'ensual_nested.html'">
+              </span>
+            </kvi>
+          </kvl>
+        </div>
+        <div class="clearfix"></div>
+      </div><!--/box-->
+    </div> <!--/box-->
+  </div><!--/span box-->
 </div><!--/row-->
-<!--</div>--><!--/container-->
 
 <div class="row-fluid"  ng-show="monitorMode == 'minion'">
   <div class="span12 box wide">
@@ -294,10 +294,10 @@
         <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-success':'badge-important'">
             <i class="fa-icon-fire icon-white"></i>
-          </span>
+        </span>
         <span class="label" title="Minion Id: Blue=grains, Orange=no grains" 
           ng-class="minion.grains.keys().length?'label-info':'label-warning'">
-          <span style="font-size: larger">{{minion.id}}</span>
+          <span class="larger-font-size">{{minion.id}}</span>
         </span>
         <span class="btn-group">
           <button type="button" class="btn btn-small"  ng-model="minionMode" 
@@ -315,8 +315,8 @@
         </span>
       </div>
       <div class="clearfix"></div>
-      <div class="top-border bottom-border" ng-show="minionMode">
-        <div class="span12 animate-fade " ng-show="minionMode == 'grain'">
+      <div class="box top-border bottom-border animate-fade " ng-show="minionMode">
+        <div class="span12 " ng-if="minionMode == 'grain'">
           <kvl ng-repeat="grain in minion.grains.items()">
             <kvi>
               <span><b><i>{{grain.key}}: </i></b></span>
@@ -325,13 +325,13 @@
               </span>
             </kvi>
           </kvl>
-          <p ng-if="minion.events.keys().length==0">Minion events not job events"</p>
+          <p ng-if="minion.grains.keys().length==0">No grains</p>
         </div>
         
-        <div class="span12 animate-fade" ng-show="minionMode == 'event'">
+        <div class="span12" ng-if="minionMode == 'event'">
           <kvl ng-repeat="event in minion.events.values().reverse()">
             <kvi>
-              <span><b><i>{{event.tag}}</i></b></span>
+              <span>{{event.tag}}</span>
               <span ng-repeat="ensual in ensuals(event.data)" 
                 ng-include="'ensual_nested.html'">
               </span>
@@ -340,7 +340,7 @@
           <p ng-if="minion.events.keys().length==0">No minion events</p>
         </div>
 
-        <div class="span12 animate-fade " ng-show="minionMode == 'command'">
+        <div class="span12 animate-fade " ng-if="minionMode == 'command'">
           <p>Not implemented yet</p>
         </div>
         <div class="clearfix"></div>
@@ -349,25 +349,24 @@
   </div><!--/span box-->
 </div><!--/row-->
 
-<!--<div class="container-fluid">-->
-<div class="row-fluid monitor" ng-show="monitorMode == 'event'">
-  <div class="span12" >
-    <div class="slat" ng-repeat="event in events.values().reverse()">
-      <div class="slat-head" ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value"
-        title="Click to toggle results display">
-        <span class="label pull-left" title="Event Tag">
-          <b style="font-size: larger">{{event.tag}}</b>
-        </span>
-        <span title="Module function">&nbsp;&nbsp;{{humanize(event.data)}}</span>
-        <div class="pull-right">
-          <a href="" ng-click="expanded.value = !expanded.value; $event.stopPropagation();">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle results disoplay" 
-              ng-class="!expanded.value?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </a> 
-        </div>  
-        <div class="clearfix"></div>
+
+<div class="row-fluid" ng-show="monitorMode == 'event'">
+  <div class="span12 box wide" >
+    <div class="box no-border" ng-repeat="event in events.values().reverse()">
+      <div class="pull-left">
+        <span title="Event Tag">{{event.tag}}</span>&nbsp;
+        <span class="label label-inverse" title="Module function" 
+            ng-show="humanize(event.data)">
+          <span class="larger-font-size">{{humanize(event.data)}}</span>
+        </span>&nbsp;
+        <i class="btn btn-small icon-mono" 
+          ng-init="expanded={'value': false}" 
+          ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
+          ng-click="expanded.value = !expanded.value; $event.stopPropagation();">
+        </i>
       </div>
-      <div class="slat-body" ng-show="expanded.value">
+      <div class="clearfix"></div>
+      <div class="box top-border bottom-border" ng-if="expanded.value">
         <div class="span12">
           <kvl>
             <kvi>
@@ -378,11 +377,11 @@
           </kvl>
         </div>
         <div class="clearfix"></div>
-      </div><!--/slat-body-->
-    </div> <!--/slat-->
-  </div><!--/span-->
+      </div><!--/box-->
+    </div> <!--/box-->
+  </div><!--/span box-->
 </div><!--/row-->
-<!--</div>--><!--/container-->
+
 
 
 <script type="text/ng-template" id="ensual_nested.html">
