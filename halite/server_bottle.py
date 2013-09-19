@@ -532,7 +532,7 @@ def startServer(level='info',
                 host=host,
                 port=port,
                 debug=devel,
-                reloader=devel,
+                reloader=devel and not gevented,
                 interval=1,
                 quiet=False,
                 **options)

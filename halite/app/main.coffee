@@ -12,7 +12,7 @@
 mainApp = angular.module("MainApp", ['ngRoute', 'ngCookies', 'ngAnimate', 
         'appConfigSrvc', 'appPrefSrvc',
         'appDataSrvc', 'appStoreSrvc', 'appUtilSrvc', 'appFltr', 'appDrtv', 
-        'saltApiSrvc', 'demoSrvc', 'ui.bootstrap', 'ui.utils'])
+        'saltApiSrvc', 'demoSrvc'])
 
 
 mainApp.constant 'MainConstants', 

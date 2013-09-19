@@ -2,7 +2,9 @@
 
 <div class="row-fluid">
   <div class="span12">
-    <alert type="'error'" close="closeAlert()" ng-cloak ng-show="!!$parent.errorMsg">Error! {{errorMsg}}</alert>
+    <ss-alert type="'error'" close="closeAlert()" ng-cloak 
+      ng-show="!!$parent.errorMsg">Error! {{errorMsg}}
+    </ss-alert>
     <div class="box">
       <form class="form-inline tight">
         <div class="btn-toolbar tight wide"> 
@@ -16,7 +18,7 @@
                     ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
                   </i>
                 </button>
-                <button class="btn dropdown-toggle">Action
+                <button class="btn ss-dropdown-toggle">Action
                   <b class="caret"></b>
                 </button>
                 <ul class="dropdown-menu">
@@ -37,7 +39,7 @@
           </div>
           
           <div class="btn-group">
-            <button class="btn dropdown-toggle leftmost" 
+            <button class="btn ss-dropdown-toggle leftmost" 
               ng-disabled="command.size(command.history)==0"
               title="Execute saved lowstate command">
               <i class="fa-icon-book" 
@@ -139,7 +141,7 @@
                 <input type="text" class="input-large" placeholder="Enter filter string" 
                   ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
                 <div class="btn-group">
-                  <button class="btn dropdown-toggle leftmost" title="Select grain to filter against">
+                  <button class="btn ss-dropdown-toggle leftmost" title="Select grain to filter against">
                     <i class="fa-icon-filter"></i>
                   </button>
                   <ul class="dropdown-menu">
@@ -159,7 +161,7 @@
           
           <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
             <div class="btn-group" >
-              <button class="btn dropdown-toggle leftmost" title="Select grain to sort by against">
+              <button class="btn ss-dropdown-toggle leftmost" title="Select grain to sort by against">
                 <i class="fa-icon-list"></i>
               </button>
               <ul class="dropdown-menu">
@@ -381,8 +383,6 @@
     </div> <!--/box-->
   </div><!--/span box-->
 </div><!--/row-->
-
-
 
 <script type="text/ng-template" id="ensual_nested.html">
   <span ng-switch on="expandMode(ensual)">
