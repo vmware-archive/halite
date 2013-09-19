@@ -10,7 +10,7 @@
     <style type="text/css">
       body { padding-top: 60px; padding-bottom: 40px;} <!-- Needed for fixed navbar-->
     </style>
-    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive{{mini}}.css" >
+    <!--<link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive{{mini}}.css" >-->
     <link rel="stylesheet" href="{{baseUrl}}/static/lib/font-awesome/css/font-awesome-fa{{mini}}.css">
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
     % for sheet in sheets:
@@ -30,11 +30,11 @@
     
     <div ng-include="'{{baseUrl}}/static/app/navbar.html'" ></div>
 
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12"><div ng-view></div></div>
-      </div><!-- /row-fluid -->
-    </div><!-- /container-fluid -->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12"><div ng-view></div></div>
+      </div><!-- /row -->
+    </div><!-- /container -->
 
     <div ng-include="'{{baseUrl}}/static/app/route.html'" ></div>
     <script src="{{baseUrl}}/static/lib/angular/angular-loader{{mini}}.js"></script>

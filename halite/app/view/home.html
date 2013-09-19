@@ -1,5 +1,5 @@
-<div class="row-fluid">
-  <div class="span12">
+<div class="row">
+  <div class="col-md-12">
     <div class="alert alert-error" ng-cloak ng-show="!!errorMsg">
       <strong>Error!</strong> {{errorMsg}}
     </div>
@@ -8,8 +8,8 @@
   </div><!--/span-->
 </div><!--/row-->
 
-<div class="row-fluid">
-  <div class="span12">
+<div class="row">
+  <div class="col-md-12">
     <ng-form name="prefForm" class="form-inline">
       <legend>Preferences</legend>
       <div class="controls controls-row" ng-repeat="item in prefs.items()">
@@ -18,7 +18,7 @@
             <input type="checkbox"  ng-model="item.val" ss-input-name="{{item.key}}">{{item.key}}
           </label>
           <label class="control-label" ng-if="isNumber(item.val)">{{item.key}}<br/>
-            <input class="input-small" type="number" ng-model="item.val"
+            <input class="input-sm" type="number" ng-model="item.val"
               ng-change="item.val=fixNumber(item.val)" ss-input-name="{{item.key}}">
           </label>
           <label class="control-label" ng-if="!(isBoolean(item.val)||isNumber(item.val))">
@@ -40,7 +40,7 @@
                 </label>
                 <label class="control-label" ng-if="isNumber(item1.val)">
                   {{item.key+'.'+item1.key}}<br/>
-                  <input type="number"  class="input-small" placeholder="{{item1.key}}" 
+                  <input type="number"  class="input-sm" placeholder="{{item1.key}}" 
                     ss-input-name="{{item1.key}}" ng-model="item1.val" 
                     ng-change="item1.val=fixNumber(item1.val)">
                 </label>
@@ -55,8 +55,8 @@
         </div>        
       </div>
       <div class="controls controls-row">
-        <button class="btn" ng-click="resetPrefs()">Reset</button>
-        <button  class="btn" type="submit" ng-click="updatePrefs()">Update</button>
+        <button class="btn btn-default" ng-click="resetPrefs()">Reset</button>
+        <button  class="btn btn-default" type="submit" ng-click="updatePrefs()">Update</button>
       </div>
     </ng-form>
   </div><!--/span-->

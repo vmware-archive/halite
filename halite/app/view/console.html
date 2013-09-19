@@ -1,7 +1,7 @@
 
-
-<div class="row-fluid">
-  <div class="span12">
+<div class="row">Console View</div>
+<div class="row">
+  <div class="col-md-12">
     <ss-alert type="'error'" close="closeAlert()" ng-cloak 
       ng-show="!!$parent.errorMsg">Error! {{errorMsg}}
     </ss-alert>
@@ -10,15 +10,15 @@
         <div class="btn-toolbar tight wide"> 
           <label>Command &nbsp;</label>
           <div class="btn-group">
-            <div class="input-prepend">
+            <div class="input-group">
               <div class="btn-group">
-                <button class="btn" ng-click="ply(actions.Test.ping)" 
+                <button class="btn btn-default" ng-click="ply(actions.Test.ping)" 
                   title="Ping minions that match target">
                   <i class="fa-icon-bullhorn" 
                     ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
                   </i>
                 </button>
-                <button class="btn ss-dropdown-toggle">Action
+                <button class="btn btn-default ss-dropdown-toggle">Action
                   <b class="caret"></b>
                 </button>
                 <ul class="dropdown-menu">
@@ -33,13 +33,13 @@
                   </li>
                 </ul>
               </div>
-              <input type="text" class="input-large" placeholder="Enter target pattern" 
+              <input type="text" class="input-lg" placeholder="Enter target pattern" 
                 ng-model="commandTarget" title="Minion command target pattern">
             </div>
           </div>
           
           <div class="btn-group">
-            <button class="btn ss-dropdown-toggle leftmost" 
+            <button class="btn btn-default ss-dropdown-toggle leftmost" 
               ng-disabled="command.size(command.history)==0"
               title="Execute saved lowstate command">
               <i class="fa-icon-book" 
@@ -52,26 +52,26 @@
                 <a ng-href="" ng-click="action(cmds)">{{name}}</a>
               </li>
             </ul>
-            <button class="btn rightmost"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
+            <button class="btn btn-default rightmost"  ng-init="collapsed=true" ng-click="collapsed = !collapsed"
               title="Execute salt command">
               <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display" 
                 ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
             </button>
           </div>
           <div class="btn-group pull-right">
-            <button class="btn" ng-click="openEventStream()" 
+            <button class="btn btn-default" ng-click="openEventStream()" 
               title="Open event stream">
               <i class="fa-icon-rss"
                 ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
               </i>
             </button>
-            <button class="btn" ng-click="fetchGrains()" 
+            <button class="btn btn-default" ng-click="fetchGrains()" 
               title="Fetch grains from all minions">
               <i class="fa-icon-briefcase" 
                 ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-briefcase';">
               </i>
             </button>
-            <button class="btn" ng-click="fetchActives()" 
+            <button class="btn btn-default" ng-click="fetchActives()" 
               title="Fetch up/down status of all minions">
               <i class="fa-icon-refresh" 
                 ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-refresh';">
@@ -83,7 +83,7 @@
       <form class="form-inline tight animate-fade" name="commandForm" ng-show="!collapsed" ng-cloak>
         <div class="controls" >
           <label class="control-label">Function<br/>
-            <input type="text" class="input-large" placeholder="Enter module.function"
+            <input type="text" class="input-lg" placeholder="Enter module.function"
               ng-model="command.cmd.fun" title="Module function" required>
           </label>
           <label class="control-label">Target<br/>
@@ -91,20 +91,20 @@
               ng-model="command.cmd.tgt" title="Minion target pattern">
           </label>
           <label class="control-label">Arguments<br/>
-            <div class="input-append">
+            <div class="input-group">
               <input type="text" class="input-medium"
                 placeholder="Enter argument"
                 ng-repeat="arg in command.cmd.arg track by $index"
                 ng-model="command.cmd.arg[$index]">
     
-              <button class="btn" ng-class="command.cmd.arg.length==1?'disabled':''" 
+              <button class="btn btn-default" ng-class="command.cmd.arg.length==1?'disabled':''" 
                 type="button" title="Remove last argument"
                 ng-click="command.delArg()"><i class="fa-icon-minus"></i></button>
-              <button class="btn " type="button" title="Add another argument"
+              <button class="btn btn-default " type="button" title="Add another argument"
                 ng-click="command.addArg()"><i class="fa-icon-plus"></i></button>
             </div>
           </label>
-          <button class="btn" type="submit" ng-click="action()" ng-disabled="commandForm.$invalid">
+          <button class="btn btn-default" type="submit" ng-click="action()" ng-disabled="commandForm.$invalid">
             <i class="fa-icon-play" 
                 ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
               </i>Execute 
@@ -117,19 +117,19 @@
         <div class="btn-toolbar tight wide">
           <label>Monitor &nbsp;</label>
           <div class="btn-group">
-            <button type="button" class="btn" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
               ss-toggle-union="'command'">Command<i class="icon-mono" 
                   ng-class="monitorMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
-            <button type="button" class="btn" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
               ss-toggle-union="'job'">Job<i class="icon-mono"
                 ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
-            <button type="button" class="btn" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
               ss-toggle-union="'minion'">Minion<i class="icon-mono"
                 ng-class="monitorMode=='minion' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
-            <button type="button" class="btn" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
               ss-toggle-union="'event'">Event<i class="icon-mono"
                 ng-class="monitorMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
@@ -137,11 +137,11 @@
           
           <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
             <div class="btn-group">
-              <div class="input-append">
-                <input type="text" class="input-large" placeholder="Enter filter string" 
+              <div class="input-group">
+                <input type="text" class="input-lg" placeholder="Enter filter string" 
                   ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
                 <div class="btn-group">
-                  <button class="btn ss-dropdown-toggle leftmost" title="Select grain to filter against">
+                  <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to filter against">
                     <i class="fa-icon-filter"></i>
                   </button>
                   <ul class="dropdown-menu">
@@ -152,7 +152,7 @@
                       </a>
                     </li>
                   </ul>
-                  <button class="btn disabled" title="Filter against this grain">in {{filterage.grain}}
+                  <button class="btn btn-default disabled" title="Filter against this grain">in {{filterage.grain}}
                   </button>
                 </div>
               </div>
@@ -161,7 +161,7 @@
           
           <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
             <div class="btn-group" >
-              <button class="btn ss-dropdown-toggle leftmost" title="Select grain to sort by against">
+              <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to sort by against">
                 <i class="fa-icon-list"></i>
               </button>
               <ul class="dropdown-menu">
@@ -172,7 +172,7 @@
                   </a>
                 </li>
               </ul>
-              <button class="btn disabled" title="Sort by this trait">by {{sortage.target}}
+              <button class="btn btn-default disabled" title="Sort by this trait">by {{sortage.target}}
               </button>
               <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
                 <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
@@ -185,21 +185,17 @@
   </div><!--/span-->
 </div><!--/row-->
       
-    </div><!--box-->
-  </div><!--/span-->
-</div><!--/row-->
-
-<div class="row-fluid" ng-show="monitorMode == 'command'">
-  <div class="span12 box wide" >
+<div class="row" ng-show="monitorMode == 'command'">
+  <div class="col-md-12 box wide" >
     <div class="box no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
       <div class="pull-left">
         <span class="pull-left" title="Command Function. Click to run again.">
-          <button class="btn btn-small" 
+          <button class="btn btn-sm" 
             ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}
           </button>
         </span>
         <span class="btn-group">
-          <button type="button" class="btn btn-small"  ng-model="commandMode" 
+          <button type="button" class="btn btn-sm"  ng-model="commandMode" 
               ss-toggle-union="'job'">
             <i class="icon-mono" 
                 ng-class="commandMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'">
@@ -209,7 +205,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border animate-fade" ng-show="commandMode">
-        <div class="span12" ng-if="commandMode == 'job'">
+        <div class="col-md-12" ng-if="commandMode == 'job'">
           <div ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
             <span class="badge" title="Failure status: Green=success, Red=fail"
                 ng-class="job.fail?'badge-important':'badge-success'">
@@ -228,8 +224,8 @@
   </div><!--/span box-->
 </div><!--/row-->
 
-<div class="row-fluid" ng-show="monitorMode == 'job'">
-  <div class="span12 box wide" >
+<div class="row" ng-show="monitorMode == 'job'">
+  <div class="col-md-12 box wide" >
     <div class="box no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
@@ -244,11 +240,11 @@
           <span  class="larger-font-size">{{job.name}}</span>
         </span>
         <span class="btn-group">
-          <button type="button" class="btn btn-small"  ng-model="jobMode" 
+          <button type="button" class="btn btn-sm"  ng-model="jobMode" 
             ss-toggle-union="'result'">Result<i class="icon-mono" 
                 ng-class="jobMode=='result' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-small" ng-model="jobMode" 
+          <button type="button" class="btn btn-sm" ng-model="jobMode" 
             ss-toggle-union="'event'">Event<i class="icon-mono" 
               ng-class="jobMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
@@ -256,7 +252,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border animate-fade" ng-show="jobMode">
-        <div class="span12 " ng-if="jobMode == 'result'">
+        <div class="col-md-12 " ng-if="jobMode == 'result'">
           <kvl ng-repeat="result in job.results.values()">
             <kvi>
               <span class="label" ng-class="result.done?'':'label-info'">
@@ -273,7 +269,7 @@
           </kvl>
         </div>
         <div class="clearfix"></div>
-        <div class="span12" ng-if="jobMode == 'event'">
+        <div class="col-md-12" ng-if="jobMode == 'event'">
           <kvl ng-repeat="event in job.events.values().reverse()">
             <kvi>
               <span>{{event.tag}}</span>
@@ -289,8 +285,8 @@
   </div><!--/span box-->
 </div><!--/row-->
 
-<div class="row-fluid"  ng-show="monitorMode == 'minion'">
-  <div class="span12 box wide">
+<div class="row"  ng-show="monitorMode == 'minion'">
+  <div class="col-md-12 box wide">
     <div class="box no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
@@ -302,15 +298,15 @@
           <span class="larger-font-size">{{minion.id}}</span>
         </span>
         <span class="btn-group">
-          <button type="button" class="btn btn-small"  ng-model="minionMode" 
+          <button type="button" class="btn btn-sm"  ng-model="minionMode" 
             ss-toggle-union="'grain'">Grain<i class="icon-mono" 
                 ng-class="minionMode=='grain' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-small" ng-model="minionMode" 
+          <button type="button" class="btn btn-sm" ng-model="minionMode" 
             ss-toggle-union="'event'">Event<i class="icon-mono" 
               ng-class="minionMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-small" ng-model="minionMode" 
+          <button type="button" class="btn btn-sm" ng-model="minionMode" 
             ss-toggle-union="'command'">Command<i class="icon-mono"
               ng-class="minionMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
@@ -318,7 +314,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border animate-fade " ng-show="minionMode">
-        <div class="span12 " ng-if="minionMode == 'grain'">
+        <div class="col-md-12 " ng-if="minionMode == 'grain'">
           <kvl ng-repeat="grain in minion.grains.items()">
             <kvi>
               <span><b><i>{{grain.key}}: </i></b></span>
@@ -330,7 +326,7 @@
           <p ng-if="minion.grains.keys().length==0">No grains</p>
         </div>
         
-        <div class="span12" ng-if="minionMode == 'event'">
+        <div class="col-md-12" ng-if="minionMode == 'event'">
           <kvl ng-repeat="event in minion.events.values().reverse()">
             <kvi>
               <span>{{event.tag}}</span>
@@ -342,7 +338,7 @@
           <p ng-if="minion.events.keys().length==0">No minion events</p>
         </div>
 
-        <div class="span12 animate-fade " ng-if="minionMode == 'command'">
+        <div class="col-md-12 animate-fade " ng-if="minionMode == 'command'">
           <p>Not implemented yet</p>
         </div>
         <div class="clearfix"></div>
@@ -351,9 +347,8 @@
   </div><!--/span box-->
 </div><!--/row-->
 
-
-<div class="row-fluid" ng-show="monitorMode == 'event'">
-  <div class="span12 box wide" >
+<div class="row" ng-show="monitorMode == 'event'">
+  <div class="col-md-12 box wide" >
     <div class="box no-border" ng-repeat="event in events.values().reverse()">
       <div class="pull-left">
         <span title="Event Tag">{{event.tag}}</span>&nbsp;
@@ -361,7 +356,7 @@
             ng-show="humanize(event.data)">
           <span class="larger-font-size">{{humanize(event.data)}}</span>
         </span>&nbsp;
-        <i class="btn btn-small icon-mono" 
+        <i class="btn btn-default btn-sm icon-mono" 
           ng-init="expanded={'value': false}" 
           ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
           ng-click="expanded.value = !expanded.value; $event.stopPropagation();">
@@ -369,7 +364,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border" ng-if="expanded.value">
-        <div class="span12">
+        <div class="col-md-12">
           <kvl>
             <kvi>
               <span ng-repeat="ensual in ensuals(event.data)" 
@@ -395,7 +390,7 @@
       </span>]
     </span>
     <span ng-switch-when="list"> 
-      <i class="btn btn-small icon-mono" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
+      <i class="btn btn-default btn-sm icon-mono" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
       <kvl class="indent tight" ng-if="expanded.value">[
@@ -406,7 +401,7 @@
       </kvl>
     </span>
     <span ng-switch-when="dict" >
-      <i class="btn btn-small icon-mono" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
+      <i class="btn btn-default btn-sm icon-mono" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
       <kvl class="indent" ng-if="expanded.value">
