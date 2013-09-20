@@ -169,14 +169,39 @@ n {
 
 .box { 
   border: 1px solid #888;
-  border-radius: 3px;
+  border-radius: 4px;
   padding: 3px 4px;
-  margin: 0px 0px -1px 0px;
+  margin: 0px 0px 0px 0px;
 }
 
-.box.no-border {
+.box.box-top {
+  margin-bottom: -1px;
+}
+
+.box.box-no-border {
   border: 0px solid #888;
 }
+
+.box.box-title-bar {
+  background: #eee;
+  padding: 0px 0px;
+  margin: 4px 0px -1px 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  
+}
+
+.flat-bottom {
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.flat-top {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+}
+
+
 
 .top-border {
     border-top: 1px solid #888;

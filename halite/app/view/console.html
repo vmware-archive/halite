@@ -7,219 +7,228 @@
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <div class="box">
-      <p class="text-center tight">Command</p>
-      <form class="form-inline tight wide">
-        <div >
-          <div class="form-group"> 
-            <div class="input-group" style="display: inline-block;">
-              <div class="btn-group btn-group-left">
-                <a class="btn btn-default" ng-href="" ng-click="ply(actions.Test.ping)" 
-                    title="Ping minions that match target">
-                   <i class="fa-icon-bullhorn" 
-                      ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
-                  </i>
-                </a>
-                <a class="btn btn-default btn-rightmost ss-dropdown-toggle" ng-href="">Action
-                  <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="nav-header">State</li>
-                  <li ng-repeat="(name, cmd) in actions.State track by $index">
-                    <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li class="nav-header">Test</li>
-                  <li ng-repeat="(name, cmd) in actions.Test track by $index">
-                    <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
-                  </li>
-                </ul>
-              </div>
-              <div class="form-group" >
-                <input type="text" class="form-control input-rightend fatter" 
-                  placeholder="Enter target pattern" 
-                  ng-model="commandTarget" title="Minion command target pattern">
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-group"> 
-            <div class="btn-group">
-              <div class="btn-group">
-                <button class="btn btn-default ss-dropdown-toggle leftmost" 
-                  ng-disabled="command.size(command.history)==0"
-                  title="Execute saved lowstate command">
-                  <i class="fa-icon-book" 
-                    ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-book';">
-                  </i>
-                  <b class="caret"></b>
-                </button>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="(name, cmds) in command.history track by $index">
-                    <a ng-href="" ng-click="action(cmds)">{{name}}</a>
-                  </li>
-                </ul>
-              </div>
-              <button class="btn btn-default rightmost"  
-                  ng-init="collapsed=true" ng-click="collapsed = !collapsed">
-                <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display" 
-                  ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-              </button>
-            </div>
-          </div>
-          
-          <div class="form-group pull-right" > 
-            <div class="btn-group">
-              <button class="btn btn-default" ng-click="openEventStream()" 
-                title="Open event stream">
-                <i class="fa-icon-rss"
-                  ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
-                </i>
-              </button>
-              <button class="btn btn-default" ng-click="fetchGrains()" 
-                title="Fetch grains from all minions">
-                <i class="fa-icon-briefcase" 
-                  ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-briefcase';">
-                </i>
-              </button>
-              <button class="btn btn-default" ng-click="fetchActives()" 
-                title="Fetch up/down status of all minions">
-                <i class="fa-icon-refresh" 
-                  ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-refresh';">
-                </i>
-              </button>
-            </div>
-          </div>
+  <div class="col-md-12 box box-title-bar">
+    <p class="text-center tight">Command</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 box flat-top">
 
-        </div>
-        <div class="clearfix"></div>
-      </form> 
-
-      
-      <form class="form-inline tight wide animate-fade" name="commandForm" ng-show="!collapsed" ng-cloak>
-        <div class="form-group">
-          <div class="form-group thinnish">
-            <label class="control-label" for="idModuleFunction">Function</label>
-            <input type="text" class="form-control" id="idModuleFunction"
-              placeholder="Enter module.function"
-              ng-model="command.cmd.fun" title="Module function" required>
-          </div>
-          <div class="form-group thinnish">
-            <label class="control-label" for="idFunctionTarget">Target</label>
-            <input type="text" class="form-control" id="idFunctionTarget"
-              placeholder="Enter minion target pattern"
-              ng-model="command.cmd.tgt" title="Minion target pattern">
-          </div>
-          <div class="form-group">
-            <label class="control-label">Arguments</label>
-            <div class="input-group" ng-repeat="arg in command.cmd.arg track by $index">
-              <div class="input-group-btn" ng-if="$first">
-                <button class="btn btn-default" 
-                  title="Remove last argument"
-                  ng-class="command.cmd.arg.length==1?'disabled':''" 
-                  ng-click="command.delArg()"><i class="fa-icon-minus"></i>
-                </button>
-                <button class="btn btn-default" 
-                  title="Add another argument"
-                  ng-click="command.addArg()"><i class="fa-icon-plus"></i>
-                </button>
-              </div>
-              <div class="form-group fattest">
-                <input type="text" class="form-control"
-                  placeholder="Enter argument"
-                  ng-model="command.cmd.arg[$index]">
-              </div>
-              
-            </div>
-          </div>
-            <button class="btn btn-primary" type="submit" ng-click="action()" 
-                ng-disabled="commandForm.$invalid">
-              <i class="fa-icon-play" 
-                  ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
-                </i>Execute 
-            </button>
-        </div>
-      </form>
-    </div>
-
-    <div class="box">
-      <p class="text-center tight">Monitor</p>
-      <form class="form-inline tight wide" name="monitorForm">
-        <div class="btn-toolbar">
-          
-          <div class="btn-group">
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
-              ss-toggle-union="'command'">Command<i class="icon-mono" 
-                  ng-class="monitorMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-            </button>
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
-              ss-toggle-union="'job'">Job<i class="icon-mono"
-                ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-            </button>
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
-              ss-toggle-union="'minion'">Minion<i class="icon-mono"
-                ng-class="monitorMode=='minion' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-            </button>
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
-              ss-toggle-union="'event'">Event<i class="icon-mono"
-                ng-class="monitorMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-            </button>
-          </div>
-          
-          <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
-            <div class="btn-group">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Enter filter string" 
-                  ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
-                <div class="btn-group">
-                  <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to filter against">
-                    <i class="fa-icon-filter"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li ng-repeat="grain in filterage.grains track by $index">
-                      <a ng-href="" ng-click="setFilterGrain($index)" 
-                        ng-class="filterage.grain==grain?'filter-active':''">
-                        {{grain}}
-                      </a>
-                    </li>
-                  </ul>
-                  <button class="btn btn-default disabled" title="Filter against this grain">in {{filterage.grain}}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </label>
-          
-          <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
-            <div class="btn-group" >
-              <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to sort by against">
-                <i class="fa-icon-list"></i>
-              </button>
+    <form class="form-inline tight wide">
+      <div >
+        <div class="form-group"> 
+          <div class="input-group" style="display: inline-block;">
+            <div class="btn-group btn-group-left">
+              <a class="btn btn-default" ng-href="" ng-click="ply(actions.Test.ping)" 
+                  title="Ping minions that match target">
+                 <i class="fa-icon-bullhorn" 
+                    ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
+                </i>
+              </a>
+              <a class="btn btn-default btn-rightmost ss-dropdown-toggle" ng-href="">Action
+                <b class="caret"></b>
+              </a>
               <ul class="dropdown-menu">
-                <li ng-repeat="target in sortage.targets track by $index">
-                  <a ng-href="" ng-click="setSortTarget($index)" 
-                    ng-class="sortage.target==target?'filter-active':''">
-                    {{target}}
-                  </a>
+                <li class="nav-header">State</li>
+                <li ng-repeat="(name, cmd) in actions.State track by $index">
+                  <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
+                </li>
+                <li class="divider"></li>
+                <li class="nav-header">Test</li>
+                <li ng-repeat="(name, cmd) in actions.Test track by $index">
+                  <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
                 </li>
               </ul>
-              <button class="btn btn-default disabled" title="Sort by this trait">by {{sortage.target}}
+            </div>
+            <div class="form-group" >
+              <input type="text" class="form-control input-rightend fatter" 
+                placeholder="Enter target pattern" 
+                ng-model="commandTarget" title="Minion command target pattern">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group"> 
+          <div class="btn-group">
+            <div class="btn-group">
+              <button class="btn btn-default ss-dropdown-toggle leftmost" 
+                ng-disabled="command.size(command.history)==0"
+                title="Execute saved lowstate command">
+                <i class="fa-icon-book" 
+                  ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-book';">
+                </i>
+                <b class="caret"></b>
               </button>
-              <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
-                <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
+              <ul class="dropdown-menu">
+                <li ng-repeat="(name, cmds) in command.history track by $index">
+                  <a ng-href="" ng-click="action(cmds)">{{name}}</a>
+                </li>
+              </ul>
+            </div>
+            <button class="btn btn-default rightmost"  
+                ng-init="collapsed=true" ng-click="collapsed = !collapsed">
+              <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display" 
+                ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group pull-right" > 
+          <div class="btn-group">
+            <button class="btn btn-default" ng-click="openEventStream()" 
+              title="Open event stream">
+              <i class="fa-icon-rss"
+                ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
+              </i>
+            </button>
+            <button class="btn btn-default" ng-click="fetchGrains()" 
+              title="Fetch grains from all minions">
+              <i class="fa-icon-briefcase" 
+                ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-briefcase';">
+              </i>
+            </button>
+            <button class="btn btn-default" ng-click="fetchActives()" 
+              title="Fetch up/down status of all minions">
+              <i class="fa-icon-refresh" 
+                ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-refresh';">
+              </i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div class="clearfix"></div>
+    </form> 
+    
+    <form class="form-inline tight wide animate-fade" name="commandForm" ng-show="!collapsed" ng-cloak>
+      <div class="form-group">
+        <div class="form-group thinnish">
+          <label class="control-label" for="idModuleFunction">Function</label>
+          <input type="text" class="form-control" id="idModuleFunction"
+            placeholder="Enter module.function"
+            ng-model="command.cmd.fun" title="Module function" required>
+        </div>
+        <div class="form-group thinnish">
+          <label class="control-label" for="idFunctionTarget">Target</label>
+          <input type="text" class="form-control" id="idFunctionTarget"
+            placeholder="Enter minion target pattern"
+            ng-model="command.cmd.tgt" title="Minion target pattern">
+        </div>
+        <div class="form-group">
+          <label class="control-label">Arguments</label>
+          <div class="input-group" ng-repeat="arg in command.cmd.arg track by $index">
+            <div class="input-group-btn" ng-if="$first">
+              <button class="btn btn-default" 
+                title="Remove last argument"
+                ng-class="command.cmd.arg.length==1?'disabled':''" 
+                ng-click="command.delArg()"><i class="fa-icon-minus"></i>
+              </button>
+              <button class="btn btn-default" 
+                title="Add another argument"
+                ng-click="command.addArg()"><i class="fa-icon-plus"></i>
               </button>
             </div>
-          </label>
+            <div class="form-group fattest">
+              <input type="text" class="form-control"
+                placeholder="Enter argument"
+                ng-model="command.cmd.arg[$index]">
+            </div>
+            
+          </div>
         </div>
-      </form><!--monitorForm-->
-    </div> <!--/box-->
-  </div><!--/span-->
+          <button class="btn btn-primary" type="submit" ng-click="action()" 
+              ng-disabled="commandForm.$invalid">
+            <i class="fa-icon-play" 
+                ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
+              </i>Execute 
+          </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 box box-title-bar">
+    <p class="text-center tight">Monitor</p>
+  </div>
+</div>
+  
+<div class="row">
+  <div class="col-md-12 box box-top flat-top flat-bottom">
+    <form class="form-inline tight wide" name="monitorForm">
+      <div class="btn-toolbar">
+        
+        <div class="btn-group">
+          <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            ss-toggle-union="'command'">Command<i class="icon-mono" 
+                ng-class="monitorMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            ss-toggle-union="'job'">Job<i class="icon-mono"
+              ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            ss-toggle-union="'minion'">Minion<i class="icon-mono"
+              ng-class="monitorMode=='minion' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            ss-toggle-union="'event'">Event<i class="icon-mono"
+              ng-class="monitorMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+        </div>
+        
+        <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
+          <div class="btn-group">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Enter filter string" 
+                ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
+              <div class="btn-group">
+                <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to filter against">
+                  <i class="fa-icon-filter"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li ng-repeat="grain in filterage.grains track by $index">
+                    <a ng-href="" ng-click="setFilterGrain($index)" 
+                      ng-class="filterage.grain==grain?'filter-active':''">
+                      {{grain}}
+                    </a>
+                  </li>
+                </ul>
+                <button class="btn btn-default disabled" title="Filter against this grain">in {{filterage.grain}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </label>
+        
+        <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
+          <div class="btn-group" >
+            <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to sort by against">
+              <i class="fa-icon-list"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li ng-repeat="target in sortage.targets track by $index">
+                <a ng-href="" ng-click="setSortTarget($index)" 
+                  ng-class="sortage.target==target?'filter-active':''">
+                  {{target}}
+                </a>
+              </li>
+            </ul>
+            <button class="btn btn-default disabled" title="Sort by this trait">by {{sortage.target}}
+            </button>
+            <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
+              <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
+            </button>
+          </div>
+        </label>
+      </div>
+    </form><!--monitorForm-->
+  </div><!--/box-->
 </div><!--/row-->
       
 <div class="row" ng-show="monitorMode == 'command'">
-  <div class="col-md-12 box wide" >
-    <div class="box no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
+  <div class="col-md-12 box flat-top wide" >
+    <div class="box box-no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
       <div class="pull-left">
         <span class="pull-left" title="Command Function. Click to run again.">
           <button class="btn btn-sm" 
@@ -257,8 +266,8 @@
 </div><!--/row-->
 
 <div class="row" ng-show="monitorMode == 'job'">
-  <div class="col-md-12 box wide" >
-    <div class="box no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
+  <div class="col-md-12 box flat-top wide" >
+    <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-important':'badge-success'">
@@ -318,8 +327,8 @@
 </div><!--/row-->
 
 <div class="row"  ng-show="monitorMode == 'minion'">
-  <div class="col-md-12 box wide">
-    <div class="box no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
+  <div class="col-md-12 box flat-top wide">
+    <div class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-success':'badge-important'">
@@ -380,8 +389,8 @@
 </div><!--/row-->
 
 <div class="row" ng-show="monitorMode == 'event'">
-  <div class="col-md-12 box wide" >
-    <div class="box no-border" ng-repeat="event in events.values().reverse()">
+  <div class="col-md-12 box flat-top wide" >
+    <div class="box box-no-border" ng-repeat="event in events.values().reverse()">
       <div class="pull-left">
         <span title="Event Tag">{{event.tag}}</span>&nbsp;
         <span class="label label-inverse" title="Module function" 
