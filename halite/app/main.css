@@ -1,7 +1,70 @@
 
+
+/* fixup rightmost child in btn-group to the left of input */
+.btn-group-left > .btn:last-child {
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+  border-right: 0px !important;
+  margin-right: -4px !important;
+}
+
+/* fixup leftmost child in btn-group to the right of input */
+.btn-group-right > .btn:first-child {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-left: 0px !important;
+  margin-left: -4px !important;
+}
+
+/* fixup rightmost btn in btn-group to attach to input on right
+  needed when dropdown in btn-group because menu is a child
+  so may not select correctly with .btn-group-right
+*/
+.btn-rightmost { 
+  border-top-right-radius: 0px !important; 
+  border-bottom-right-radius: 0px !important; 
+  border-right: 0px !important;
+  margin-right: -4px !important;
+}
+
+/* fixup leftmost btn in btn-group to attach to input on left
+  needed when dropdown in btn-group because menu is a child so can select
+  with .btn-group-left
+*/
+.btn-leftmost { 
+  border-top-left-radius: 0px !important; 
+  border-bottom-left-radius: 0px !important; 
+  border-left: 0px !important;
+  margin-left: -4px !important;
+}
+
+.input-rightend {
+  border-top-right-radius: 4px !important; 
+  border-bottom-right-radius: 4px !important; 
+}
+
+.input-leftend {
+  border-top-left-radius: 4px !important; 
+  border-bottom-left-radius: 4px !important; 
+}
+
+.leftmost { 
+  border-top-right-radius: 0px !important; 
+  border-bottom-right-radius: 0px !important; 
+}
+
+.rightmost { 
+  border-top-left-radius: 0px !important; 
+  border-bottom-left-radius: 0px !important; 
+}
+
 .tight {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+.squeeze {
+  margin: 0px;
 }
 
 .narrow {
@@ -11,6 +74,31 @@
 .wide {
     padding: 6px 4px;
 }
+
+.thinnest {
+  width: 100px !important;
+}
+
+.thinner {
+  width: 125px !important;
+}
+
+.thinnish {
+  width: 150px !important;
+}
+
+.fatish {
+  width: 175px !important;
+}
+
+.fatter {
+  width: 200px !important;
+}
+
+.fattest {
+  width: 225px !important;
+}
+
 
 .larger-font-size {
   font-size: larger;
@@ -130,15 +218,7 @@ n {
 
 .filter-active {background: #ccc}
 
-.leftmost { 
-  border-top-right-radius: 0px !important; 
-  border-bottom-right-radius: 0px !important; 
-}
 
-.rightmost { 
-  border-top-left-radius: 0px !important; 
-  border-bottom-left-radius: 0px !important; 
-}
 
 /* extra icon colors for font icons */
 .icon-white {color: white;}
@@ -146,6 +226,7 @@ n {
 .icon-green {color: green;}
 .icon-red { color: red; }
 .icon-black {color: black;}
+.icon-gray {color: gray;}
 
 /* Additional sizes for bootstrap labels and badges not in default bootstrap*/
 .label-mini,
@@ -198,3 +279,5 @@ n {
   -moz-border-radius: 18px 18px 18px 18px;
   border-radius: 18px 18px 18px 18px;
 }
+
+
