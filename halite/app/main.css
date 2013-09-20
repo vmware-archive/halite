@@ -66,12 +66,22 @@
   margin-bottom: 0px;
 }
 
-.squeeze {
+.tight-all {
   margin: 0px;
 }
 
-.narrow {
-    padding: 0px;
+.taut {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.taut-all {
+    padding: 0px !important;
+}
+
+.slack {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
 }
 
 .wide {
@@ -247,6 +257,17 @@ n {
 .filter-active {background: #ccc}
 
 
+/* badge colors */
+
+.badge-gray {background-color: gray;}
+.badge-white {background-color: white;}
+.badge-black {background-color: black;}
+.badge-blue { background-color: blue;}
+.badge-green {background-color: green;}
+.badge-red { background-color: red; }
+.badge-orange { background-color: orange; }
+.badge-purple { background-color: purple; }
+.badge-yellow { background-color: yellow; }
 
 /* extra icon colors for font icons */
 .icon-white {color: white;}

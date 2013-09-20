@@ -233,31 +233,31 @@
 <div class="row" ng-show="monitorMode == 'command'">
   <div class="col-md-12 box flat-top wide" >
     <div class="box box-no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
-      <div class="pull-left">
-        <span class="pull-left" title="Command Function. Click to run again.">
-          <button class="btn btn-sm" 
+      <div class="btn-toolbar">
+        <div class="btn-group pull-left" >
+          <button class="btn btn-default btn-sm" title="Command Function. Click to run again."
             ng-click="ply(command.cmds); $event.stopPropagation();">{{command.name}}
           </button>
-        </span>
-        <span class="btn-group">
-          <button type="button" class="btn btn-sm"  ng-model="commandMode" 
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-default btn-sm"  ng-model="commandMode" 
               ss-toggle-union="'job'">
             <i class="icon-mono" 
                 ng-class="commandMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'">
             </i>
           </button>
-        </span>
+        </div>
       </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border animate-fade" ng-show="commandMode">
         <div class="col-md-12" ng-if="commandMode == 'job'">
           <div ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
             <span class="badge" title="Failure status: Green=success, Red=fail"
-                ng-class="job.fail?'badge-important':'badge-success'">
+                ng-class="job.fail?'badge-red':'badge-green'">
               <i class="fa-icon-certificate icon-white"></i>
             </span>
             <span class="label" title="Job Id: Black=done, Blue=not yet done" 
-                ng-class="job.done?'label-inverse':'label-info'">
+                ng-class="job.done?'label-default':'label-info'">
               <span class="larger-font-size">{{job.jid}}</span>
             </span>
             <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
@@ -270,26 +270,26 @@
 </div><!--/row-->
 
 <div class="row" ng-show="monitorMode == 'job'">
-  <div class="col-md-12 box flat-top wide" ng-cloak>
+  <div class="col-md-12 box flat-top wide">
     <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
-            ng-class="job.fail?'badge-important':'badge-success'">
+            ng-class="job.fail?'badge-green':'badge-red'">
             <i class="fa-icon-certificate icon-white"></i>
         </span>
-        <span class="label" title="Job Id: Black=done, Blue=not yet done" 
-          ng-class="job.done?'label-inverse':'label-info'">
+        <span class="label" title="Job Id: Green=done, Blue=not yet done" 
+          ng-class="job.done?'label-success':'label-info'">
           <span  class="larger-font-size">{{job.jid}}</span>
         </span>&nbsp;
-        <span class="label label-inverse" title="Module function">
+        <span class="label label-default" title="Module function">
           <span  class="larger-font-size">{{job.name}}</span>
-        </span>
-        <span class="btn-group">
-          <button type="button" class="btn btn-sm"  ng-model="jobMode" 
+        </span>&nbsp;
+        <span class="btn-group btn-group-sm">
+          <button type="button" class="btn btn-default taut" ng-model="jobMode" 
             ss-toggle-union="'result'">Result<i class="icon-mono" 
                 ng-class="jobMode=='result' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-sm" ng-model="jobMode" 
+          <button type="button" class="btn btn-default taut" ng-model="jobMode" 
             ss-toggle-union="'event'">Event<i class="icon-mono" 
               ng-class="jobMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
@@ -300,13 +300,13 @@
         <div class="col-md-12 " ng-if="jobMode == 'result'">
           <kvl ng-repeat="result in job.results.values()">
             <kvi>
-              <span class="label" ng-class="result.done?'':'label-info'">
+              <span class="label" ng-class="result.done?'label-success':'label-info'">
                 {{result.id}}
-              </span>
-              <span class="badge" ng-class="result.fail?'badge-important':'badge-success'">
+              </span>&nbsp;
+              <span class="badge" ng-class="result.fail?'badge-red':'badge-blue'">
                 <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
                 <b ng-if="result.retcode != null">{{result.retcode}}</b>
-              </span>
+              </span>&nbsp;
               <span ng-repeat="ensual in result.results()" 
                 ng-include="'ensual_nested.html'">
               </span>
@@ -335,23 +335,23 @@
     <div class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
-            ng-class="minion.active?'badge-success':'badge-important'">
+            ng-class="minion.active?'badge-green':'badge-red'">
             <i class="fa-icon-fire icon-white"></i>
         </span>
         <span class="label" title="Minion Id: Blue=grains, Orange=no grains" 
           ng-class="minion.grains.keys().length?'label-info':'label-warning'">
           <span class="larger-font-size">{{minion.id}}</span>
-        </span>
+        </span>&nbsp;
         <span class="btn-group">
-          <button type="button" class="btn btn-sm"  ng-model="minionMode" 
+          <button type="button" class="btn btn-default btn-sm taut"  ng-model="minionMode" 
             ss-toggle-union="'grain'">Grain<i class="icon-mono" 
                 ng-class="minionMode=='grain' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-sm" ng-model="minionMode" 
+          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode" 
             ss-toggle-union="'event'">Event<i class="icon-mono" 
               ng-class="minionMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-sm" ng-model="minionMode" 
+          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode" 
             ss-toggle-union="'command'">Command<i class="icon-mono"
               ng-class="minionMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
@@ -395,13 +395,13 @@
 <div class="row" ng-show="monitorMode == 'event'">
   <div class="col-md-12 box flat-top wide" >
     <div class="box box-no-border" ng-repeat="event in events.values().reverse()">
-      <div class="pull-left">
+      <div>
         <span title="Event Tag">{{event.tag}}</span>&nbsp;
-        <span class="label label-inverse" title="Module function" 
+        <span class="label label-default" title="Module function" 
             ng-show="humanize(event.data)">
           <span class="larger-font-size">{{humanize(event.data)}}</span>
         </span>&nbsp;
-        <i class="btn btn-default btn-sm icon-mono" 
+        <i class="btn btn-default btn-sm" 
           ng-init="expanded={'value': false}" 
           ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
           ng-click="expanded.value = !expanded.value; $event.stopPropagation();">
@@ -435,7 +435,8 @@
       </span>]
     </span>
     <span ng-switch-when="list"> 
-      <i class="btn btn-default btn-sm icon-mono" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
+      <i class="btn btn-default btn-sm slack" 
+        ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
       <kvl class="indent tight" ng-if="expanded.value">[
@@ -446,7 +447,8 @@
       </kvl>
     </span>
     <span ng-switch-when="dict" >
-      <i class="btn btn-default btn-sm icon-mono" ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
+      <i class="btn btn-default btn-sm slack" 
+        ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
       <kvl class="indent" ng-if="expanded.value">
