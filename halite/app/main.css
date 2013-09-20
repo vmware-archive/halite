@@ -1,4 +1,7 @@
-
+/* fix up display to not use table*/
+.input-group.input-group-fix {
+  display: inline-block;
+}
 
 /* fixup rightmost child in btn-group to the left of input */
 .btn-group-left > .btn:last-child {

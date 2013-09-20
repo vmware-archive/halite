@@ -17,7 +17,7 @@
     <form class="form-inline tight wide">
       <div >
         <div class="form-group"> 
-          <div class="input-group" style="display: inline-block;">
+          <div class="input-group input-group-fix" >
             <div class="btn-group btn-group-left">
               <a class="btn btn-default" ng-href="" ng-click="ply(actions.Test.ping)" 
                   title="Ping minions that match target">
@@ -103,47 +103,51 @@
     <form class="form-inline tight wide animate-fade" name="commandForm" ng-show="!collapsed" ng-cloak>
       <div class="form-group">
         <div class="form-group thinnish">
-          <label class="control-label" for="idModuleFunction">Function</label>
+          <label class="control-label tight" for="idModuleFunction">Function</label>
           <input type="text" class="form-control" id="idModuleFunction"
             placeholder="Enter module.function"
             ng-model="command.cmd.fun" title="Module function" required>
         </div>
         <div class="form-group thinnish">
-          <label class="control-label" for="idFunctionTarget">Target</label>
+          <label class="control-label tight" for="idFunctionTarget">Target</label>
           <input type="text" class="form-control" id="idFunctionTarget"
             placeholder="Enter minion target pattern"
             ng-model="command.cmd.tgt" title="Minion target pattern">
         </div>
         <div class="form-group">
-          <label class="control-label">Arguments</label>
-          <div class="input-group" ng-repeat="arg in command.cmd.arg track by $index">
-            <div class="input-group-btn" ng-if="$first">
-              <button class="btn btn-default" 
-                title="Remove last argument"
-                ng-class="command.cmd.arg.length==1?'disabled':''" 
-                ng-click="command.delArg()"><i class="fa-icon-minus"></i>
-              </button>
-              <button class="btn btn-default" 
-                title="Add another argument"
-                ng-click="command.addArg()"><i class="fa-icon-plus"></i>
-              </button>
+          <label class="control-label tight">Arguments<br/>
+            <div class="input-group input-group-fix" style="margin-right: 4px;"
+                ng-repeat="arg in command.cmd.arg track by $index">
+              <div class="form-group fattest">
+                <input type="text" class="form-control"
+                  placeholder="Enter argument"
+                  ng-model="command.cmd.arg[$index]">
+              </div>
+              <div ng-if="$last" class="btn-group btn-group-right">
+                <a class="btn btn-default" title="Remove last argument"
+                    ng-class="command.cmd.arg.length==1?'disabled':''" 
+                    ng-click="command.delArg()" ng-href="">
+                  <i class="fa-icon-minus"></i>
+                </a>
+                <a class="btn btn-default"  title="Add another argument"
+                    ng-click="command.addArg()" ng-href="">
+                  <i class="fa-icon-plus"></i>
+                </a>
+              </div>
+              <div ng-if="$last" class="btn-group">
+                <button class="btn btn-primary" type="submit" ng-click="action()" 
+                    ng-disabled="commandForm.$invalid">
+                  <i class="fa-icon-play" 
+                    ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
+                  </i>Execute 
+                </button>
+              </div>
             </div>
-            <div class="form-group fattest">
-              <input type="text" class="form-control"
-                placeholder="Enter argument"
-                ng-model="command.cmd.arg[$index]">
-            </div>
-            
-          </div>
+          </label>
         </div>
-          <button class="btn btn-primary" type="submit" ng-click="action()" 
-              ng-disabled="commandForm.$invalid">
-            <i class="fa-icon-play" 
-                ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
-              </i>Execute 
-          </button>
       </div>
     </form>
+    
   </div>
 </div>
 
@@ -266,7 +270,7 @@
 </div><!--/row-->
 
 <div class="row" ng-show="monitorMode == 'job'">
-  <div class="col-md-12 box flat-top wide" >
+  <div class="col-md-12 box flat-top wide" ng-cloak>
     <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
