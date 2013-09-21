@@ -14,8 +14,8 @@
 <div class="row">
   <div class="col-md-12 box flat-top">
 
-    <form class="form-inline tight wide">
-      <div >
+    <form class="form-inline wide">
+
         <div class="form-group"> 
           <div class="input-group input-group-fix" >
             <div class="btn-group btn-group-left">
@@ -95,11 +95,8 @@
             </button>
           </div>
         </div>
-
-      </div>
-      <div class="clearfix"></div>
     </form> 
-    
+    <div class="clearfix"></div>
     <form class="form-inline tight wide animate-fade" name="commandForm" ng-show="!collapsed" ng-cloak>
       <div class="form-group">
         <div class="form-group thinnish">
@@ -148,7 +145,7 @@
       </div>
     </form>
     
-  </div>
+  </div><!--box-->
 </div>
 
 <div class="row">
@@ -160,54 +157,64 @@
 <div class="row">
   <div class="col-md-12 box box-top flat-top flat-bottom">
     <form class="form-inline tight wide" name="monitorForm">
-      <div class="btn-toolbar">
-        
-        <div class="btn-group">
-          <button type="button" class="btn btn-default" ng-model="monitorMode" 
-            ss-toggle-union="'command'">Command<i class="icon-mono" 
-                ng-class="monitorMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-          </button>
-          <button type="button" class="btn btn-default" ng-model="monitorMode" 
-            ss-toggle-union="'job'">Job<i class="icon-mono"
-              ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-          </button>
-          <button type="button" class="btn btn-default" ng-model="monitorMode" 
-            ss-toggle-union="'minion'">Minion<i class="icon-mono"
-              ng-class="monitorMode=='minion' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-          </button>
-          <button type="button" class="btn btn-default" ng-model="monitorMode" 
-            ss-toggle-union="'event'">Event<i class="icon-mono"
-              ng-class="monitorMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
-          </button>
+      <div>
+        <div class="form-group">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+              ss-toggle-union="'command'">Command<i class="icon-mono" 
+                  ng-class="monitorMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+            </button>
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+              ss-toggle-union="'job'">Job<i class="icon-mono"
+                ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+            </button>
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+              ss-toggle-union="'minion'">Minion<i class="icon-mono"
+                ng-class="monitorMode=='minion' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+            </button>
+            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+              ss-toggle-union="'event'">Event<i class="icon-mono"
+                ng-class="monitorMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+            </button>
+          </div>
         </div>
         
-        <label ng-show="monitorMode == 'minion'">&nbsp; Filter &nbsp;
-          <div class="btn-group">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Enter filter string" 
-                ng-model="filterage.target" ng-change="setFilterExpress()" title="Minon filter string">
-              <div class="btn-group">
-                <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to filter against">
-                  <i class="fa-icon-filter"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li ng-repeat="grain in filterage.grains track by $index">
-                    <a ng-href="" ng-click="setFilterGrain($index)" 
-                      ng-class="filterage.grain==grain?'filter-active':''">
-                      {{grain}}
-                    </a>
-                  </li>
-                </ul>
-                <button class="btn btn-default disabled" title="Filter against this grain">in {{filterage.grain}}
-                </button>
-              </div>
+        <div class="form-group" ng-show="monitorMode == 'minion'">
+          &nbsp;&nbsp;
+          <label>Find</label>
+          <div class="input-group input-group-fix">
+            <div class="form-group fattish">
+              <input type="text" class="form-control" 
+                placeholder="Enter filter string" 
+                title="Minon filter string"
+                ng-model="filterage.target" 
+                ng-change="setFilterExpress()">
+            </div>
+            <div class="btn-group btn-group-right">
+              <a class="btn btn-default ss-dropdown-toggle" 
+                  title="Select grain to filter against" ng-href="">
+                <i class="fa-icon-filter"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li ng-repeat="grain in filterage.grains track by $index">
+                  <a ng-href="" ng-click="setFilterGrain($index)" 
+                    ng-class="filterage.grain==grain?'filter-active':''">
+                    {{grain}}
+                  </a>
+                </li>
+              </ul>
+              <a class="btn btn-default disabled" 
+                  title="Filter against this grain" ng-href="">in {{filterage.grain}}
+              </a>
             </div>
           </div>
-        </label>
+        </div>
         
-        <label ng-show="monitorMode == 'minion'">&nbsp; Sort &nbsp;
-          <div class="btn-group" >
-            <button class="btn btn-default ss-dropdown-toggle leftmost" title="Select grain to sort by against">
+        <div class="form-group" ng-show="monitorMode == 'minion'">
+          &nbsp;&nbsp;
+          <label>Sort</label>
+          <div class="btn-group btn-group" >
+            <button class="btn btn-default ss-dropdown-toggle" title="Select grain to sort by against">
               <i class="fa-icon-list"></i>
             </button>
             <ul class="dropdown-menu">
@@ -220,11 +227,12 @@
             </ul>
             <button class="btn btn-default disabled" title="Sort by this trait">by {{sortage.target}}
             </button>
-            <button class="btn" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
+            <button class="btn btn-default" ng-click="sortage.reverse=!sortage.reverse" title="Reverse sort">
               <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
             </button>
           </div>
-        </label>
+        </div>
+
       </div>
     </form><!--monitorForm-->
   </div><!--/box-->
@@ -253,14 +261,15 @@
         <div class="col-md-12" ng-if="commandMode == 'job'">
           <div ng-repeat="job in command.jobs.values() | orderBy:sortJobs:jobReverse">
             <span class="badge" title="Failure status: Green=success, Red=fail"
-                ng-class="job.fail?'badge-red':'badge-green'">
+                ng-class="job.fail?'badge-danger':'badge-success'">
               <i class="fa-icon-certificate icon-white"></i>
             </span>
             <span class="label" title="Job Id: Black=done, Blue=not yet done" 
-                ng-class="job.done?'label-default':'label-info'">
+                ng-class="job.done?'label-info':'label-primary'">
               <span class="larger-font-size">{{job.jid}}</span>
-            </span>
-            <span title="Module function">&nbsp;&nbsp;{{job.name}}</span>
+            </span>&nbsp;
+            <span  class="label label-default" title="Module function">
+              <span class="larger-font-size">{{job.name}}</span></span>
           </div>  
         </div>
         <div class="clearfix"></div>
@@ -274,11 +283,11 @@
     <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
-            ng-class="job.fail?'badge-green':'badge-red'">
+            ng-class="job.fail?'badge-danger':'badge-success'">
             <i class="fa-icon-certificate icon-white"></i>
         </span>
         <span class="label" title="Job Id: Green=done, Blue=not yet done" 
-          ng-class="job.done?'label-success':'label-info'">
+          ng-class="job.done?'label-info':'label-primary'">
           <span  class="larger-font-size">{{job.jid}}</span>
         </span>&nbsp;
         <span class="label label-default" title="Module function">
@@ -300,10 +309,10 @@
         <div class="col-md-12 " ng-if="jobMode == 'result'">
           <kvl ng-repeat="result in job.results.values()">
             <kvi>
-              <span class="label" ng-class="result.done?'label-success':'label-info'">
+              <span class="label" ng-class="result.done?'label-info':'label-primary'">
                 {{result.id}}
               </span>&nbsp;
-              <span class="badge" ng-class="result.fail?'badge-red':'badge-blue'">
+              <span class="badge" ng-class="result.fail?'badge-danger':'badge-success'">
                 <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
                 <b ng-if="result.retcode != null">{{result.retcode}}</b>
               </span>&nbsp;
@@ -396,12 +405,12 @@
   <div class="col-md-12 box flat-top wide" >
     <div class="box box-no-border" ng-repeat="event in events.values().reverse()">
       <div>
-        <span title="Event Tag">{{event.tag}}</span>&nbsp;
+        <span class="nook" title="Event Tag">{{event.tag}}</span>&nbsp;
         <span class="label label-default" title="Module function" 
             ng-show="humanize(event.data)">
           <span class="larger-font-size">{{humanize(event.data)}}</span>
         </span>&nbsp;
-        <i class="btn btn-default btn-sm" 
+        <i class="btn btn-default btn-sm slack" 
           ng-init="expanded={'value': false}" 
           ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
           ng-click="expanded.value = !expanded.value; $event.stopPropagation();">

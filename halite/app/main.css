@@ -180,6 +180,12 @@ n {
   margin: 5px 0px 0px 0px;
 }
 
+.nook {
+  border: 1px solid #888;
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+
 .box { 
   border: 1px solid #888;
   border-radius: 4px;
@@ -262,10 +268,11 @@ n {
 .badge-gray {background-color: gray;}
 .badge-white {background-color: white;}
 .badge-black {background-color: black;}
-.badge-blue { background-color: blue;}
-.badge-green {background-color: green;}
-.badge-red { background-color: red; }
-.badge-orange { background-color: orange; }
+.badge-primary { background-color: #428bca;}
+.badge-blue, .badge-info { background-color: #5bc0de;}
+.badge-green, .badge-success {background-color: #5cb85c;}
+.badge-red, .badge-danger { background-color: #d9534f; }
+.badge-orange, .badge-warning { background-color: #f0ad4e; }
 .badge-purple { background-color: purple; }
 .badge-yellow { background-color: yellow; }
 
