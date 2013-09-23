@@ -351,7 +351,12 @@ with Apache and Mod_wsgi.
 To do a custom deployment with some other framework like Django etc. would involve
 replicating the endpoints from server_bottle. 
 
-  
+Architecture
+-------------
+
+The following diagram illustrates how the various pieces to Halite interact.
+
+.. image:: diagrams/halitearchitecture.png
   
 Testing
 -------
