@@ -16,14 +16,13 @@
 #
 
 Name:           python-halite
-Version:        0.0.9
+Version:        0.1.0
 Release:        1%{?dist}
 License:        Apache-2.0
 Summary:        Halite the salt Web UI
 Url:            http://saltstack.org/
 Group:          System/Monitoring
 Source0:        http://pypi.python.org/packages/source/h/halite/halite-%{version}.tar.gz
-Source1:		halite-rpmlintrc
 BuildRoot:      %{_tmppath}/halite-%{version}-build
 
 %if 0%{?suse_version} && 0%{?suse_version} <= 1110
@@ -37,12 +36,12 @@ BuildRequires:  python
 BuildRequires:  python-distribute
 BuildRequires:	salt
 BuildRequires:	salt-master
-
+BuildRequires:  python-pyOpenSSL
+BuildRequires:  python-Paste
 Requires:       salt
 Requires:       salt-master
-Recommends:     python-CherryPy
-Recommends:     python-Paste
-Recommends:     python-gevent
+Requires:		python-pyOpenSSL
+Requires:		python-Paste
 
 %description
 Halite is the salt web ui, from which you can run salt jobs/events and track progress
