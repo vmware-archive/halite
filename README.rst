@@ -184,7 +184,11 @@ Selecting dropdown buttons will show grains data as well as minion (not job) gen
   
 .. image:: screenshots/MinionMonitor.png
 
-.. image:: screenshots/MinonGrains.png
+
+
+With the grains button selected one can see all the grains for the minion.
+
+.. image:: screenshots/MinionGrains.png
 
 
 
