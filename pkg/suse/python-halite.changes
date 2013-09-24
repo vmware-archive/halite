@@ -1,4 +1,17 @@
 -------------------------------------------------------------------
+Tue Sep 24 19:33:00 UTC 2013 - aboe76@gmail.com
+
+- updated to halite 0.1.0
+  - Upgraded to Twitter Bootstrap v 3.0
+  - Documentation updates
+-------------------------------------------------------------------
+Mon Sep 23 21:34:23 UTC 2013 - aboe76@gmail.com
+
+- Updated requirements to defaults no recommends
+  - python-paste
+  - python-pyopenssl
+
+-------------------------------------------------------------------
 Thu Sep 19 05:52:24 UTC 2013 - aboe76@gmail.com
 
 - updated to halite 0.0.9
