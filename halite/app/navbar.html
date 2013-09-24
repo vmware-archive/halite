@@ -1,7 +1,7 @@
 <div ng-controller="NavbarCtlr">
   <nav class="navbar navbar-default navbar-fixed-top" >
     <div class="navbar-header" ng-init="isCollapsed=false">
-      <button type="button" class="navbar-toggle" ng-show="!!isCollapsed"
+      <button type="button" class="navbar-toggle" 
           ng-click="isCollapsed = !isCollapsed">
         <span class="fa-icon-reorder"></span>
       </button>
@@ -9,7 +9,7 @@
         <img ng-src="{{baseUrl}}/static/app/SaltStackLogoBlackHoriz18.png" />
       </a>
     </div><!-- /navbar-header -->
-    <div>
+    <div class="navbar-collapse animate-fade" ng-show="!isCollapsed" >
       <ul class="nav navbar-nav">
         <li ng-repeat="view in views.tabs" ng-class="navery.navs[view.label].state">
           <a ng-href="{{view.url}}">{{view.label | capitalcase}}</a>
@@ -34,7 +34,7 @@
         <span class="label label-big label-info" style="vertical-align:middle">{{username}}</span>
         <button type="submit" class="btn btn-default btn-sm" ng-click="logoutUser()">Logout</button>
       </form>
-    </div><!-- /nav collapse -->
+    </div><!-- /navbar-collapse -->
   </nav><!-- /nav -->
 </div>
 
