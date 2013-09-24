@@ -8,7 +8,25 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      
+      <div>
+        <ss-pagination 
+          class="pagination-small"
+          page="currentPage" 
+          total-items="totalItems" 
+          items-per-page="itemsPerPage"
+          max-size="maxSize"
+          on-select-page="displayPage(currentPage)"
+          num-pages
+          direction-links="true"
+          previous-text="&lsaquo;" 
+          next-text="&rsaquo;" 
+          boundary-links="true" 
+          first-text="&laquo;" 
+          last-text="&raquo;">
+        </ss-pagination>
+      </div>
+      <p>{{currentPage}}</p>
+      <p>{{stuff}}</p>
     </div>
   </div>
 </div>

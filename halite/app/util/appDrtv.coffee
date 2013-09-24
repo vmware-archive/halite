@@ -322,22 +322,56 @@ appDrtv.directive 'ssAlert', () ->
     return ddo
 
 
-appDrtv.run ["$templateCache", ($templateCache) ->
-    $templateCache.put( "template/alert/ss_alert.html",
-    """
-<div class="alert" ng-class="'alert-' + (type || 'warning')">
-    <button ng-show="closeable" type="button" class="close" ng-click="close()">&times;</button>
-    <div ng-transclude></div>
-</div>
-    """
-    )
-]
 
 
 ###
 ss-pagination ssPagination Directive
 
 replacement for UI-bootstrap pagination
+
+<ss-pagination 
+    class="pagination-small"
+    boundary-links="true" 
+    total-items="totalItems" 
+    page="currentPage" 
+     previous-text="&lsaquo;" 
+     next-text="&rsaquo;" 
+     first-text="&laquo;" 
+     last-text="&raquo;">
+</ss-pagination>
+
+$scope.totalItems = 64;
+$scope.currentPage = 4;
+$scope.maxSize = 5;
+  
+$scope.setPage = (pageNo) ->
+    $scope.currentPage = pageNo;
+
+
+
+
+Pagination Settings attributes of ssPagination element
+
+Settings can be provided as attributes in the <pagination> or 
+globally configured through the paginationConfig.
+
+page  : Current page number. First page is 1.
+total-items  : Total number of items in all pages.
+items-per-page  (Defaults: 10) : Maximum number of items per page. 
+        A value less than one indicates all items on one page.
+max-size  (Defaults: null) : Limit number for pagination size.
+num-pages readonly : Total number of pages to display.
+rotate (Defaults: true) : Whether to keep current page in the middle of the visible ones.
+on-select-page (page) (Default: null) : An optional expression called when a 
+    page is selected having the page number as argument.
+
+direction-links (Default: true) : Whether to display Previous / Next buttons.
+previous-text (Default: 'Previous') : Text for Previous button.
+next-text (Default: 'Next') : Text for Next button.
+
+boundary-links (Default: false) : Whether to display First / Last buttons.
+first-text (Default: 'First') : Text for First button.
+last-text (Default: 'Last') : Text for Last button.
 
 
 ###
@@ -408,7 +442,7 @@ appDrtv.constant("paginationConfig",
     rotate: true
 )
 
-appDrtv.directive "pagination", ["$parse", "paginationConfig", ($parse, config) ->
+appDrtv.directive "ssPagination", ["$parse", "paginationConfig", ($parse, config) ->
     restrict: "EA"
     scope:
         page: "="
@@ -417,89 +451,109 @@ appDrtv.directive "pagination", ["$parse", "paginationConfig", ($parse, config) 
         numPages: "="
 
     controller: "PaginationController"
-    templateUrl: "template/pagination/pagination.html"
+    templateUrl: "template/pagination/ss_pagination.html"
     replace: true
     link: (scope, element, attrs, paginationCtrl) ->
-      
-      # Setup configuration parameters
-      
-      # Create page object used in template
-      makePage = (number, text, isActive, isDisabled) ->
-        number: number
-        text: text
-        active: isActive
-        disabled: isDisabled
-      maxSize = undefined
-      boundaryLinks = paginationCtrl.getAttributeValue(attrs.boundaryLinks, config.boundaryLinks)
-      directionLinks = paginationCtrl.getAttributeValue(attrs.directionLinks, config.directionLinks)
-      firstText = paginationCtrl.getAttributeValue(attrs.firstText, config.firstText, true)
-      previousText = paginationCtrl.getAttributeValue(attrs.previousText, config.previousText, true)
-      nextText = paginationCtrl.getAttributeValue(attrs.nextText, config.nextText, true)
-      lastText = paginationCtrl.getAttributeValue(attrs.lastText, config.lastText, true)
-      rotate = paginationCtrl.getAttributeValue(attrs.rotate, config.rotate)
-      paginationCtrl.init config.itemsPerPage
-      if attrs.maxSize
-        scope.$parent.$watch $parse(attrs.maxSize), (value) ->
-          maxSize = parseInt(value, 10)
-          paginationCtrl.render()
-  
-      paginationCtrl.getPages = (currentPage, totalPages) ->
-        pages = []
-        
-        # Default page limits
-        startPage = 1
-        endPage = totalPages
-        isMaxSized = (angular.isDefined(maxSize) and maxSize < totalPages)
-        
-        # recompute if maxSize
-        if isMaxSized
-          if rotate
+        # Setup configuration parameters
+        # Create page object used in template
+        makePage = (number, text, isActive, isDisabled) ->
+            number: number
+            text: text
+            active: isActive
+            disabled: isDisabled
+        maxSize = undefined
+        boundaryLinks = paginationCtrl.getAttributeValue(attrs.boundaryLinks, config.boundaryLinks)
+        directionLinks = paginationCtrl.getAttributeValue(attrs.directionLinks, config.directionLinks)
+        firstText = paginationCtrl.getAttributeValue(attrs.firstText, config.firstText, true)
+        previousText = paginationCtrl.getAttributeValue(attrs.previousText, config.previousText, true)
+        nextText = paginationCtrl.getAttributeValue(attrs.nextText, config.nextText, true)
+        lastText = paginationCtrl.getAttributeValue(attrs.lastText, config.lastText, true)
+        rotate = paginationCtrl.getAttributeValue(attrs.rotate, config.rotate)
+        paginationCtrl.init config.itemsPerPage
+        if attrs.maxSize
+            scope.$parent.$watch $parse(attrs.maxSize), (value) ->
+                maxSize = parseInt(value, 10)
+                paginationCtrl.render()
+    
+        paginationCtrl.getPages = (currentPage, totalPages) ->
+            pages = []
             
-            # Current page is displayed in the middle of the visible ones
-            startPage = Math.max(currentPage - Math.floor(maxSize / 2), 1)
-            endPage = startPage + maxSize - 1
+            # Default page limits
+            startPage = 1
+            endPage = totalPages
+            isMaxSized = (angular.isDefined(maxSize) and maxSize < totalPages)
             
-            # Adjust if limit is exceeded
-            if endPage > totalPages
-              endPage = totalPages
-              startPage = endPage - maxSize + 1
-          else
+            # recompute if maxSize
+            if isMaxSized
+                if rotate
+                    # Current page is displayed in the middle of the visible ones
+                    startPage = Math.max(currentPage - Math.floor(maxSize / 2), 1)
+                    endPage = startPage + maxSize - 1
+                    
+                    # Adjust if limit is exceeded
+                    if endPage > totalPages
+                        endPage = totalPages
+                        startPage = endPage - maxSize + 1
+                else
+                    # Visible pages are paginated with maxSize
+                    startPage = ((Math.ceil(currentPage / maxSize) - 1) * maxSize) + 1
+                    
+                    # Adjust last page if limit is exceeded
+                    endPage = Math.min(startPage + maxSize - 1, totalPages)
             
-            # Visible pages are paginated with maxSize
-            startPage = ((Math.ceil(currentPage / maxSize) - 1) * maxSize) + 1
+            # Add page number links
+            number = startPage
+    
+            while number <= endPage
+                page = makePage(number, number, paginationCtrl.isActive(number), false)
+                pages.push page
+                number++
             
-            # Adjust last page if limit is exceeded
-            endPage = Math.min(startPage + maxSize - 1, totalPages)
-        
-        # Add page number links
-        number = startPage
-  
-        while number <= endPage
-          page = makePage(number, number, paginationCtrl.isActive(number), false)
-          pages.push page
-          number++
-        
-        # Add links to move between page sets
-        if isMaxSized and not rotate
-          if startPage > 1
-            previousPageSet = makePage(startPage - 1, "...", false, false)
-            pages.unshift previousPageSet
-          if endPage < totalPages
-            nextPageSet = makePage(endPage + 1, "...", false, false)
-            pages.push nextPageSet
-        
-        # Add previous & next links
-        if directionLinks
-          previousPage = makePage(currentPage - 1, previousText, false, paginationCtrl.noPrevious())
-          pages.unshift previousPage
-          nextPage = makePage(currentPage + 1, nextText, false, paginationCtrl.noNext())
-          pages.push nextPage
-        
-        # Add first & last links
-        if boundaryLinks
-          firstPage = makePage(1, firstText, false, paginationCtrl.noPrevious())
-          pages.unshift firstPage
-          lastPage = makePage(totalPages, lastText, false, paginationCtrl.noNext())
-          pages.push lastPage
-        pages
+            # Add links to move between page sets
+            if isMaxSized and not rotate
+                if startPage > 1
+                    previousPageSet = makePage(startPage - 1, "...", false, false)
+                    pages.unshift previousPageSet
+                if endPage < totalPages
+                    nextPageSet = makePage(endPage + 1, "...", false, false)
+                    pages.push nextPageSet
+            
+            # Add previous & next links
+            if directionLinks
+                previousPage = makePage(currentPage - 1, previousText, false, paginationCtrl.noPrevious())
+                pages.unshift previousPage
+                nextPage = makePage(currentPage + 1, nextText, false, paginationCtrl.noNext())
+                pages.push nextPage
+            
+            # Add first & last links
+            if boundaryLinks
+                firstPage = makePage(1, firstText, false, paginationCtrl.noPrevious())
+                pages.unshift firstPage
+                lastPage = makePage(totalPages, lastText, false, paginationCtrl.noNext())
+                pages.push lastPage
+            pages
 ]
+
+
+
+appDrtv.run ["$templateCache", ($templateCache) ->
+    $templateCache.put( "template/alert/ss_alert.html",
+    """
+<div class="alert" ng-class="'alert-' + (type || 'warning')">
+    <button ng-show="closeable" type="button" class="close" ng-click="close()">&times;</button>
+    <div ng-transclude></div>
+</div>
+    """
+    )
+    
+    $templateCache.put( "template/pagination/ss_pagination.html",
+    """
+<ul class="pagination">
+  <li ng-repeat="page in pages" ng-class="{active: page.active, disabled: page.disabled}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li>
+</ul>
+    """
+    )
+]
+
+
+"template/pagination/pagination.html"
