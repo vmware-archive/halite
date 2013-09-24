@@ -11,16 +11,18 @@ with Bootsrap 3.0. Since UI-Bootstrap won't be fully BS3 compat until v 0.7
 See halite/app/util/appDrtv.coffee
 
 alert  -> ssAlert
+
 dropDownToggle -> ssDropdownToggle
 
 
-* Added new directive for new type of radio button like group called ToggleUnion
-    where the at most one member can be selected but none is allowed
+* Added new directive ssToggleUnion.
+This adds new type of radio button like group called ToggleUnion
+where at most one member can be selected but none is allowed
 
 ssToggleUnion
 
-* Clean up the display. Get rid of slats and use toggle unions instead of tabs
-for drill down display of monitor data
+* Clean up the display. 
+Get rid of slats and use toggle unions instead of tabs for drill down display of monitor data
 
 * Community additions of packages for Arch and Suse Linux
 
