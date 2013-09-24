@@ -233,10 +233,23 @@ and then is not propagated further.
       </li>
     </ul>
   </li>
+  
+<div class="dropdown">
+  <button class="btn ss-dropdown-toggle">Action<b class="caret"></b></button>
+  <ul class="dropdown-menu">
+    <li class="nav-header">State</li>
+    <li><a ng-href="">Hi</a></li>
+    <li class="divider"></li>
+    <li class="nav-header">Test</li>
+    <li><a ng-href="">Bye</a></li>
+  </ul>
+</div>
+
+
 ###
 
 
-appDrtv.directive 'ss-dropdown-toggle', 
+appDrtv.directive 'ssDropdownToggle', 
     ['$document', '$location', ($document, $location) ->
         openElement = null
         closeMenu = angular.noop
@@ -274,4 +287,48 @@ appDrtv.directive 'ss-dropdown-toggle',
                 return true
                 
         return ddo
-      ]
+    ]
+
+
+###
+ss-alert ssAlert
+
+Replacement for ui-bootstrap alert
+
+
+<ss-alert type="'error'" close="closeAlert()" ng-cloak 
+      ng-show="!!$parent.errorMsg">Error! {{errorMsg}}
+</ss-alert>
+
+<ss-alert ng-repeat="alert in alerts" type="alert.type" 
+    close="closeAlert($index)">{{alert.msg}}</ss-alert>
+
+Directive templates replace the directive element.
+###
+
+appDrtv.directive 'ssAlert', () ->
+    ddo =
+        restrict: 'EA'
+        templateUrl:'template/alert/ss_alert.html'
+        transclude: true
+        replace: true
+        scope: 
+            type: '=',
+            close: '&'
+        link: ($scope, elm, attrs, ctlr) ->
+            $scope.closeable = attrs.close?;
+            return true
+    
+    return ddo
+
+
+appDrtv.run ["$templateCache", ($templateCache) ->
+    $templateCache.put( "template/alert/ss_alert.html",
+    """
+<div class="alert" ng-class="'alert-' + (type || 'warning')">
+    <button ng-show="closeable" type="button" class="close" ng-click="close()">&times;</button>
+    <div ng-transclude></div>
+</div>
+    """
+    )
+]

@@ -357,7 +357,7 @@ Architecture
 The following diagram illustrates how the various pieces to Halite interact.
 
 .. image:: diagrams/HaliteArchitecture.png
-  
+
 Testing
 -------
 

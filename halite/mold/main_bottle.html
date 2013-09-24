@@ -6,11 +6,11 @@
     <meta name="description" content="Main app entry point">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="/"></base>
-    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap{{mini}}.css">
+    <link rel="stylesheet" media="screen" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap{{mini}}.css">
     <style type="text/css">
-      body { padding-top: 60px; padding-bottom: 40px;} <!-- Needed for fixed navbar-->
+      body { padding: 60px;} <!-- Needed for fixed navbar-->
+      .navbar { margin-bottom: 60px;}
     </style>
-    <link rel="stylesheet" href="{{baseUrl}}/static/lib/bootstrap/css/bootstrap-responsive{{mini}}.css" >
     <link rel="stylesheet" href="{{baseUrl}}/static/lib/font-awesome/css/font-awesome-fa{{mini}}.css">
     <link rel="shortcut icon" type="image/x-icon" href="{{baseUrl}}/static/app/favicon.ico">
     % for sheet in sheets:
@@ -30,11 +30,11 @@
     
     <div ng-include="'{{baseUrl}}/static/app/navbar.html'" ></div>
 
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12"><div ng-view></div></div>
-      </div><!-- /row-fluid -->
-    </div><!-- /container-fluid -->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12"><div ng-view></div></div>
+      </div><!-- /row -->
+    </div><!-- /container -->
 
     <div ng-include="'{{baseUrl}}/static/app/route.html'" ></div>
     <script src="{{baseUrl}}/static/lib/angular/angular-loader{{mini}}.js"></script>
@@ -48,9 +48,9 @@
     <!--<script src="{{baseUrl}}/lib/angular/angular-mocks{{mini}}.js"></script>-->
     <!--<script src="{{baseUrl}}/lib/angular/angular-scenario{{mini}}.js"></script>-->
 
-    <script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/ui-bootstrap-tpls{{mini}}.js"></script>
-    <script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>
-    <script src="{{baseUrl}}/static/lib/angular-ui/utils/utils{{mini}}.js"></script>
+    <!--<script src="{{baseUrl}}/static/lib/angular-ui/bootstrap/ui-bootstrap-tpls{{mini}}.js"></script>-->
+    <!--<script src="{{baseUrl}}/static/lib/angular-ui/router/router{{mini}}.js"></script>-->
+    <!--<script src="{{baseUrl}}/static/lib/angular-ui/utils/utils{{mini}}.js"></script>-->
     
     <script src="{{baseUrl}}/static/lib/underscore/underscore{{mini}}.js"></script>
     <script src="{{baseUrl}}/static/lib/underscore/underscore.string{{mini}}.js"></script>

@@ -1,5 +1,5 @@
-<div class="row-fluid">
-  <div class="span12">
+<div class="row">
+  <div class="col-md-12">
     <div class="alert alert-error" ng-cloak ng-show="!!errorMsg">
       <strong>Error!</strong> {{errorMsg}}
     </div>
@@ -8,57 +8,72 @@
   </div><!--/span-->
 </div><!--/row-->
 
-<div class="row-fluid">
-  <div class="span12">
-    <ng-form name="prefForm" class="form-inline">
+
+<ng-form name="prefForm" class="form-inline">
+  <div class="row">
+    <div class="col-md-12">
       <legend>Preferences</legend>
-      <div class="controls controls-row" ng-repeat="item in prefs.items()">
+      <div ng-repeat="item in prefs.items()">
         <div ng-if="!isObject(item.val)">
-          <label class="checkbox" ng-if="isBoolean(item.val)">
-            <input type="checkbox"  ng-model="item.val" ss-input-name="{{item.key}}">{{item.key}}
-          </label>
-          <label class="control-label" ng-if="isNumber(item.val)">{{item.key}}<br/>
-            <input class="input-small" type="number" ng-model="item.val"
-              ng-change="item.val=fixNumber(item.val)" ss-input-name="{{item.key}}">
-          </label>
-          <label class="control-label" ng-if="!(isBoolean(item.val)||isNumber(item.val))">
-            {{item.key}}<br/>
-            <input type="text" class="input-medium" placeholder="{{item.key}}" 
-              ng-model="item.val" ss-input-name="{{item.key}}">
-          </label>
+          <div class="checkbox" ng-if="isBoolean(item.val)">
+            <label>
+              <input type="checkbox" placeholder="{{item.key}}" 
+                  ng-model="item.val" ss-input-name="{{item.key}}">
+                {{item.key}}
+            </label>
+          </div>
+          <div class="form-group thinnish" ng-if="isNumber(item.val)">
+            <label class="control-label" 
+              for="'id'+item.key">{{item.key}}</label>
+            <input type="number" class="form-control input-sm" id="'id'+item.key"
+              placeholder="{{item.key}}" ng-model="item.val" 
+              ss-input-name="{{item.key}}" ng-change="item.val=fixNumber(item.val)">
+          </div>
+          <div class="form-group thinnish" ng-if="!(isBoolean(item.val)||isNumber(item.val))">
+            <label class="control-label" for="'id'+item.key" >{{item.key}}</label>
+            <input type="text" class="form-control input-sm" id="'id'+item.key"
+              placeholder="{{item.key}}" ng-model="item.val" ss-input-name="{{item.key}}">
+          </div>
         </div>
         <div ng-if="isObject(item.val)" >
-          <ng-form ss-form-name="{{item.key}}Form" ss-outer-form="prefForm" 
-              class="form-inline">
-            <p></p><label><strong>{{item.key}}</strong></label>
-            <div class="controls controls-row">
+          <ng-form class="form-inline" 
+              ss-form-name="{{item.key}}Form" ss-outer-form="prefForm">
+            <p><strong>{{item.key}}</strong></p>
+            <div>
               <span ng-repeat="item1 in item.val.items()">
-                <label class="checkbox" ng-if="isBoolean(item1.val)">
-                  <input type="checkbox" placeholder="{{item1.key}}" 
-                    ss-input-name="{{item1.key}}" ng-model="item1.val">
-                    {{item.key+'.'+item1.key}}
-                </label>
-                <label class="control-label" ng-if="isNumber(item1.val)">
-                  {{item.key+'.'+item1.key}}<br/>
-                  <input type="number"  class="input-small" placeholder="{{item1.key}}" 
-                    ss-input-name="{{item1.key}}" ng-model="item1.val" 
-                    ng-change="item1.val=fixNumber(item1.val)">
-                </label>
-                <label class="control-label" ng-if="!(isBoolean(item1.val)||isNumber(item1.val))">
-                  {{item.key+'.'+item1.key}}<br/>
-                  <input type="text" class="input-medium" placeholder="{{item1.key}}" 
-                    ss-input-name="{{item1.key}}" ng-model="item1.val">
-                </label>
+                <div class="checkbox" ng-if="isBoolean(item1.val)">
+                  <label>
+                    <input type="checkbox"  placeholder="{{item1.key}}" 
+                        ng-model="item1.val" ss-input-name="{{item1.key}}">
+                      {{item.key+'.'+item1.key}}
+                  </label>
+                </div>
+                <div class="form-group thinnish" ng-if="isNumber(item1.val)">
+                  <label class="control-label" 
+                    for="'id'+item.key+'.'+item1.key">{{item.key+'.'+item1.key}}</label>
+                  <input type="number" class="form-control input-sm" id="'id'+item.key+'.'+item1.key"
+                    placeholder="{{item1.key}}" ng-model="item1.val" 
+                    ss-input-name="{{item1.key}}" ng-change="item1.val=fixNumber(item1.val)">
+                </div>
+                <div class="form-group thinnish" ng-if="!(isBoolean(item1.val)||isNumber(item1.val))">
+                  <label class="control-label" 
+                    for="'id'+item.key+'.'+item1.key">{{item.key+'.'+item1.key}}</label>
+                  <input type="text" class="form-control input-sm" id="'id'+item.key+'.'+item1.key"
+                    placeholder="{{item1.key}}" ng-model="item1.val" ss-input-name="{{item1.key}}">
+                </div>
               </span>
             </div>
-          </ng-form>
+          </ng-form> <!-- inner form-->
         </div>        
       </div>
-      <div class="controls controls-row">
-        <button class="btn" ng-click="resetPrefs()">Reset</button>
-        <button  class="btn" type="submit" ng-click="updatePrefs()">Update</button>
-      </div>
-    </ng-form>
-  </div><!--/span-->
-</div><!--/row-->
+    </div><!--/col-->
+  </div><!--/row-->
 
+  <div class='row col-md-12'>
+    <p></p>
+    <div class="form-group">
+      <button class="btn btn-default" ng-click="resetPrefs()">Reset</button>
+      <button  class="btn btn-primary" type="submit" ng-click="updatePrefs()">Update</button>
+    </div>
+  </div>
+</ng-form> <!-- outer form-->

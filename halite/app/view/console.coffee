@@ -133,7 +133,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             return result
         
         $scope.sortEvents = (event) ->
-            result = event.tag
+            result = event.utag
             result = if result? then result else false
             return result
         
@@ -497,8 +497,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             #console.log edata
             if not edata.data._stamp?
                 edata.data._stamp = $scope.stamp()
-            edata.tag = [edata.tag, edata.data._stamp].join("/")
-            $scope.events.set(edata.tag, edata)
+            edata.utag = [edata.tag, edata.data._stamp].join("/")
+            $scope.events.set(edata.utag, edata)
             parts = edata.tag.split("/") # split on "/" character
             if parts[0] is 'salt'
                 if parts[1] is 'job'
