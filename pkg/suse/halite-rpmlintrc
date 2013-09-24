@@ -1,0 +1,9 @@
+# halite uses coffee and javascripts
+# suse rpm build warns about script-without-shebang
+# each time. 
+#
+# example:
+# python-halite.noarch: W: script-without-shebang /usr/lib/python2.7/site-packages/halite/lib/angular/i18n/angular-locale_fi-fi.js
+#
+# to fix this:
+addFilter(".*script-without-shebang.*/*\.js.*")
