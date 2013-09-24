@@ -326,7 +326,8 @@
         <div class="col-md-12" ng-if="jobMode == 'event'">
           <kvl ng-repeat="event in job.events.values().reverse()">
             <kvi>
-              <span>{{event.tag}}</span>
+              <span class="nook">{{event.data._stamp}}</span>&nbsp;
+              <span class="nook">{{event.tag}}</span>
               <span ng-repeat="ensual in ensuals(event.data)" 
                 ng-include="'ensual_nested.html'">
               </span>
@@ -383,7 +384,8 @@
         <div class="col-md-12" ng-if="minionMode == 'event'">
           <kvl ng-repeat="event in minion.events.values().reverse()">
             <kvi>
-              <span>{{event.tag}}</span>
+              <span class="nook">{{event.data._stamp}}</span>&nbsp;
+              <span class="nook">{{event.tag}}</span>
               <span ng-repeat="ensual in ensuals(event.data)" 
                 ng-include="'ensual_nested.html'">
               </span>
@@ -405,6 +407,7 @@
   <div class="col-md-12 box flat-top wide" >
     <div class="box box-no-border" ng-repeat="event in events.values().reverse()">
       <div>
+        <span class="nook">{{event.data._stamp}}</span>&nbsp;
         <span class="nook" title="Event Tag">{{event.tag}}</span>&nbsp;
         <span class="label label-default" title="Module function" 
             ng-show="humanize(event.data)">
