@@ -330,23 +330,31 @@ ss-pagination ssPagination Directive
 replacement for UI-bootstrap pagination
 
 <ss-pagination 
-    class="pagination-small"
-    boundary-links="true" 
-    total-items="totalItems" 
+    class="pagination-sm tight"
     page="currentPage" 
-     previous-text="&lsaquo;" 
-     next-text="&rsaquo;" 
-     first-text="&laquo;" 
-     last-text="&raquo;">
+    total-items="totalItems" 
+    items-per-page="itemsPerPage"
+    max-size="maxSize"
+    on-select-page="displayPage(page)"
+    num-pages
+    direction-links="true"
+    previous-text="&lsaquo;" 
+    next-text="&rsaquo;" 
+    boundary-links="true" 
+    first-text="&laquo;" 
+    last-text="&raquo;">
 </ss-pagination>
 
-$scope.totalItems = 64;
-$scope.currentPage = 4;
-$scope.maxSize = 5;
-  
+$scope.totalItems = 64
+$scope.currentPage = 1
+$scope.maxSize = 5
+$scope.itemsPerPage = 10
+
 $scope.setPage = (pageNo) ->
     $scope.currentPage = pageNo;
-
+    
+$scope.displayPage = (pageNo) ->
+    $scope.stuff = "info from page" + pageNo
 
 
 
@@ -359,11 +367,11 @@ page  : Current page number. First page is 1.
 total-items  : Total number of items in all pages.
 items-per-page  (Defaults: 10) : Maximum number of items per page. 
         A value less than one indicates all items on one page.
-max-size  (Defaults: null) : Limit number for pagination size.
-num-pages readonly : Total number of pages to display.
-rotate (Defaults: true) : Whether to keep current page in the middle of the visible ones.
 on-select-page (page) (Default: null) : An optional expression called when a 
     page is selected having the page number as argument.
+max-size  (Defaults: null) : Limit number of page buttons to display for pagination size.
+num-pages readonly : Total number of pages to display.
+rotate (Defaults: true) : Whether to keep current page in the middle of the visible ones.
 
 direction-links (Default: true) : Whether to display Previous / Next buttons.
 previous-text (Default: 'Previous') : Text for Previous button.
@@ -534,6 +542,67 @@ appDrtv.directive "ssPagination", ["$parse", "paginationConfig", ($parse, config
             pages
 ]
 
+###
+ss-pager ssPager
+
+Replacement for UI-Bootstrap pager directive
+
+Settings can be provided as attributes in the <ss-pager> or globally configured 
+through the pagerConfig. 
+
+page  : Current page number. First page is 1.
+total-items  : Total number of items in all pages.
+items-per-page  (Defaults: 10) : Maximum number of items per page. 
+        A value less than one indicates all items on one page.
+on-select-page (page) (Default: null) : An optional expression called when a 
+    page is selected having the page number as argument. 
+
+Other settings are:
+
+align (Default: true) : Whether to align each link to the sides.
+previous-text (Default: '« Previous') : Text for Previous button.
+next-text (Default: 'Next »') : Text for Next button.
+
+<ss-pager total-items="totalItems" page="currentPage"></ss-pager>
+
+###
+
+appDrtv.constant "pagerConfig",
+    itemsPerPage: 10
+    previousText: "« Previous"
+    nextText: "Next »"
+    align: true
+
+appDrtv.directive "ssPager", ["pagerConfig", (config) ->
+    restrict: "EA"
+    scope:
+        page: "="
+        totalItems: "="
+        onSelectPage: " &"
+        numPages: "="
+  
+    controller: "PaginationController"
+    templateUrl: "template/pagination/pager.html"
+    replace: true
+    link: (scope, element, attrs, paginationCtrl) ->
+      
+      # Setup configuration parameters
+      
+      # Create page object used in template
+      makePage = (number, text, isDisabled, isPrevious, isNext) ->
+            number: number
+            text: text
+            disabled: isDisabled
+            previous: (align and isPrevious)
+            next: (align and isNext)
+      previousText = paginationCtrl.getAttributeValue(attrs.previousText, config.previousText, true)
+      nextText = paginationCtrl.getAttributeValue(attrs.nextText, config.nextText, true)
+      align = paginationCtrl.getAttributeValue(attrs.align, config.align)
+      paginationCtrl.init config.itemsPerPage
+      paginationCtrl.getPages = (currentPage) ->
+        [makePage(currentPage - 1, previousText, paginationCtrl.noPrevious(), true, false), 
+            makePage(currentPage + 1, nextText, paginationCtrl.noNext(), false, true)]
+]
 
 
 appDrtv.run ["$templateCache", ($templateCache) ->
@@ -553,6 +622,16 @@ appDrtv.run ["$templateCache", ($templateCache) ->
 </ul>
     """
     )
+    
+    $templateCache.put( "template/pagination/ss_pager.html",
+    """
+<ul class="pager">
+    <li ng-repeat="page in pages" ng-class="{disabled: page.disabled, previous: page.previous, next: page.next}"><a ng-click="selectPage(page.number)">{{page.text}}</a></li>
+</ul>
+    """
+    )
+    
+    
 ]
 
 

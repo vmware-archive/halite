@@ -41,7 +41,7 @@
               </ul>
             </div>
             <div class="form-group" >
-              <input type="text" class="form-control input-rightend fatter" 
+              <input type="text" class="form-control input-rightend fat" 
                 placeholder="Enter target pattern" 
                 ng-model="commandTarget" title="Minion command target pattern">
             </div>
@@ -401,6 +401,39 @@
       </div><!--collapsed-->
     </div> <!--/box repeated-->
   </div><!--/span box-->
+  <div class="col-md-12 wide">
+    <form class="form-inline pull-right" name="minionPagerForm"
+        ng-init="minionPager=newPagerage()">
+      <div class="form-group">
+        <ss-pagination 
+          class="pagination-sm tight"
+          style="vertical-align: middle"
+          page="minionPager.page" 
+          total-items="minionPager.itemCount" 
+          items-per-page="minionPager.perPage"
+          max-size="minionPager.pagerLimit"
+          on-select-page="displayPage(page, minionPager)"
+          num-pages
+          direction-links="true"
+          previous-text="&lsaquo;" 
+          next-text="&rsaquo;" 
+          boundary-links="true" 
+          first-text="&laquo;" 
+          last-text="&raquo;">
+        </ss-pagination>&nbsp;
+        <div class="form-group">
+          <span style="font-size: smaller">per page</span>
+          <select class="form-control input-sm" 
+            style="width: 50px; direction: rtl"
+            ng-model="minionPager.perPage"
+            name="ippSelect"
+            required
+            ng-options="count for count in [5, 10, 20, 50, 100]">
+          </select>
+        </div>
+      </div>
+    </form>
+  </div><!--col-->
 </div><!--/row-->
 
 <div class="row" ng-show="monitorMode == 'event'">

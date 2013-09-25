@@ -67,6 +67,24 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             if not $scope.minions.get(mid)?
                 $scope.minions.set(mid, new Minioner(mid))
             return ($scope.minions.get(mid))
+            
+        $scope.pagerage =
+            page: 1
+            itemCount: 64
+            perPage: 10
+            pagerLimit: 5
+        
+        $scope.newPagerage = () ->
+            return angular.copy($scope.pagerage)
+            
+        $scope.itemOffset =  (page, perPage) ->
+            return (Math.max(page-1,0) * perPage)
+  
+        $scope.setPage = (page, pager) ->
+            pager.page = page;
+            
+        $scope.displayPage = (page, pager) ->
+            console.log "Display page " + page
         
         $scope.commandTarget = ""
         

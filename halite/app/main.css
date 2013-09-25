@@ -88,15 +88,19 @@
     padding: 6px 4px;
 }
 
-.thinnest {
+.skinniest{
+  width: 75px !important;
+}
+
+.skinnier {
   width: 100px !important;
 }
 
-.thinner {
+.skinny {
   width: 125px !important;
 }
 
-.thinnish {
+.skinnish {
   width: 150px !important;
 }
 
@@ -104,17 +108,27 @@
   width: 175px !important;
 }
 
-.fatter {
+.fat {
   width: 200px !important;
 }
 
-.fattest {
+.fatter {
   width: 225px !important;
+}
+
+.fattest {
+  width: 250px !important;
 }
 
 
 .larger-font-size {
   font-size: larger;
+}
+
+.centered {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
 
 kvl {
