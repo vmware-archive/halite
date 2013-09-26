@@ -8,42 +8,8 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <form class="form-inline" name="paginatorForm" ng-init="pager=newPaginator()">
-        <div class="form-group">
-          <ss-pagination 
-            class="pagination-sm tight"
-            style="vertical-align: middle"
-            page="pager.page" 
-            total-items="pager.itemCount" 
-            items-per-page="pager.perPage"
-            max-size="pager.pagerLimit"
-            on-select-page="displayPage(page)"
-            num-pages
-            direction-links="true"
-            previous-text="&lsaquo;" 
-            next-text="&rsaquo;" 
-            boundary-links="true" 
-            first-text="&laquo;" 
-            last-text="&raquo;">
-          </ss-pagination>&nbsp;
-          <div class="form-group">
-            <span style="font-size: smaller">per page</span>
-            <select class="form-control input-sm" 
-              style="width: 50px; direction: rtl"
-              ng-model="pager.perPage"
-              name="ippSelect"
-              required
-              ng-options="count for count in [5, 10, 20, 50, 100]">
-            </select>
-          </div>
-        </div>
-      </form>
-      <p></p>
-      <p>{{pager.page}} {{stuff}}</p>
       
-      <div>
-        
-      </div>
+
     </div>
   </div>
 </div>
