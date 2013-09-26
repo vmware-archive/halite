@@ -2,10 +2,10 @@ mainApp = angular.module("MainApp") #get reference to MainApp module
 
 mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$templateCache'
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
-    'Minioner', 'Resulter', 'Jobber', 'Runner', 'Wheeler', 'Commander',
+    'Minioner', 'Resulter', 'Jobber', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
     ($scope, $location, $route, $q, $templateCache, Configuration, AppData, AppPref, 
-    Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, Commander,
+    Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, Commander, Pagerage,
     SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
         $scope.location = $location
         $scope.route = $route
@@ -67,24 +67,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             if not $scope.minions.get(mid)?
                 $scope.minions.set(mid, new Minioner(mid))
             return ($scope.minions.get(mid))
-            
-        $scope.pagerage =
-            page: 1
-            itemCount: 64
-            perPage: 10
-            pagerLimit: 5
         
-        $scope.newPagerage = () ->
-            return angular.copy($scope.pagerage)
-            
-        $scope.itemOffset =  (page, perPage) ->
-            return (Math.max(page-1,0) * perPage)
-  
-        $scope.setPage = (page, pager) ->
-            pager.page = page;
-            
-        $scope.displayPage = (page, pager) ->
-            console.log "Display page " + page
+        $scope.newPagerage = (itemCount) ->
+            return (new Pagerage(itemCount))
         
         $scope.commandTarget = ""
         

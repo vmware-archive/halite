@@ -240,7 +240,7 @@
       
 <div class="row" ng-show="monitorMode == 'command'">
   <div class="col-md-12 box flat-top wide" >
-    <div class="box box-no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse">
+    <div class="box box-no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse | pagerize:commandPager">
       <div class="btn-toolbar">
         <div class="btn-group pull-left" >
           <button class="btn btn-default btn-sm" title="Command Function. Click to run again."
@@ -276,11 +276,44 @@
       </div><!--/box-->
     </div> <!--/box-->
   </div><!--/span box-->
+  <div class="col-md-12 wide">
+    <form class="form-inline pull-right" name="commandPagerForm"
+        ng-init="commandPager=newPagerage()">
+      <div class="form-group">
+        <ss-pagination 
+          class="pagination-sm tight"
+          style="vertical-align: middle"
+          page="commandPager.page" 
+          total-items="commandPager.itemCount" 
+          items-per-page="commandPager.perPage"
+          max-size="commandPager.pagerLimit"
+          on-select-page="commandPager.displayPage(page)"
+          num-pages
+          direction-links="true"
+          previous-text="&lsaquo;" 
+          next-text="&rsaquo;" 
+          boundary-links="true" 
+          first-text="&laquo;" 
+          last-text="&raquo;">
+        </ss-pagination>&nbsp;
+        <div class="form-group">
+          <span style="font-size: smaller">per page</span>
+          <select class="form-control input-sm" 
+            style="width: 50px; direction: rtl"
+            ng-model="commandPager.perPage"
+            name="ippSelect"
+            required
+            ng-options="count for count in [5, 10, 20, 50, 100]">
+          </select>
+        </div>
+      </div>
+    </form>
+  </div><!--col-->
 </div><!--/row-->
 
 <div class="row" ng-show="monitorMode == 'job'">
   <div class="col-md-12 box flat-top wide">
-    <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse">
+    <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse | pagerize:jobPager">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-danger':'badge-success'">
@@ -338,11 +371,44 @@
       </div><!--/box-->
     </div> <!--/box-->
   </div><!--/span box-->
+  <div class="col-md-12 wide">
+    <form class="form-inline pull-right" name="jobPagerForm"
+        ng-init="jobPager=newPagerage()">
+      <div class="form-group">
+        <ss-pagination 
+          class="pagination-sm tight"
+          style="vertical-align: middle"
+          page="jobPager.page" 
+          total-items="jobPager.itemCount" 
+          items-per-page="jobPager.perPage"
+          max-size="jobPager.pagerLimit"
+          on-select-page="jobPager.displayPage(page)"
+          num-pages
+          direction-links="true"
+          previous-text="&lsaquo;" 
+          next-text="&rsaquo;" 
+          boundary-links="true" 
+          first-text="&laquo;" 
+          last-text="&raquo;">
+        </ss-pagination>&nbsp;
+        <div class="form-group">
+          <span style="font-size: smaller">per page</span>
+          <select class="form-control input-sm" 
+            style="width: 50px; direction: rtl"
+            ng-model="jobPager.perPage"
+            name="ippSelect"
+            required
+            ng-options="count for count in [5, 10, 20, 50, 100]">
+          </select>
+        </div>
+      </div>
+    </form>
+  </div><!--col-->
 </div><!--/row-->
 
 <div class="row"  ng-show="monitorMode == 'minion'">
   <div class="col-md-12 box flat-top wide">
-    <div class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse">
+    <div class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse | pagerize:minionPager">
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-green':'badge-red'">
@@ -412,7 +478,7 @@
           total-items="minionPager.itemCount" 
           items-per-page="minionPager.perPage"
           max-size="minionPager.pagerLimit"
-          on-select-page="displayPage(page, minionPager)"
+          on-select-page="minionPager.displayPage(page)"
           num-pages
           direction-links="true"
           previous-text="&lsaquo;" 
@@ -438,7 +504,7 @@
 
 <div class="row" ng-show="monitorMode == 'event'">
   <div class="col-md-12 box flat-top wide" >
-    <div class="box box-no-border" ng-repeat="event in events.values().reverse()">
+    <div class="box box-no-border" ng-repeat="event in events.values().reverse() | pagerize:eventPager">
       <div>
         <span class="nook">{{event.data._stamp}}</span>&nbsp;
         <span class="nook" title="Event Tag">{{event.tag}}</span>&nbsp;
@@ -467,6 +533,39 @@
       </div><!--/box-->
     </div> <!--/box-->
   </div><!--/span box-->
+  <div class="col-md-12 wide">
+    <form class="form-inline pull-right" name="eventPagerForm"
+        ng-init="eventPager=newPagerage()">
+      <div class="form-group">
+        <ss-pagination 
+          class="pagination-sm tight"
+          style="vertical-align: middle"
+          page="eventPager.page" 
+          total-items="eventPager.itemCount" 
+          items-per-page="eventPager.perPage"
+          max-size="eventPager.pagerLimit"
+          on-select-page="eventPager.displayPage(page)"
+          num-pages
+          direction-links="true"
+          previous-text="&lsaquo;" 
+          next-text="&rsaquo;" 
+          boundary-links="true" 
+          first-text="&laquo;" 
+          last-text="&raquo;">
+        </ss-pagination>&nbsp;
+        <div class="form-group">
+          <span style="font-size: smaller">per page</span>
+          <select class="form-control input-sm" 
+            style="width: 50px; direction: rtl"
+            ng-model="eventPager.perPage"
+            name="ippSelect"
+            required
+            ng-options="count for count in [5, 10, 20, 50, 100]">
+          </select>
+        </div>
+      </div>
+    </form>
+  </div><!--col-->
 </div><!--/row-->
 
 <script type="text/ng-template" id="ensual_nested.html">

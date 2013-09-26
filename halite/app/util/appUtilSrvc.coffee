@@ -414,6 +414,31 @@ class Commander
         
 appUtilSrvc.value "Commander", Commander  
 
+
+###
+Pagerage class used to manage pagination control form
+
+
+###
+
+class Pagerage
+    constructor: (@itemCount=0, @pagerLimit=5, @perPage=10, @page=1) ->
+        return @
+    
+    itemOffset: () ->
+        return (Math.max(@page-1,0) * @perPage)
+  
+    setPage: (page) ->
+        @page = page;
+        return @
+            
+    displayPage: (page) ->
+        console.log "Display page " + page
+        return @
+
+appUtilSrvc.value "Pagerage", Pagerage
+
+
 ###
 Orderer class  used to provide ordered data object with keyed lookup
 Entries can be accessed by key but the order of entry or sort is preserved.

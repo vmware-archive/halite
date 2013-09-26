@@ -13,4 +13,15 @@ appFltr.filter 'titlecase', () ->
         return chunks.join(" ")
     return filter 
 
-
+appFltr.filter 'pagerize', () ->
+    filter = (input, pager) ->
+        if not pager?
+            return input
+        
+        pager.itemCount = input.length
+        start = pager.itemOffset()
+        end = start + pager.perPage
+        output = input.slice(start, end)
+        return output
+        
+    return filter 
