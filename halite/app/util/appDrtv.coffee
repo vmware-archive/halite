@@ -47,6 +47,7 @@ appDrtv.directive 'ssInputName',
                 nameTransformed = ex($scope)
                 modelCtrl = ctrls[0]
                 modelCtrl.$name = nameTransformed
+                elm.attr("name",nameTransformed)
                 formCtrl = ctrls[1]
                 formCtrl.$addControl(modelCtrl)
                 return true
@@ -106,6 +107,7 @@ appDrtv.directive 'ssFormName',
                 formCtrl = $scope.$parent[elm.attr(attrs.$attr.ssOuterForm)]
                 formCtrl.$removeControl(innerFormCtrl)
                 innerFormCtrl.$name = innerFormName
+                elm.attr("name",innerFormName)
                 formCtrl.$addControl(innerFormCtrl)
                 return true
         return ddo        

@@ -22,14 +22,14 @@
                 {{item.key}}
             </label>
           </div>
-          <div class="form-group thinnish" ng-if="isNumber(item.val)">
+          <div class="form-group skinnish" ng-if="isNumber(item.val)">
             <label class="control-label" 
               for="'id'+item.key">{{item.key}}</label>
             <input type="number" class="form-control input-sm" id="'id'+item.key"
               placeholder="{{item.key}}" ng-model="item.val" 
               ss-input-name="{{item.key}}" ng-change="item.val=fixNumber(item.val)">
           </div>
-          <div class="form-group thinnish" ng-if="!(isBoolean(item.val)||isNumber(item.val))">
+          <div class="form-group skinnish" ng-if="!(isBoolean(item.val)||isNumber(item.val))">
             <label class="control-label" for="'id'+item.key" >{{item.key}}</label>
             <input type="text" class="form-control input-sm" id="'id'+item.key"
               placeholder="{{item.key}}" ng-model="item.val" ss-input-name="{{item.key}}">
@@ -48,14 +48,14 @@
                       {{item.key+'.'+item1.key}}
                   </label>
                 </div>
-                <div class="form-group thinnish" ng-if="isNumber(item1.val)">
+                <div class="form-group skinnish" ng-if="isNumber(item1.val)">
                   <label class="control-label" 
                     for="'id'+item.key+'.'+item1.key">{{item.key+'.'+item1.key}}</label>
                   <input type="number" class="form-control input-sm" id="'id'+item.key+'.'+item1.key"
                     placeholder="{{item1.key}}" ng-model="item1.val" 
                     ss-input-name="{{item1.key}}" ng-change="item1.val=fixNumber(item1.val)">
                 </div>
-                <div class="form-group thinnish" ng-if="!(isBoolean(item1.val)||isNumber(item1.val))">
+                <div class="form-group skinnish" ng-if="!(isBoolean(item1.val)||isNumber(item1.val))">
                   <label class="control-label" 
                     for="'id'+item.key+'.'+item1.key">{{item.key+'.'+item1.key}}</label>
                   <input type="text" class="form-control input-sm" id="'id'+item.key+'.'+item1.key"

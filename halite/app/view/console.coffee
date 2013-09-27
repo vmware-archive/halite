@@ -246,17 +246,24 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                 mode: 'async'
                 fun: ''
                 tgt: '*'
-                arg: ['']
+                arg: [""]  
             
             size: (obj) ->
                 return _.size(obj)
             
             addArg: () ->
                 @cmd.arg.push('')
+                #@cmd.arg[_.size(@cmd.arg)] = ""
                 
             delArg: () ->
                 if @cmd.arg.length > 1
                     @cmd.arg = @cmd.arg[0..-2]
+                #if _.size(@cmd.arg) > 1
+                 #   delete @cmd.arg[_.size(@cmd.arg) - 1]
+            
+            getArgs: () ->
+                #return (val for own key, val of @cmd.arg when val isnt '')
+                return (arg for arg in @cmd.arg when arg isnt '')
 
             getCmds: () ->
                 if @cmd.fun.split(".").length == 3 # runner or wheel not minion job
@@ -264,7 +271,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                     [
                         fun: @cmd.fun,
                         mode: @cmd.mode,
-                        arg: (arg for arg in @cmd.arg when arg isnt '')
+                        arg: @getArgs()
                     ]
                 else 
                     cmds =
@@ -272,7 +279,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                         fun: @cmd.fun,
                         mode: @cmd.mode,
                         tgt: if @cmd.tgt isnt "" then @cmd.tgt else "*",
-                        arg: (arg for arg in @cmd.arg when arg isnt '')
+                        arg: @getArgs()
                     ]
                 return cmds
             
@@ -610,5 +617,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
         if not SaltApiEvtSrvc.active and SessionStore.get('loggedIn') == true
             $scope.openEventStream()
         
+        $scope.testClick = (name) ->
+            console.log "click #{name}"
+        
+        $scope.testFocus = (name) ->
+            console.log "focus #{name}"
+            
         return true
     ]
