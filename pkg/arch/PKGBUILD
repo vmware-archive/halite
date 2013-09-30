@@ -1,7 +1,7 @@
 # Maintainer: Christer Edwards <christer.edwards@gmail.com>
 
 pkgname=halite
-pkgver=0.1.0
+pkgver=0.1.01
 pkgrel=1
 pkgdesc="Halite is a Salt GUI."
 arch=(any)
@@ -12,12 +12,12 @@ backup=()
 makedepends=()
 optdepends=('python2-cherrypy' 'python2-gevent')
 options=()
-conflicts=()
+conflicts=('halite-git')
 install=halite.install
 
 source=("http://pypi.python.org/packages/source/h/${pkgname}/${pkgname}-${pkgver}.tar.gz")
 
-md5sums=('4dc7e02e5e34d5e8206efe545ba850d7')
+md5sums=('23645cf70287d6c492b5697f7e6db2df')
 
 package() {
   cd ${srcdir}/${pkgname}-${pkgver}
