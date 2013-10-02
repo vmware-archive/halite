@@ -24,7 +24,7 @@ setup(
                                       'screenshots', 'screenshots.*']),
     package_data={
         '':       ['*.txt',  '*.md', '*.rst', '*.json', '*.conf', '*.html',
-                   '*.css', '*.ico', '*.png',],
+                   '*.css', '*.ico', '*.png', 'LICENSE'],
         'halite': ['app/*.txt', 'app/*/*.txt',
                    'app/*.ico', 'app/*/*.ico',
                    'app/*.png', 'app/*/*.png', 
