@@ -1,19 +1,19 @@
 # Maintainer: Christer Edwards <christer.edwards@gmail.com>
 pkgname=halite-git
 _gitname=halite
-pkgver=0.0.8.16.gaebe26d
+pkgver=0.1.01.1.gdcca62c
 pkgrel=1
 pkgdesc="SaltStack Web UI"
 arch=('i686' 'x86_64')
 url="https://github.com/saltstack/halite"
 license=("APACHE")
-depends=('python2' 'salt' 'coffee-script' 'nodejs')
+depends=('python2' 'salt' 'coffee-script' 'nodejs' 'python2-paste')
 backup=()
 makedepends=('git')
-optdepends=('python2-cherrypy' 'python2-paste' 'python2-gevent')
+optdepends=('python2-cherrypy' 'python2-gevent')
 options=()
-conflicts=('python2-halite')
-provides=('python2-halite')
+conflicts=('halite')
+provides=('halite')
 install='halite.install'
 md5sums=('SKIP')
 source=("git://github.com/saltstack/halite.git")
@@ -28,7 +28,6 @@ build() {
   cd "${srcdir}/${_gitname}"
   python2 setup.py build
   python2 prep_dist.py
-
 }
 
 package() {
