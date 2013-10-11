@@ -420,6 +420,8 @@ def createStaticMain(kind='bottle',
     write to filepath path is save
 
     """
+    import bottle
+    
     data = dict(baseUrl=base,
                 mini=".min" if not devel else "",
                 coffee = coffee )
@@ -636,7 +638,6 @@ if __name__ == "__main__":
     logger.setLevel(aiding.LOGGING_LEVELS[args.level]) # set bottle app logger from args
 
     if args.gen:
-        import bottle
         logger.info("Generating %s from template only." % args.load)
         load = args.load
         if not os.path.isabs(load):
