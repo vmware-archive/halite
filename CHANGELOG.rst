@@ -1,3 +1,23 @@
+0.1.02 (2013-10-14)
+==================
+
+Features
+----------
+
+Command form now supports all target expression formats not just glob
+
+
+Fixes
+------
+
+Changed fetchGrains on refresh to only fetch grains of active minions hopefully
+fixes #42
+
+prep_dist on arch  07c04ff5acf3975dadbf9bc6dd2fc5c25dc927aa
+
+submit button behavior on command form was erratic with return now works
+
+
 0.1.01 (2013-09-24)
 ==================
 
