@@ -1,12 +1,13 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
-mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$templateCache'
+mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filter', 
+    '$templateCache',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
     'Minioner', 'Resulter', 'Jobber', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
-    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore',
-    ($scope, $location, $route, $q, $templateCache, Configuration, AppData, AppPref, 
-    Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, Commander, Pagerage,
-    SaltApiSrvc, SaltApiEvtSrvc, SessionStore) ->
+    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', '$filter',
+    ($scope, $location, $route, $q, $filter, $templateCache, Configuration, 
+    AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, 
+    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore ) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -247,6 +248,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                 fun: ''
                 tgt: '*'
                 arg: [""]  
+                expr_form: 'glob'
             
             size: (obj) ->
                 return _.size(obj)
@@ -279,7 +281,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                         fun: @cmd.fun,
                         mode: @cmd.mode,
                         tgt: if @cmd.tgt isnt "" then @cmd.tgt else "",
-                        arg: @getArgs()
+                        arg: @getArgs(),
+                        expr_form: @cmd.expr_form
                     ]
 
                 return cmds
@@ -289,6 +292,29 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                     cmds = @getCmds()
                 return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
                     when part? and part isnt '').join(' ') for cmd in cmds).join(',').trim())
+                    
+        $scope.expressionFormats = 
+            Glob: 'glob'
+            'Perl Regex': 'pcre'
+            List: 'list'
+            Grain: 'grain'
+            'Grain Perl Regex': 'grain_pcre'
+            Pillar: 'pillar'
+            'Node Group': 'nodegroup'
+            Range: 'range'
+            Compound: 'compound'
+        
+        $scope.$watch "command.cmd.expr_form", (newVal, oldVal, scope) ->
+            if newVal == oldVal
+                return
+            if newVal == 'glob' 
+                $scope.command.cmd.tgt = "*"
+            else
+                $scope.command.cmd.tgt = ""
+        
+        $scope.fixTarget = () ->
+            if $scope.command.cmd.tgt? and $scope.command.cmd.expr_form == 'list' #remove spaces after commas
+                $scope.command.cmd.tgt = $scope.command.cmd.tgt.replace(/,\s+/g,',')
         
         $scope.humanize = (cmds) ->
             unless angular.isArray(cmds)
@@ -387,11 +413,19 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             return job
             
         $scope.fetchGrains = (target) ->
-            target = if target then target else "*"
+            #target = if target then target else "*"
             cmd =
                 mode: "async"
                 fun: "grains.items"
                 tgt: target
+                expr_form: 'glob'
+                
+            if not target?
+                minions = (minion.id for minion in $scope.minions.values() when minion.active is true)
+                target = minions.join(',')
+                cmd.tgt = target
+                cmd.expr_form = 'list'
+            
             
             $scope.graining = true
             SaltApiSrvc.run($scope, [cmd])
@@ -623,6 +657,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
         
         $scope.testFocus = (name) ->
             console.log "focus #{name}"
+            
             
         return true
     ]

@@ -99,7 +99,27 @@
     <form class="form-inline tight wide animate-fade" name="commandForm" 
         ng-show="!collapsed" ng-cloak ng-submit="action();">
       <div class="form-group">
-        <div class="form-group thinnish">
+        <div class="form-group skinnish">
+          <label class="control-label tight" for="idExpressionFormat">Target Format</label>
+          <select class="form-control" 
+            id="idExpressionFormat"
+            placeholder="Enter minion target pattern"
+            title="Target pattern expression format"
+            name="expressionFormat"
+            ng-model="command.cmd.expr_form"
+            ng-options="val as key for (key, val) in expressionFormats"></select>
+        </div>
+        <div class="form-group fatter">
+          <label class="control-label tight" for="idFunctionTarget">Target</label>
+          <input type="text" class="form-control" 
+            id="idFunctionTarget"
+            placeholder="Enter minion target pattern"
+            title="Minion target pattern"
+            name="functionTarget"
+            ng-model="command.cmd.tgt" 
+            ng-change="fixTarget()">
+        </div>
+        <div class="form-group fatter">
           <label class="control-label tight" for="idModuleFunction">Function</label>
           <input type="text" class="form-control" 
             id="idModuleFunction"
@@ -108,15 +128,6 @@
             ng-required="true"
             name="moduleFunction"
             ng-model="command.cmd.fun" >
-        </div>
-        <div class="form-group thinnish">
-          <label class="control-label tight" for="idFunctionTarget">Target</label>
-          <input type="text" class="form-control" 
-            id="idFunctionTarget"
-            placeholder="Enter minion target pattern"
-            title="Minion target pattern"
-            name="functionTarget"
-            ng-model="command.cmd.tgt" >
         </div>
         <div class="form-group fatter" style="margin-right: 4px;"
             ng-repeat="arg in command.cmd.arg track by $index">
