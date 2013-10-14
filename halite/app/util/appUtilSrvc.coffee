@@ -422,7 +422,7 @@ Pagerage class used to manage pagination control form
 ###
 
 class Pagerage
-    constructor: (@itemCount=0, @pagerLimit=5, @perPage=10, @page=1) ->
+    constructor: (@itemCount=0, @pagerLimit=5, @perPage=20, @page=1) ->
         return @
     
     itemOffset: () ->
