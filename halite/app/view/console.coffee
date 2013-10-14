@@ -278,9 +278,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
                     [
                         fun: @cmd.fun,
                         mode: @cmd.mode,
-                        tgt: if @cmd.tgt isnt "" then @cmd.tgt else "*",
+                        tgt: if @cmd.tgt isnt "" then @cmd.tgt else "",
                         arg: @getArgs()
                     ]
+
                 return cmds
             
             humanize: (cmds) ->
@@ -305,7 +306,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$temp
             .success (data, status, headers, config ) ->
                 results = data.return
                 for result, index in results
-                    if result
+                    if not _.isEmpty(result)
                         parts = cmds[index].fun.split(".") # split on "." character
                         if parts.length == 3 
                             if parts[0] =='runner'
