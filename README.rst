@@ -298,7 +298,8 @@ https://localhost:8080/app or however you have configured your master above.
 
 If you have problems look for "Halite:" in the saltstack master log output.
 
-2) Customized Deployment
+Customized Deployment
+====
 
 The Halite github repository provides a skeleton framework for building your own custom
 deployment. One can run the default bottle.py framwork form the command line thusly
@@ -392,11 +393,34 @@ To run the karma angular scenario e2e test runner first start up a web server.
 A multithreaded or asynchronous one will be needed if more than one browser is
 tested at once.
 
+Make sure that the end to end test is setup to login to Halite
+
+.. code-block:: bash
+  $ vim halite/test/mock/loginConf.coffee
+
+In that file change the following
+
+.. code-block:: javascript
+
+   loginInfo =
+       username: 'your_halite_username'
+       password: 'your_halite_password'
+
+Now you can run the tests using the following commands
+
 .. code-block:: bash
 
   $ cd halite
   $ karma start karma_e2e.conf.js
 
-.. ............................................................................
 
+You might have to build the distribution (for development)
+
+.. code-block:: bash
+
+   $ cd halite
+   $ ./prep_dist.py
+
+
+.. ............................................................................
 .. _`halite`: https://github.com/saltstack/halite

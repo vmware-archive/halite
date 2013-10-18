@@ -14,7 +14,14 @@ module.exports = function(config) {
     files: [
       'test/e2e/**/*.spec.coffee',
       'test/e2e/**/*.spec.litcoffee',
-      'test/e2e/**/*.spec.js'
+      'test/e2e/**/*.spec.js',
+      // fixtures
+      {
+        pattern: 'test/mock/*.coffee',
+        watched: true,
+        served: true,
+        included: true
+      }
     ],
     
     
@@ -76,6 +83,8 @@ module.exports = function(config) {
     
     // Map karma specific pages to not conflict with proxy server
     urlRoot: "/__karma/",
+
+    proxyValidateSSL: false,
     
 
   });

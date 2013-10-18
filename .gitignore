@@ -1,5 +1,5 @@
 halite/index.html
-
+halite/app/main.html
 node_modules
 dist
 
@@ -8,3 +8,7 @@ dist
 *.bbprojectd
 *.wpr
 *.wpu
+*.js
+*.swp
+
+halite.egg-info/*
