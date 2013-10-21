@@ -4,33 +4,33 @@ describe "Basic app disply suite", () ->
   foo = null
 
   beforeEach () ->
-    browser().navigateTo('/halite/app/home')
+    browser().navigateTo('/app/home')
 
   afterEach () ->
-    browser().navigateTo('/halite/app/home')
+    browser().navigateTo('/app/home')
     browser().reload()
 
 
   it "check home view window path", () ->
     expect(browser().window().path()).toBeDefined()
-    expect(browser().window().path()).toContain('halite/app/home')
+    expect(browser().window().path()).toContain('/app/home')
   
-  it "check test view window path", () ->
-    browser().navigateTo('/halite/app/test')
+  it "check console view window path", () ->
+    browser().navigateTo('/app/console')
     expect(browser().window().path()).toBeDefined()
-    expect(browser().window().path()).toContain('halite/app/test')
+    expect(browser().window().path()).toContain('/app/console')
     
   it "check app view window path", () ->
-    browser().navigateTo('/halite/app')
+    browser().navigateTo('/app')
     expect(browser().window().path()).toBeDefined()
-    expect(browser().window().path()).toContain('halite/app')
+    expect(browser().window().path()).toContain('/app')
   
   it "check navbar click", () ->
-    browser().navigateTo('/halite/app/home')
+    browser().navigateTo('/app/home')
     expect(browser().window().path()).toBeDefined()
-    expect(browser().window().path()).toContain('halite/app/home')
-    expect(element('li:contains("Test")').count()).toBe(1)
-    expect(element('a:contains("Test")').count()).toBe(1)
-    element('a:contains("Test")').click();
+    expect(browser().window().path()).toContain('/app/home')
+    expect(element('li:contains("Console")').count()).toBe(1)
+    expect(element('a:contains("Console")').count()).toBe(1)
+    element('a:contains("Console")').click();
     expect(browser().window().path()).toBeDefined()
-    expect(browser().window().path()).toContain('halite/app/test')
+    expect(browser().window().path()).toContain('/app/console')

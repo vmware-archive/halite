@@ -17,5 +17,5 @@ describe "ConfigSrvc suite", () ->
     expect(Configuration.baseUrl).toBeDefined();
     expect(Configuration.date).toBeDefined();
   
-  it "baseUrl is /halite", () ->
-    expect(Configuration.baseUrl).toEqual('/halite');
+  it "baseUrl is ''", () ->
+    expect(Configuration.baseUrl).toEqual('');
