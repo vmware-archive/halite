@@ -21,9 +21,11 @@ Source1:        https://raw.github.com/saltstack/%{_realname}/v%{version}/LICENS
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-BuildRequires:  python-setuptools
+BuildRequires:  python26-distribute
+BuildRequires:  python26
 
 Requires:       python-cherrypy
+Requires:       python26
 
 %description
 Halite is a Salt GUI. Status is pre-alpha. Contributions are very welcome. Join
