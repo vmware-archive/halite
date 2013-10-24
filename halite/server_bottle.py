@@ -270,8 +270,16 @@ def loadSaltApi(app):
 
         while True:
             data =  client.get_event(wait=0.025, tag=tag, full=True)
+            
             if data:
-                yield 'data: {0}\n\n'.format(json.dumps(data))
+                try: #work around try to decode catch unicode errors
+                    data = json.dumps(data)
+                except UnicodeDecodeError as ex:
+                    if 'data' in data:
+                        if 'tok' in data['data']:
+                            del data['data']['tok']
+                            data = json.dumps(data)
+                yield 'data: {0}\n\n'.format(data)
             else:
                 sleep(0.1)
 
