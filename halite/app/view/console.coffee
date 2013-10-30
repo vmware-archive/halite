@@ -40,7 +40,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         if !AppData.get('events')?
             AppData.set('events', new Itemizer())
         $scope.events = AppData.get('events')
-        
+
         $scope.snagCommand = (name, cmds) -> #get or create Command
             unless $scope.commands.get(name)?
                 $scope.commands.set(name, new Commander(name, cmds))
@@ -328,6 +328,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 cmds = $scope.command.getCmds()
             command = $scope.snagCommand($scope.humanize(cmds), cmds)
             
+            #console.log('Calling SaltApiSrvc.action')
             SaltApiSrvc.action($scope, cmds )
             .success (data, status, headers, config ) ->
                 results = data.return
@@ -644,6 +645,60 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             #console.log "Received #{event.name}"
             #console.log event
             $scope.fetchGrains()
+
+        $scope.docsLoaded = false
+        $scope.docKeys = []
+        $scope.toRender = ''
+        $scope.docs = {}
+
+        $scope.searchDocs = () ->
+            matching = _.filter($scope.docKeys, (key) ->
+                return key.indexOf($scope.searchStr.toLowerCase()) != -1)
+            matchingDocs = (key + "\n" + $scope.docs[key] + "\n" for key in matching)
+            $scope.toRender = matchingDocs.join('')
+            return true
+
+        $scope.isSearchable = () ->
+            return $scope.docsLoaded
+
+        $scope.fetchDocsDone = (donejob) ->
+            results = donejob.results
+            minions = results._data
+            minion_with_result = _.find(minions, (minion) ->
+                minion.val.retcode == 0)
+            if minion_with_result?
+                $scope.docs = minion_with_result.val.return
+                $scope.docKeys = for key, value of $scope.docs
+                    "#{key.toLowerCase()}"
+                $scope.docsLoaded = true
+            else
+                $scope.errorMsg = 'Docs not loaded since all minions returned invalid data. Please Check Minions And Retry.'
+            return
+
+        $scope.fetchDocsFailed = () ->
+            $scope.errorMsg = 'Failed to fetch Docs. Please check system and retry'
+
+        $scope.fetchDocs = () ->
+            command =
+                fun: 'sys.doc'
+                mode: 'async'
+                tgt: '*'
+                arg: []
+                expr_form: 'glob'
+            commands = [command]
+
+            command = $scope.snagCommand($scope.humanize(commands), commands)
+            SaltApiSrvc.run($scope, commands)
+            .success (data, status, headers, config) ->
+                result = data.return?[0] #result is a tag
+                if result
+
+                    job = $scope.startJob(result, commands) #runner result is a tag
+                    job.commit($q).then($scope.fetchDocsDone, $scope.fetchDocsFailed)
+                    return true
+            .error (data, status, headers, config) ->
+                return false
+            return true
             
         $scope.$on('ToggleAuth', $scope.authListener)
         $scope.$on('Activate', $scope.activateListener)
@@ -657,6 +712,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         
         $scope.testFocus = (name) ->
             console.log "focus #{name}"
+
+        $scope.fetchDocs()
             
             
         return true
