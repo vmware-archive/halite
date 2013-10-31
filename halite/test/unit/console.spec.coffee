@@ -42,3 +42,12 @@ describe 'Console Controller Search Functionality', () ->
          expect($scope.toRender).not.toContain('test.ping')
          expect($scope.toRender).toContain($scope.docs['network.ping'])
 
+     it 'should clear test results when query is empty', () ->
+         $scope.searchStr = 'network.ping'
+         $scope.searchDocs()
+
+         $scope.searchStr =  ''
+         $scope.searchDocs()
+
+         expect($scope.toRender).toBe('')
+
