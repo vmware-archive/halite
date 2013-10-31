@@ -24,6 +24,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.statusing = false
         $scope.eventing = false
         $scope.commanding = false
+        $scope.docSearch = false
+
+        $scope.$watch 'docSearch', (newVal, oldVal) ->
+            $scope.searchDocs()
+            return true
+
+        $scope.isSearchRequested = () ->
+            return $scope.docSearch
             
         if !AppData.get('commands')?
             AppData.set('commands', new Itemizer())
@@ -630,6 +638,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             #console.log event
             if loggedIn
                 $scope.openEventStream()
+                $scope.fetchDocs()
             else
                 $scope.closeEventStream()
                 $scope.clearSaltData()
@@ -655,11 +664,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return $scope.toRender != ''
 
         $scope.searchDocs = () ->
-            if $scope.searchStr == ''
+            if not $scope.command.cmd.fun? or not $scope.docSearch or $scope.command.cmd.fun == ''
                 $scope.toRender = ''
                 return true
             matching = _.filter($scope.docKeys, (key) ->
-                return key.indexOf($scope.searchStr.toLowerCase()) != -1)
+                return key.indexOf($scope.command.cmd.fun.toLowerCase()) != -1)
             matchingDocs = (key + "\n" + $scope.docs[key] + "\n" for key in matching)
             $scope.toRender = matchingDocs.join('')
             return true
