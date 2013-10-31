@@ -14,3 +14,12 @@ describe 'Console Tab Tests', () ->
         value = element('pre')
         expect(value.html()).toContain('test.ping')
 
+    it 'should hide search results pre when the query is an empty string', () ->
+        element("#fetch-docs").click()
+        sleep(5)
+        input('searchStr').enter('test.ping')
+        browserTrigger(element('#doc-search'), 'change')
+        input('searchStr').enter('')
+        browserTrigger(element('#doc-search'), 'change')
+        expect(element('pre:visible').count()).toBe(0)
+
