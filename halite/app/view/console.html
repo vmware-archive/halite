@@ -167,10 +167,11 @@
       <Label>Doc Search Results</Label>
       <div class="checkbox">
         <label>
-          <input type="checkbox" ng-disabled="!isSearchable()" ng-model="docSearch"> Live Doc Search
+          <input type="checkbox" ng-disabled="!isSearchable()"
+            ng-change="searchDocs()" ng-model="docSearch" id="search-checkbox"> Live Doc Search
           </label>
       </div>
-      <pre ng-show="hasSearchResults()">{{toRender}}</pre>
+      <pre ng-show="!!docSearchResults">{{docSearchResults}}</pre>
     </form>
     
   </div><!--box-->

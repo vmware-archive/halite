@@ -25,13 +25,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.eventing = false
         $scope.commanding = false
         $scope.docSearch = false
-
-        $scope.$watch 'docSearch', (newVal, oldVal) ->
-            $scope.searchDocs()
-            return true
-
-        $scope.isSearchRequested = () ->
-            return $scope.docSearch
             
         if !AppData.get('commands')?
             AppData.set('commands', new Itemizer())
@@ -657,20 +650,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.docsLoaded = false
         $scope.docKeys = []
-        $scope.toRender = ''
+        $scope.docSearchResults = ''
         $scope.docs = {}
-
-        $scope.hasSearchResults = () ->
-            return $scope.toRender != ''
 
         $scope.searchDocs = () ->
             if not $scope.command.cmd.fun? or not $scope.docSearch or $scope.command.cmd.fun == ''
-                $scope.toRender = ''
+                $scope.docSearchResults = ''
                 return true
             matching = _.filter($scope.docKeys, (key) ->
                 return key.indexOf($scope.command.cmd.fun.toLowerCase()) != -1)
             matchingDocs = (key + "\n" + $scope.docs[key] + "\n" for key in matching)
-            $scope.toRender = matchingDocs.join('')
+            $scope.docSearchResults = matchingDocs.join('')
             return true
 
         $scope.isSearchable = () ->
