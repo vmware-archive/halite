@@ -21,14 +21,20 @@ describe 'Console Controller Search Functionality', () ->
         $scope.docKeys = docKeys
         $scope.docs = docs
 
+        command = {}
+        command.cmd = {}
+        $scope.command = command
+
     it 'should perform case insensitive search', () ->
-        $scope.searchStr = 'tEsT.PiNg'
+        $scope.command.cmd.fun = 'tEsT.PiNg'
+        $scope.docSearch = true
         $scope.searchDocs()
 
         expect($scope.toRender).toBe('test.ping\n' + docs['test.ping'] + '\n')
 
     it 'should perform exhaustive search', () ->
-        $scope.searchStr = 'ping'
+        $scope.command.cmd.fun = 'ping'
+        $scope.docSearch = true
         $scope.searchDocs()
 
 
@@ -36,18 +42,36 @@ describe 'Console Controller Search Functionality', () ->
         expect($scope.toRender).toContain('test')
 
      it 'should perform correct search', () ->
-         $scope.searchStr = 'network.ping'
+         $scope.command.cmd.fun = 'network.ping'
+         $scope.docSearch = true
          $scope.searchDocs()
 
          expect($scope.toRender).not.toContain('test.ping')
          expect($scope.toRender).toContain($scope.docs['network.ping'])
 
      it 'should clear test results when query is empty', () ->
-         $scope.searchStr = 'network.ping'
+         $scope.command.cmd.fun = 'network.ping'
+         $scope.docSearch = true
          $scope.searchDocs()
 
-         $scope.searchStr =  ''
+         $scope.command.cmd.fun =  ''
          $scope.searchDocs()
 
          expect($scope.toRender).toBe('')
 
+     it 'should clear test results when query is undefined', () ->
+         $scope.command.cmd.fun = 'network.ping'
+         $scope.docSearch = true
+         $scope.searchDocs()
+
+         $scope.command.cmd.fun =  undefined
+         $scope.searchDocs()
+
+         expect($scope.toRender).toBe('')
+
+     it 'should clear test results when searchDocs is false', () ->
+         $scope.command.cmd.fun = 'network.ping'
+         $scope.docSearch = false
+         $scope.searchDocs()
+
+         expect($scope.toRender).toBe('')

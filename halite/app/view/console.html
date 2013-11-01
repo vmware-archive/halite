@@ -45,13 +45,6 @@
           </div>
         </div>
       </div>
-      <div class="form-group" id="table-display">
-          <div class="input-group">
-          <span class="input-group-addon">Search Docs</span>
-          <input type="text" class="form-control" placeholder="Enter Search String" id="doc-search" ng-change="searchDocs()"
-            ng-model="searchStr" ng-disabled="!isSearchable()"/>
-        </div>
-      </div>
       <div class="form-group"> 
         <div class="btn-group">
           <div class="btn-group">
@@ -80,10 +73,6 @@
       
       <div class="form-group pull-right" > 
         <div class="btn-group">
-          <button class="btn btn-default" id="fetch-docs" type="button" ng-click="fetchDocs()"
-            title="Fetch Documentation">
-            <i class="fa-icon-book"></i>
-          </button>
           <button class="btn btn-default" type="button" ng-click="openEventStream()" 
             title="Open event stream">
             <i class="fa-icon-rss"
@@ -137,7 +126,8 @@
             title="Module function" 
             ng-required="true"
             name="moduleFunction"
-            ng-model="command.cmd.fun" >
+            ng-model="command.cmd.fun"
+            ng-change="searchDocs()">
         </div>
         <div class="form-group fatter" style="margin-right: 4px;"
             ng-repeat="arg in command.cmd.arg track by $index">
@@ -175,6 +165,11 @@
       </div>
       <hr />
       <Label>Doc Search Results</Label>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-disabled="!isSearchable()" ng-model="docSearch"> Live Doc Search
+          </label>
+      </div>
       <pre ng-show="hasSearchResults()">{{toRender}}</pre>
     </form>
     
