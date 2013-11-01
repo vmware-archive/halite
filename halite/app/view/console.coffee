@@ -493,11 +493,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 fun: 'sys.doc'
                 mode: 'async'
                 tgt: '*'
-                arg: []
                 expr_form: 'glob'
             commands = [command]
 
-            command = $scope.snagCommand($scope.humanize(commands), commands)
+            # command = $scope.snagCommand($scope.humanize(commands), commands)
             SaltApiSrvc.run($scope, commands)
             .success (data, status, headers, config) ->
                 result = data.return?[0] #result is a tag
