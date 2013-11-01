@@ -30,7 +30,7 @@ describe 'Console Controller Search Functionality', () ->
         $scope.docSearch = true
         $scope.searchDocs()
 
-        expect($scope.toRender).toBe('test.ping\n' + docs['test.ping'] + '\n')
+        expect($scope.docSearchResults).toBe('test.ping\n' + docs['test.ping'] + '\n')
 
     it 'should perform exhaustive search', () ->
         $scope.command.cmd.fun = 'ping'
@@ -38,16 +38,16 @@ describe 'Console Controller Search Functionality', () ->
         $scope.searchDocs()
 
 
-        expect($scope.toRender).toContain('network')
-        expect($scope.toRender).toContain('test')
+        expect($scope.docSearchResults).toContain('network')
+        expect($scope.docSearchResults).toContain('test')
 
      it 'should perform correct search', () ->
          $scope.command.cmd.fun = 'network.ping'
          $scope.docSearch = true
          $scope.searchDocs()
 
-         expect($scope.toRender).not.toContain('test.ping')
-         expect($scope.toRender).toContain($scope.docs['network.ping'])
+         expect($scope.docSearchResults).not.toContain('test.ping')
+         expect($scope.docSearchResults).toContain($scope.docs['network.ping'])
 
      it 'should clear test results when query is empty', () ->
          $scope.command.cmd.fun = 'network.ping'
@@ -57,7 +57,7 @@ describe 'Console Controller Search Functionality', () ->
          $scope.command.cmd.fun =  ''
          $scope.searchDocs()
 
-         expect($scope.toRender).toBe('')
+         expect($scope.docSearchResults).toBe('')
 
      it 'should clear test results when query is undefined', () ->
          $scope.command.cmd.fun = 'network.ping'
@@ -67,11 +67,11 @@ describe 'Console Controller Search Functionality', () ->
          $scope.command.cmd.fun =  undefined
          $scope.searchDocs()
 
-         expect($scope.toRender).toBe('')
+         expect($scope.docSearchResults).toBe('')
 
      it 'should clear test results when searchDocs is false', () ->
          $scope.command.cmd.fun = 'network.ping'
          $scope.docSearch = false
          $scope.searchDocs()
 
-         expect($scope.toRender).toBe('')
+         expect($scope.docSearchResults).toBe('')

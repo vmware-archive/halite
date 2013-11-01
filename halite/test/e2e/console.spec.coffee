@@ -32,6 +32,6 @@ describe 'Console Tab Tests', () ->
 
     it 'should not show pre when checkbox is checked initially with no text in the textbox', () ->
         input('docSearch').check()
+        browserTrigger(element('#search-checkbox'), 'change')
         value = element('pre')
-        expect(value.html()).toContain('test.ping')
         expect(element('pre:visible').count()).toBe(0)
