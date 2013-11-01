@@ -1,3 +1,21 @@
+0.1.03 (2013-11-1)
+==================
+
+Features
+----------
+
+Command form now has search docs feature, where it displays the Salt docs associated
+with a search string
+
+
+Fixes
+------
+
+Updated karma test confs to support v 0.10.x of Karma
+Workaround to tok problem introduced in 17.1
+Packaging updates
+
+
 0.1.02 (2013-10-14)
 ==================
 

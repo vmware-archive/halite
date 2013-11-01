@@ -651,7 +651,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.toRender = ''
         $scope.docs = {}
 
+        $scope.hasSearchResults = () ->
+            return $scope.toRender != ''
+
         $scope.searchDocs = () ->
+            if $scope.searchStr == ''
+                $scope.toRender = ''
+                return true
             matching = _.filter($scope.docKeys, (key) ->
                 return key.indexOf($scope.searchStr.toLowerCase()) != -1)
             matchingDocs = (key + "\n" + $scope.docs[key] + "\n" for key in matching)
