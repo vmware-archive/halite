@@ -35,3 +35,6 @@ describe 'Console Tab Tests', () ->
         browserTrigger(element('#search-checkbox'), 'change')
         value = element('pre')
         expect(element('pre:visible').count()).toBe(0)
+
+    it 'should have sys.doc element', () ->
+        expect(element('span:contains("sys.doc")').count()).not().toBe(0)

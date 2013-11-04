@@ -494,15 +494,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 mode: 'async'
                 tgt: '*'
                 expr_form: 'glob'
-            commands = [command]
 
             # command = $scope.snagCommand($scope.humanize(commands), commands)
-            SaltApiSrvc.run($scope, commands)
+            SaltApiSrvc.run($scope, command)
             .success (data, status, headers, config) ->
                 result = data.return?[0] #result is a tag
                 if result
 
-                    job = $scope.startJob(result, commands) #runner result is a tag
+                    job = $scope.startJob(result, command) #runner result is a tag
                     job.commit($q).then($scope.fetchDocsDone, $scope.fetchDocsFailed)
                     return true
             .error (data, status, headers, config) ->
@@ -688,7 +687,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             #console.log event
             if loggedIn
                 $scope.openEventStream()
-                $scope.fetchDocs()
             else
                 $scope.closeEventStream()
                 $scope.clearSaltData()
@@ -699,6 +697,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             #console.log "Received #{event.name}"
             #console.log event
             $scope.fetchActives()
+            $scope.fetchDocs()
         
         $scope.marshallListener = (event) ->
             #console.log "Received #{event.name}"
@@ -717,8 +716,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         
         $scope.testFocus = (name) ->
             console.log "focus #{name}"
-
-        $scope.fetchDocs()
             
             
         return true
