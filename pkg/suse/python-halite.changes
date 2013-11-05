@@ -1,4 +1,34 @@
 -------------------------------------------------------------------
+Mon Nov  4 21:36:04 UTC 2013 - aboe76@gmail.com
+
+- Updated to halite 0.1.04
+- Removed unnecesary functions and variables
+- New feature: Command form now has search docs feature, where it displays 
+  the Salt docs associated with a search string
+
+-------------------------------------------------------------------
+Tue Oct 15 05:43:45 UTC 2013 - aboe76@gmail.com
+
+- Updated to halite 0.1.02
+- fixed fetchGrains to only attempt to fetch grains from minions that have active status
+- allow empty target and then handle empty returns in prepartion for supporting
+  other target types besides glob
+- Changed default pagination to 20
+
+-------------------------------------------------------------------
+Mon Sep 30 09:46:31 UTC 2013 - cfarrell@suse.com
+
+- license update: MIT
+  Most of the source code files are MIT licensed. No indication of an
+  Apache-2.0 license
+
+-------------------------------------------------------------------
+Thu Sep 26 20:49:17 UTC 2013 - aboe76@gmail.com
+
+- Updated to halite 0.1.01
+  - pagination added to monitors
+
+-------------------------------------------------------------------
 Tue Sep 24 19:33:00 UTC 2013 - aboe76@gmail.com
 
 - updated to halite 0.1.0

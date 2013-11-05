@@ -16,9 +16,9 @@
 #
 
 Name:           python-halite
-Version:        0.1.0
+Version:        0.1.04
 Release:        1%{?dist}
-License:        Apache-2.0
+License:        MIT
 Summary:        Halite the salt Web UI
 Url:            http://saltstack.org/
 Group:          System/Monitoring
@@ -36,11 +36,9 @@ BuildRequires:  python
 BuildRequires:  python-distribute
 BuildRequires:	salt
 BuildRequires:	salt-master
-BuildRequires:  python-pyOpenSSL
 BuildRequires:  python-Paste
 Requires:       salt
 Requires:       salt-master
-Requires:		python-pyOpenSSL
 Requires:		python-Paste
 
 %description
@@ -58,6 +56,7 @@ python setup.py install --prefix=%{_prefix} --root=%{buildroot}
 
 %files
 %defattr(-,root,root)
+%doc README.rst
 %attr(755,root,root)%{python_sitelib}/halite/bottle.py
 %attr(755,root,root)%{python_sitelib}/halite/server_bottle.py
 %attr(755,root,root)%{python_sitelib}/halite/genindex.py
