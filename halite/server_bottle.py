@@ -273,13 +273,10 @@ def loadSaltApi(app):
             
             if data:
                 try: #work around try to decode catch unicode errors
-                    data = json.dumps(data)
+                    yield 'data: {0}\n\n'.format(json.dumps(data))
                 except UnicodeDecodeError as ex:
-                    if 'data' in data:
-                        if 'tok' in data['data']:
-                            del data['data']['tok']
-                            data = json.dumps(data)
-                yield 'data: {0}\n\n'.format(data)
+                    logger.error("Error: Salt event has non UTF-8 data:\n{0}".format(data))
+                
             else:
                 sleep(0.1)
 
