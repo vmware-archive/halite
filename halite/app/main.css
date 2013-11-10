@@ -1,3 +1,6 @@
+div.height-controlled {
+    height: 20px;
+}
 /* make sure search docs form group is displayed correctly */
 div#table-display {
   display: inline-table;
@@ -353,5 +356,4 @@ n {
   -moz-border-radius: 18px 18px 18px 18px;
   border-radius: 18px 18px 18px 18px;
 }
-
 

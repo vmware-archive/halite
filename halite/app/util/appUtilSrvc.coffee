@@ -249,6 +249,10 @@ class Resulter
 appUtilSrvc.value "Resulter", Resulter  
 
 class Jobber
+    @STATUS_SUCCESS = 'success'
+    @STATUS_FAILURE = 'danger'
+    @STATUS_INFO = 'info'
+
     constructor: (@jid, @cmd, mids=[]) ->
         @name = @humanize(@cmd)
         @fail = true
@@ -259,6 +263,7 @@ class Jobber
         @events = new Itemizer()
         @results = new Itemizer()
         @minions = new Itemizer()
+        @progressEvents = new Itemizer()
         for mid in mids
             @results.set(mid, new Resulter(mid))
         return @
@@ -271,8 +276,8 @@ class Jobber
     
     initResults: (mids=[]) ->
         for mid in mids
-            unless @results.get(mid)?
-                @results.set(mid, new Resulter(mid))
+          unless @results.get(mid)?
+            @results.set(mid, new Resulter(mid))
         return @
     
     humanize: (cmd) ->
@@ -351,6 +356,61 @@ class Jobber
             result['error'] = data.return
             @errors.push(result['error'])
         return @
+
+    totalProgEvents: (mid) ->
+      return @getLatestProgEvent(mid).numEvents
+
+    getCurrentRunNumber: (mid) ->
+      return @getLatestProgEvent(mid).runNum
+
+    getLatestProgEvent: (mid) ->
+      progEvents = @progressEvents.get(mid)
+      return progEvents[progEvents.length - 1]
+
+    getLatestComment: (mid) ->
+      return @getLatestProgEvent(mid).comment
+
+    getPercentageComplete: (mid) ->
+      return Math.round(@getCurrentRunNumber(mid) / @totalProgEvents(mid) * 100)
+
+    hasProgressEvents: (mid) ->
+      if @progressEvents.get(mid)?
+        return true
+      else
+        return false
+
+    currentState: (mid) ->
+      return @getLatestProgEvent(mid).state
+
+    processProgEvent: (edata) ->
+      data = edata.data
+      mid = data.id
+      hasChanges = true
+      unless @progressEvents.get(mid)
+        @progressEvents.set(mid, [])
+      results = @progressEvents.get(mid)
+      eventInfo = data.data
+      runNum = eventInfo.ret.__run_num__ + 1
+      result = new Resulter(runNum)
+      result['mid'] = mid
+      result['numEvents'] = eventInfo.len
+      result['runNum'] = runNum
+      result['comment'] = eventInfo.ret.comment
+      result['done'] = true
+      result['active'] = true
+      result['success'] = eventInfo.ret.result
+
+      hasChanges = false if not eventInfo.ret.changes.diff?
+      if not result['success']
+        result['state'] = Jobber.STATUS_FAILURE
+      else
+        if hasChanges
+          result['state'] = Jobber.STATUS_INFO
+        else
+          result['state'] = Jobber.STATUS_SUCCESS
+
+      results.push(result)
+      return @
     
 appUtilSrvc.value "Jobber", Jobber
 
