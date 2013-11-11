@@ -16,13 +16,18 @@
 
 function setupModuleLoader(window) {
 
-  var $injectorMinErr = minErr('$injector');
+
+  //var $injectorMinErr = minErr('$injector');
 
   function ensure(obj, name, factory) {
     return obj[name] || (obj[name] = factory());
   }
 
-  return ensure(ensure(window, 'angular', Object), 'module', function() {
+  //return ensure(ensure(window, 'angular', Object), 'module', function() {
+  var angular = ensure(window, 'angular', Object);
+  angular.$$minErr = angular.$$minErr || minErr;
+    
+  return ensure(angular, 'module', function() {
     /** @type {Object.<string, angular.Module>} */
     var modules = {};
 
@@ -77,6 +82,14 @@ function setupModuleLoader(window) {
      * @returns {module} new module with the {@link angular.Module} api.
      */
     return function module(name, requires, configFn) {
+      var $injectorMinErr = minErr('$injector');
+      var ngMinErr = minErr('ng');
+      var assertNotHasOwnProperty = function(name, context) {
+        if (name === 'hasOwnProperty') {
+          throw ngMinErr('badname', "hasOwnProperty is not a valid {0} name", context);
+        }
+      };
+      
       assertNotHasOwnProperty(name, 'module');
       if (requires && modules.hasOwnProperty(name)) {
         modules[name] = null;

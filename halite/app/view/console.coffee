@@ -601,6 +601,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             if not edata.data._stamp?
                 edata.data._stamp = $scope.stamp()
             edata.utag = [edata.tag, edata.data._stamp].join("/")
+            edata.data.stamp = edata.data._stamp # fixes ng 1.2 error expression private data
             $scope.events.set(edata.utag, edata)
             parts = edata.tag.split("/") # split on "/" character
             if parts[0] is 'salt'

@@ -438,7 +438,8 @@ appDrtv.controller("PaginationController", ["$scope", "$attrs", "$parse", "$inte
   
     $scope.$watch "page", ->
         self.render()
-
+    
+    return true
 ])
 
 appDrtv.constant("paginationConfig",
