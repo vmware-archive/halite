@@ -1,3 +1,21 @@
+0.1.05 (2014-11-18)
+==================
+
+Features
+--------
+Added display of state run progress events to the Job->Results view
+Each minion result line now shows number of state run out of total with progress
+bar. Run number badges show success or failure. Comment line is also shown
+
+
+
+
+0.1.04 
+========
+
+Minor fixes
+
+
 0.1.03 (2013-11-1)
 ==================
 
