@@ -12,3 +12,6 @@ dist
 *.swp
 
 halite.egg-info/*
+.idea/
+*.map
+

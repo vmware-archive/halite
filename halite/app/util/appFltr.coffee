@@ -24,4 +24,19 @@ appFltr.filter 'pagerize', () ->
         output = input.slice(start, end)
         return output
         
-    return filter 
+    return filter
+
+appFltr.filter 'truncate', () ->
+  filter = (text, length, end) ->
+
+    length = 20 if isNaN(length)
+
+    end = '...' if not end?
+
+    retval = null
+    if text.length < length or text.lenght - end.length <= length
+      retval = text
+    else
+      retval = text.substring(0, length-end.length) + end
+    return retval
+  return filter

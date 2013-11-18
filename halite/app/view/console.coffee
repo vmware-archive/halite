@@ -458,6 +458,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.docSearchResults = ''
         $scope.docs = {}
 
+        $scope.getPercentageComplete = (job, mid) ->
+          return job.getPercentageComplete(mid)
+
         $scope.searchDocs = () ->
             if not $scope.command.cmd.fun? or not $scope.docSearch or $scope.command.cmd.fun == ''
                 $scope.docSearchResults = ''
@@ -545,6 +548,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 job.linkMinion(minion)
                 job.processRetEvent(data)
                 job.checkDone()
+            else if kind == 'prog'
+                job.processProgEvent(edata)
             return job
         
         $scope.processRunEvent = (jid, kind, edata) ->

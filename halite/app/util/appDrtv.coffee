@@ -8,6 +8,18 @@ Uses 'ss' (short for SaltStack) as the prefix to distinguish from built in 'ng'
 
 appDrtv = angular.module "appDrtv", []
 
+# Add custom progress bar since
+# Angular UI is not yet ported to Twitter Bootstrap 3
+appDrtv.directive("ssProgress", ->
+  ddo =
+    restrict: 'E'
+    replace: true
+    templateUrl: "app/util/template/progressbar/progress.html"
+    scope:
+      percentage: '@'
+  return ddo
+)
+
 
 ###
 ss-input-name  ssInputName
@@ -633,9 +645,16 @@ appDrtv.run ["$templateCache", ($templateCache) ->
 </ul>
     """
     )
-    
-    
-]
 
+    $templateCache.put( "app/util/template/progressbar/progress.html",
+    """
+<div class="progress">
+  <div class="progress-bar"  role="progressbar" aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{percentage}}%">
+    <span class="sr-only">{{percentage}}% Complete</span>
+  </div>
+</div>
+    """
+    )
+]
 
 "template/pagination/pagination.html"
