@@ -657,4 +657,3 @@ appDrtv.run ["$templateCache", ($templateCache) ->
     )
 ]
 
-"template/pagination/pagination.html"
