@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'halite',
-    version = '0.1.05', 
+    version = '0.1.06', 
     description = 'SaltStack Web UI',
     url = 'https://github.com/saltstack/halite',
     author='SaltStack Inc',
@@ -35,7 +35,7 @@ setup(
                    'lib/*/*.woff', 'lib/*/*/*.woff',
                    'lib/angular/*.min.js', 'lib/angular/*.min.js.map',
                    'lib/angular/i18n/*','lib/angular/angular-csp.css',
-                   'lib/angular/angular-loader.js/*', 
+                   'lib/angular/angular-loader.js', 
                    'lib/angular-ui/bootstrap/*-tpls.min.js',
                    'lib/angular-ui/router/*.min.js',
                    'lib/angular-ui/utils/*.min.js',
