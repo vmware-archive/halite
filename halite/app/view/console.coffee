@@ -547,7 +547,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 job.processRetEvent(data)
                 job.checkDone()
             else if kind == 'prog'
-                job.processProgEvent(edata)
+              minion = $scope.snagMinion(data.id)
+              job.linkMinion(minion)
+              job.processProgEvent(edata)
             return job
         
         $scope.processRunEvent = (jid, kind, edata) ->

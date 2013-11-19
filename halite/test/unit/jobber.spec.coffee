@@ -1,6 +1,7 @@
 describe "Jobber Unit Tests", () ->
 
   Jobber = null
+  Itemizer = null
 
   data1 = null
   data2 = null
@@ -14,6 +15,9 @@ describe "Jobber Unit Tests", () ->
   $q = null
   $rootScope = null
   Itemizer = null
+
+  data1_job2 = null
+  data2_job2 = null
 
   beforeEach module('appUtilSrvc')
 
@@ -30,6 +34,9 @@ describe "Jobber Unit Tests", () ->
     _data6 = '{"tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5","data":{"jid":"20131109195504714490","cmd":"_minion_event","_stamp":"2013-11-09_19:55:11.451270","tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5","data":{"len":6,"ret":{"comment":"File /tmp/testfile6 is in the correct state","__run_num__":5,"changes":{},"name":"/tmp/testfile6","result":true}},"id":"Adityas-MacBook-Pro.local"},"utag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5/2013-11-09_19:55:11.451270"}'
     _dataError = '{"tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5","data":{"jid":"20131109195504714490","cmd":"_minion_event","_stamp":"2013-11-09_19:55:11.451270","tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5","data":{"len":6,"ret":{"comment":"File /tmp/testfile6 is in the correct state","__run_num__":5,"changes":{},"name":"/tmp/testfile6","result":false}},"id":"Adityas-MacBook-Pro.local"},"utag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5/2013-11-09_19:55:11.451270"}'
     _dataInfo = '{"tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5","data":{"jid":"20131109195504714490","cmd":"_minion_event","_stamp":"2013-11-09_19:55:11.451270","tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5","data":{"len":6,"ret":{"comment":"File /tmp/testfile6 is in the correct state","__run_num__":5,"changes":{"diff": "foo"},"name":"/tmp/testfile6","result":true}},"id":"Adityas-MacBook-Pro.local"},"utag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/5/2013-11-09_19:55:11.451270"}'
+    _data1_job2 = '{"tag":"salt/job/20131109195504714520/prog/Adityas-MacBook-Pro.local2/0","data":{"jid":"20131109195504714520","cmd":"_minion_event","_stamp":"2013-11-09_19:55:08.251106","tag":"salt/job/20131109195504714520/prog/Adityas-MacBook-Pro.local2/0","data":{"len":6,"ret":{"comment":"File /tmp/testfile1 is in the correct state","__run_num__":0,"changes":{},"name":"/tmp/testfile1","result":true}},"id":"Adityas-MacBook-Pro.local2"},"utag":"salt/job/20131109195504714520/prog/Adityas-MacBook-Pro.local2/0/2013-11-09_19:55:08.251106"}'
+    _data2_job2 = '{"tag":"salt/job/20131109195504714520/prog/Adityas-MacBook-Pro.local2/1","data":{"jid":"20131109195504714520","cmd":"_minion_event","_stamp":"2013-11-09_19:55:08.819216","tag":"salt/job/20131109195504714520/prog/Adityas-MacBook-Pro.local2/1","data":{"len":6,"ret":{"comment":"File /tmp/testfile3 is in the correct state","__run_num__":1,"changes":{},"name":"/tmp/testfile3","result":true}},"id":"Adityas-MacBook-Pro.local2"},"utag":"salt/job/20131109195504714520/prog/Adityas-MacBook-Pro.local2/1/2013-11-09_19:55:08.819216"}'
+
 
     data1 = JSON.parse(_data1)
     data2 = JSON.parse(_data2)
@@ -39,7 +46,10 @@ describe "Jobber Unit Tests", () ->
     data6 = JSON.parse(_data6)
     dataError = JSON.parse(_dataError)
     dataInfo = JSON.parse(_dataInfo)
+    data1_job2 = JSON.parse(_data1_job2)
+    data2_job2 = JSON.parse(_data2_job2)
     mid = 'Adityas-MacBook-Pro.local'
+    Itemizer = _Itemizer_
 
   it "defines a processProgEvent function", () ->
     job = new Jobber('foo', 'bar')
@@ -170,3 +180,47 @@ describe "Jobber Unit Tests", () ->
     job.checkDone()
     $rootScope.$digest()
     expect(i).toBe(0)
+
+  it "returns false when there are no nested events", () ->
+    job = new Jobber('foo', 'bar')
+    expect(job.hasNestedProgressEvents()).toBe(false)
+
+  it "returns true when there are nested events", () ->
+    job = new Jobber('foo', 'bar')
+    job.processProgEvent(data1)
+    expect(job.hasNestedProgressEvents()).toBe(true)
+
+  it 'sets the total number of events corectly', () ->
+    job = new Jobber('foo', 'bar')
+    job.minions = new Itemizer()
+    job.minions.set('foo', 'bar', 123)
+    job.minions.set('foo1', 'bar1', 123)
+    job.processProgEvent(data1)
+    expect(job.totalEvents).toBe(12)
+
+  it 'sets the number of completed events corectly', () ->
+    job = new Jobber('foo', 'bar')
+    job.minions = new Itemizer()
+    job.processProgEvent(data1)
+    job.processProgEvent(data2)
+    expect(job.completedEvents).toBe(2)
+
+  it 'reports correct total percentage complete', () ->
+    job = new Jobber('foo', 'bar')
+    job.minions = new Itemizer()
+    job.minions.set('foo', 'bar', 123)
+    job.minions.set('foo1', 'bar1', 123)
+    job.processProgEvent(data1)
+    job.processProgEvent(data1_job2)
+    job.processProgEvent(data2_job2)
+    expect(job.totalPercentageComplete()).toBe(Math.round(3 / 12 * 100))
+
+  it 'reports correct total percentage complete even if events are repeated', () ->
+    job = new Jobber('foo', 'bar')
+    job.minions = new Itemizer()
+    job.minions.set('foo', 'bar', 123)
+    job.minions.set('foo1', 'bar1', 123)
+    job.processProgEvent(data1)
+    job.processProgEvent(data1_job2)
+    job.processProgEvent(data1_job2)
+    expect(job.totalPercentageComplete()).toBe(Math.round(2 / 12 * 100))

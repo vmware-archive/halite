@@ -1,9 +1,11 @@
 div.progress {
     position: relative;
     margin-bottom: 0px;
-    bottom: -6px;
-    width: 50px;
+    width: 70px;
     display: inline-block;
+}
+kvl div.progress {
+    bottom: -6px;
 }
 div.height-controlled {
     height: 20px;
