@@ -505,6 +505,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 if result
 
                     job = $scope.startJob(result, command) #runner result is a tag
+                    job.resolveOnAnyPass = true
                     job.commit($q).then($scope.fetchDocsDone, $scope.fetchDocsFailed)
                     return true
             .error (data, status, headers, config) ->

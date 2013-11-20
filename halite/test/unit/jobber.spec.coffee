@@ -11,10 +11,16 @@ describe "Jobber Unit Tests", () ->
   dataError = null
   dataInfo = null
   mid = null
+  $q = null
+  $rootScope = null
+  Itemizer = null
 
   beforeEach module('appUtilSrvc')
 
-  beforeEach inject (_Jobber_) ->
+  beforeEach inject (_$rootScope_, _$q_, _Jobber_, _Itemizer_) ->
+    Itemizer = _Itemizer_
+    $q = _$q_
+    $rootScope = _$rootScope_
     Jobber = _Jobber_
     _data1 = '{"tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/0","data":{"jid":"20131109195504714490","cmd":"_minion_event","_stamp":"2013-11-09_19:55:08.251106","tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/0","data":{"len":6,"ret":{"comment":"File /tmp/testfile1 is in the correct state","__run_num__":0,"changes":{},"name":"/tmp/testfile1","result":true}},"id":"Adityas-MacBook-Pro.local"},"utag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/0/2013-11-09_19:55:08.251106"}'
     _data2 = '{"tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/1","data":{"jid":"20131109195504714490","cmd":"_minion_event","_stamp":"2013-11-09_19:55:08.819216","tag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/1","data":{"len":6,"ret":{"comment":"File /tmp/testfile3 is in the correct state","__run_num__":1,"changes":{},"name":"/tmp/testfile3","result":true}},"id":"Adityas-MacBook-Pro.local"},"utag":"salt/job/20131109195504714490/prog/Adityas-MacBook-Pro.local/1/2013-11-09_19:55:08.819216"}'
@@ -101,3 +107,66 @@ describe "Jobber Unit Tests", () ->
     job = new Jobber('foo', 'bar')
     job.processProgEvent(data1)
     expect(job.currentState(mid)).toBe(Jobber.STATUS_SUCCESS)
+
+  it "has resolveOnAnyPass set to false by default", () ->
+    job = new Jobber('foo', 'bar')
+    expect(job.resolveOnAnyPass).toBe(false)
+
+  it "does not call resolve when resolveOnAnyPass is true and all minions return false", () ->
+    job = new Jobber('foo', 'bar')
+    job.resolveOnAnyPass = true
+    i = 0
+    job.commit($q)
+    .then () ->
+      i = 1
+    , () ->
+      i = 2
+    falseReturn =
+      done: false
+    job.results.set('foo', falseReturn)
+    job.results.set('bar', falseReturn)
+    job.checkDone()
+    $rootScope.$digest()
+    expect(i).toBe(0)
+
+  it "calls resolve when resolveOnAnyPass is true and some minion returns true", () ->
+    job = new Jobber('foo', 'bar')
+    job.resolveOnAnyPass = true
+    i = 0
+    job.commit($q)
+    .then () ->
+      i = 1
+    , () ->
+      i = 2
+    falseReturn =
+      done: false
+      active: true
+    trueReturn =
+      done: true
+      active: true
+    job.results.set('foo', falseReturn)
+    job.results.set('bar', trueReturn)
+    job.checkDone()
+    $rootScope.$digest()
+    expect(i).toBe(1)
+
+  it "does not call resolve when resolveOnAnyPass is false and some minion returns true", () ->
+    job = new Jobber('foo', 'bar')
+    job.resolveOnAnyPass = false
+    i = 0
+    job.commit($q)
+    .then () ->
+        i = 1
+      , () ->
+        i = 2
+    falseReturn =
+      done: false
+      active: true
+    trueReturn =
+      done: true
+      active: true
+    job.results.set('foo', falseReturn)
+    job.results.set('bar', trueReturn)
+    job.checkDone()
+    $rootScope.$digest()
+    expect(i).toBe(0)
