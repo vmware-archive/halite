@@ -374,7 +374,7 @@
         <div class="col-md-12 " ng-if="jobMode == 'result'">
           <kvl class="row" ng-repeat="result in job.results.values()">
             <kvi>
-              <div class="col-md-6">
+              <div class="col-md-3">
                 <span class="label" ng-class="result.done?'label-info':'label-primary'">
                   {{result.id}}
                 </span>&nbsp;
@@ -382,20 +382,22 @@
                   <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
                   <b ng-if="result.retcode != null">{{result.retcode}}</b>
                 </span>&nbsp;
-                <span ng-repeat="ensual in result.results()"
-                  ng-include="'ensual_nested.html'">
-                </span>
               </div>
               <div class="col-md-1" ng-if="job.hasProgressEvents(result.id)">
                 <span class="badge badge-{{job.currentState(result.id)}}">{{job.getCurrentRunNumber(result.id)}}</span>
                 <span>of</span>
                 <span class="badge badge-info">{{job.totalProgEvents(result.id)}}</span>
               </div>
-              <div class="col-md-2 height-controlled">
+              <div class="col-md-1 height-controlled">
                 <ss-progress ng-if="job.hasProgressEvents(result.id)" percentage="{{job.getPercentageComplete(result.id)}}"></ss-progress>
               </div>
-              <div class="col-md-3" ng-if="job.hasProgressEvents(result.id)">
-                <p class="text-{{job.currentState(result.id)}}">{{job.getLatestComment(result.id)|truncate:40}}</p>
+              <div class="col-md-2" ng-if="job.hasProgressEvents(result.id)">
+                <p class="text-{{job.currentState(result.id)}}">{{job.getLatestComment(result.id)|truncate:30}}</p>
+              </div>
+              <div class="col-md-5">
+                <span ng-repeat="ensual in result.results()"
+                      ng-include="'ensual_nested.html'">
+               </span>
               </div>
             </kvi>
           </kvl>
