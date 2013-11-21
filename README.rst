@@ -199,7 +199,7 @@ Shows panels, one per event associated with this Master.
   
 .. image:: screenshots/EventMonitor.png
   
-More Details comming. TBD
+More details coming. TBD
 
 
 Browser requirements
