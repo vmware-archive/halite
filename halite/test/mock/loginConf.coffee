@@ -3,4 +3,3 @@ loginInfo =
     password: 'password'
 
 window.loginInfo = loginInfo
-

@@ -264,6 +264,7 @@ class Jobber
         @results = new Itemizer()
         @minions = new Itemizer()
         @progressEvents = new Itemizer()
+        @resolveOnAnyPass = false
         for mid in mids
             @results.set(mid, new Resulter(mid))
         return @
@@ -291,7 +292,9 @@ class Jobber
         @done = _((result.done for result in @results.values() when\
             result.active isnt false)).all()
         if not @done
-            return false
+          anyDone = _((result.done for result in @results.values() when result.active isnt false)).any()
+          @defer.resolve @ if @resolveOnAnyPass and anyDone
+          return false
         
         @fail = _((result.fail for result in @results.values() when\
             result.active and result.done )).any()
