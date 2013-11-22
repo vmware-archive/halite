@@ -265,6 +265,9 @@ class Jobber
         @minions = new Itemizer()
         @progressEvents = new Itemizer()
         @resolveOnAnyPass = false
+        @totalEvents = 0
+        @completedEvents = 0
+        @eventInfo = new Itemizer()
         for mid in mids
             @results.set(mid, new Resulter(mid))
         return @
@@ -385,6 +388,22 @@ class Jobber
     currentState: (mid) ->
       return @getLatestProgEvent(mid).state
 
+    hasNestedProgressEvents: () ->
+      if @progressEvents.keys().length == 0
+        return false
+      else
+        return true
+
+    totalPercentageComplete: () ->
+      return Math.round(@completedEvents / @totalEvents * 100)
+
+    updateProgessEventInfo: (mid, runNum) ->
+      @eventInfo.set(mid, runNum)
+      @completedEvents = _.reduce @eventInfo.values(), (memo, num) ->
+        memo + num
+      , 0
+      return true
+
     processProgEvent: (edata) ->
       data = edata.data
       mid = data.id
@@ -413,8 +432,11 @@ class Jobber
           result['state'] = Jobber.STATUS_SUCCESS
 
       results.push(result)
+
+      @totalEvents = @minions.keys().length * result['numEvents']
+      @updateProgessEventInfo(mid, result['runNum'])
       return @
-    
+
 appUtilSrvc.value "Jobber", Jobber
 
 class Bosser extends Jobber

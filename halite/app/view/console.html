@@ -369,6 +369,9 @@
           </button>
         </span>
       </div>
+      <div class="col-md-2 height-controlled">
+        <ss-progress percentage="{{job.totalPercentageComplete()}}" ng-if="job.hasNestedProgressEvents()"></ss-progress>
+      </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border animate-fade" ng-show="jobMode">
         <div class="col-md-12 " ng-if="jobMode == 'result'">
