@@ -14,7 +14,7 @@ appDrtv.directive("ssProgress", ->
   ddo =
     restrict: 'E'
     replace: true
-    templateUrl: "app/util/template/progressbar/progress.html"
+    templateUrl: "app/util/template/progressbar/ss_progress.html"
     scope:
       percentage: '@'
   return ddo
@@ -646,7 +646,7 @@ appDrtv.run ["$templateCache", ($templateCache) ->
     """
     )
 
-    $templateCache.put( "app/util/template/progressbar/progress.html",
+    $templateCache.put( "app/util/template/progressbar/ss_progress.html",
     """
 <div class="progress">
   <div class="progress-bar"  role="progressbar" aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{percentage}}%">

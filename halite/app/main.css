@@ -1,3 +1,10 @@
+div.progress {
+    position: relative;
+    margin-bottom: 0px;
+    bottom: -6px;
+    width: 50px;
+    display: inline-block;
+}
 div.height-controlled {
     height: 20px;
 }
