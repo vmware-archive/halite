@@ -369,7 +369,7 @@
           </button>
         </span>
       </div>
-      <div class="col-md-2 height-controlled">
+      <div class="height-controlled" ng-if="job.fail">
         <ss-progress percentage="{{job.totalPercentageComplete()}}" ng-if="job.hasNestedProgressEvents()"></ss-progress>
       </div>
       <div class="clearfix"></div>
@@ -384,14 +384,16 @@
                 <i ng-if="result.retcode == null" class="fa-icon-certificate icon-white"></i>
                 <b ng-if="result.retcode != null">{{result.retcode}}</b>
               </span>&nbsp;&nbsp;
-              <span ng-if="job.hasProgressEvents(result.id)">
-                <span class="badge badge-{{job.currentState(result.id)}}">{{job.getCurrentRunNumber(result.id)}}</span>
-                <span>of</span>
-                <span class="badge badge-info">{{job.totalProgEvents(result.id)}}</span>
-              </span>
-              <ss-progress ng-if="job.hasProgressEvents(result.id)" percentage="{{job.getPercentageComplete(result.id)}}"></ss-progress>
-              <span ng-if="job.hasProgressEvents(result.id)">
-                <span class="text-{{job.currentState(result.id)}}">{{job.getLatestComment(result.id)|truncate:40}}</span>
+              <span ng-hide="result.done">
+                <span ng-if="job.hasProgressEvents(result.id)">
+                  <span class="badge badge-{{job.currentState(result.id)}}">{{job.getCurrentRunNumber(result.id)}}</span>
+                  <span>of</span>
+                  <span class="badge badge-info">{{job.totalProgEvents(result.id)}}</span>
+                </span>
+                <ss-progress ng-if="job.hasProgressEvents(result.id)" percentage="{{job.getPercentageComplete(result.id)}}"></ss-progress>
+                <span ng-if="job.hasProgressEvents(result.id)">
+                  <span class="text-{{job.currentState(result.id)}}">{{job.getLatestComment(result.id)|truncate:40}}</span>
+                </span>
               </span>
               <span ng-repeat="ensual in result.results()"
                     ng-include="'ensual_nested.html'">
