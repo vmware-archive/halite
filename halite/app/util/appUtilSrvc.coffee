@@ -470,10 +470,10 @@ class Bosser extends Jobber
         @fail = result.fail
                
         if result.success == true
-            result.return = data.ret
+            result.return = data.return
         else
-            result.error = data.ret
-            @errors.push(data.ret)
+            result.error = data.return
+            @errors.push(data.return)
         
         console.log "Run/Wheel Done. Fail = #{@fail}"
         console.log @

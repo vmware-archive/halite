@@ -510,18 +510,18 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return true
             
         
-        $scope.startWheel = (tag, cmd) ->
+        $scope.startWheel = (data, cmd) ->
             console.log "Start Wheel #{$scope.humanize(cmd)}"
             console.log tag
-            parts = tag.split("/")
+            parts = data.tag.split("/")
             jid = parts[2]
             job = $scope.snagWheel(jid, cmd)
             return job    
         
-        $scope.startRun = (tag, cmd) ->
+        $scope.startRun = (data, cmd) ->
             #console.log "Start Run #{$scope.humanize(cmd)}"
             #console.log tag
-            parts = tag.split("/")
+            parts = data.tag.split("/")
             jid = parts[2]
             job = $scope.snagRunner(jid, cmd)
             return job
