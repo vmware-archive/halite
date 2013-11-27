@@ -1,18 +1,31 @@
-0.1.07 (2014-11-18)
+0.1.08 (2013-11-27)
+==================
+
+Features
+--------
+Added progress bars for individual jobs
+Added aggregate progress bars
+
+Bug fixes
+--------
+Support for change in return semantics
+Fixed checkbox
+
+0.1.07 (2013-11-18)
 ==================
 
 fixed pypi dist
 
 
 
-0.1.06 (2014-11-18)
+0.1.06 (2013-11-18)
 ==================
 
 Fixed typo in setup.py
 
 
 
-0.1.05 (2014-11-18)
+0.1.05 (2013-11-18)
 ==================
 
 Features
