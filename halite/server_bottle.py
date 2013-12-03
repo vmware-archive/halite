@@ -53,7 +53,7 @@ def loadWebUI(app, devel=False, coffee=False):
     @app.route('/') # /
     def appGet(path=''):
         if devel:
-            return(  createStaticMain(    kind='bottle', 
+            return(  createStaticMain(    kind='bottle',
                                             base=args.base,
                                             coffee=args.coffee,
                                             devel=args.devel,
@@ -152,7 +152,7 @@ def tokenify(cmd, token=None):
         cmd['token'] = token
     return cmd
 
-def loadSaltApi(app):
+def loadSaltApi(app, master_config=None):
     ''' Load endpoints for Salt-API '''
     from salt.exceptions import EauthAuthenticationError
     import salt.client.api
@@ -170,7 +170,7 @@ def loadSaltApi(app):
                      password=data.get("password"),
                      eauth=data.get("eauth"))
 
-        client = salt.client.api.APIClient()
+        client = salt.client.api.APIClient(master_config)
         try:
             creds = client.create_token(creds)
         except EauthAuthenticationError as ex:
@@ -222,7 +222,7 @@ def loadSaltApi(app):
     def runPost(token = None):
         '''
         Execute salt command with either credentials in post data
-        or token from url or token from X-Auth-Token headertoken 
+        or token from url or token from X-Auth-Token headertoken
         '''
         if not token:
             token = bottle.request.get_header('X-Auth-Token')
@@ -270,13 +270,13 @@ def loadSaltApi(app):
 
         while True:
             data =  client.get_event(wait=0.025, tag=tag, full=True)
-            
+
             if data:
                 try: #work around try to decode catch unicode errors
                     yield 'data: {0}\n\n'.format(json.dumps(data))
                 except UnicodeDecodeError as ex:
                     logger.error("Error: Salt event has non UTF-8 data:\n{0}".format(data))
-                
+
             else:
                 sleep(0.1)
 
@@ -339,7 +339,7 @@ def loadCors(app):
         bottle.response.set_header('Access-Control-Allow-Origin', '*')
         bottle.response.set_header('Access-Control-Allow-Methods',
                             'PUT, GET, POST, DELETE, OPTIONS')
-        bottle.response.set_header('Access-Control-Allow-Headers', 
+        bottle.response.set_header('Access-Control-Allow-Headers',
             'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, X-Auth-Token')
 
     @app.route(corsRoutes, method='OPTIONS')
@@ -426,7 +426,7 @@ def createStaticMain(kind='bottle',
 
     """
     import bottle
-    
+
     data = dict(baseUrl=base,
                 mini=".min" if not devel else "",
                 coffee = coffee )
@@ -459,13 +459,14 @@ def startServer(level='info',
                 host='0.0.0.0',
                 port='8080',
                 base='',
-                cors=False, 
-                tls=False, 
+                cors=False,
+                tls=False,
                 certpath='/etc/pki/tls/certs/localhost.crt',
                 keypath='/etc/pki/tls/certs/localhost.key',
                 pempath='/etc/pki/tls/certs/localhost.pem',
                 devel=False,
-                coffee=False, 
+                coffee=False,
+                master_config=None,
                 **kwas
                 ):
     '''
@@ -520,7 +521,7 @@ def startServer(level='info',
 
     loadErrors(app)
     loadWebUI(app, devel=devel, coffee=coffee)
-    loadSaltApi(app)
+    loadSaltApi(app, master_config)
     if cors:
         loadCors(app)
     app = rebase(base=base)
