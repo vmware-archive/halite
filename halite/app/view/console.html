@@ -345,7 +345,7 @@
 
 <div class="row" ng-show="monitorMode == 'job'">
   <div class="col-md-12 box flat-top wide">
-    <div class="box box-no-border" ng-repeat="job in jobs.values() | orderBy:sortJobs:jobReverse | pagerize:jobPager">
+    <div class="box box-no-border" ng-repeat="job in jobs.values() | filter:removeLookupJidJobs | orderBy:sortJobs:jobReverse | pagerize:jobPager">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-danger':'badge-success'">

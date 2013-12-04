@@ -413,7 +413,55 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     $scope.minions?.filter(mids) #remove non status minions
             $scope.statusing = false
             return job
-            
+
+        $scope.tagMap = {}
+
+        $scope.lookupJID = (job_id) ->
+          command =
+            fun: 'runner.jobs.lookup_jid'
+            kwarg:
+              jid: job_id
+
+          SaltApiSrvc.run($scope, command)
+          .success (data, status, headers, config) ->
+            result = data.return[0]
+            $scope.tagMap[result.tag.split('/')[2]] = job_id
+          return true
+
+        $scope.cachedJIDs = []
+        $scope.failedCachedJIDs = []
+
+        $scope.$on "CacheFetch", (event, edata) ->
+          if edata?
+            $scope.cachedJIDs = _.difference($scope.cachedJIDs, [edata.jid])
+            $scope.failedCachedJIDs.push(edata.jid) unless edata.success
+          $scope.lookupJID($scope.cachedJIDs[0]) unless $scope.cachedJIDs.length == 0
+          return
+
+        $scope.preloadJobCache = () ->
+          command =
+            fun: 'runner.jobs.list_jobs'
+            tgt: []
+
+          SaltApiSrvc.run($scope, command)
+          .success (data, status, headers, config) ->
+              result = data.return[0]
+              job = $scope.startRun(result, command)
+              job.commit($q).then (donejob) ->
+                for jid, val of donejob.results.items()[0].val.results()[0]
+                  cmd =
+                    fun: val.Function
+                  cmd.tgt = val.Target if val.Target?
+                  if not $scope.jobs.get(jid)
+                    $scope.jobs.set(jid, new Runner(jid, cmd))
+                    $scope.cachedJIDs.push(jid)
+                $scope.$emit("CacheFetch")
+              , () ->
+                $scope.errorMsg = "List All Jobs Failed! Please retry."
+                return true
+              return true
+          return true
+
         $scope.fetchGrains = (target) ->
             #target = if target then target else "*"
             cmd =
@@ -552,6 +600,27 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
               job.processProgEvent(edata)
             return job
         
+        $scope.processLookupJID = (data) ->
+          results = new Itemizer()
+          for key, val of data.return
+            result = new Resulter()
+            result.return = val
+            result.id = key
+            results.set(key, result)
+            if data.success
+              result.done = true
+              result.success = true
+              result.fail = false
+            $scope.jobs.get($scope.tagMap[data.jid]).results = results
+          if data.success
+            $scope.jobs.get($scope.tagMap[data.jid]).done = true
+            $scope.jobs.get($scope.tagMap[data.jid]).fail = false
+            $scope.$emit("CacheFetch", {succes: true, jid: $scope.tagMap[data.jid]})
+          if not data.success
+            $scope.jobs.get($scope.tagMap[data.jid]).done = false
+            $scope.jobs.get($scope.tagMap[data.jid]).fail = true
+            $scope.$emit("CacheFetch", {succes: false, jid: $scope.tagMap[data.jid]})
+
         $scope.processRunEvent = (jid, kind, edata) ->
             job = $scope.jobs.get(jid)
             job.processEvent(edata)
@@ -559,6 +628,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             if kind == 'new'
                 job.processNewEvent(data)
             else if kind == 'ret'
+                if data.fun == 'runner.jobs.lookup_jid'
+                  $scope.processLookupJID(data)
                 job.processRetEvent(data)
             return job
         
@@ -704,6 +775,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             #console.log event
             $scope.fetchActives()
             $scope.fetchDocs()
+            $scope.preloadJobCache()
         
         $scope.marshallListener = (event) ->
             #console.log "Received #{event.name}"
@@ -723,6 +795,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.testFocus = (name) ->
             console.log "focus #{name}"
             
-            
+
+        $scope.removeLookupJidJobs = (job) ->
+          return job.name != 'runner.jobs.lookup_jid'
+
         return true
     ]
