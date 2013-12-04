@@ -152,7 +152,7 @@ def tokenify(cmd, token=None):
         cmd['token'] = token
     return cmd
 
-def loadSaltApi(app, master_config=None):
+def loadSaltApi(app, opts=None):
     ''' Load endpoints for Salt-API '''
     from salt.exceptions import EauthAuthenticationError
     import salt.client.api
@@ -170,7 +170,7 @@ def loadSaltApi(app, master_config=None):
                      password=data.get("password"),
                      eauth=data.get("eauth"))
 
-        client = salt.client.api.APIClient(master_config)
+        client = salt.client.api.APIClient(opts)
         try:
             creds = client.create_token(creds)
         except EauthAuthenticationError as ex:
@@ -208,7 +208,7 @@ def loadSaltApi(app, master_config=None):
         if hasattr(cmds, 'get'): #convert to array
             cmds =  [cmds]
 
-        client = salt.client.api.APIClient()
+        client = salt.client.api.APIClient(opts)
         try:
             results = [client.signature(tokenify(cmd, token)) for cmd in cmds]
         except EauthAuthenticationError as ex:
@@ -234,7 +234,7 @@ def loadSaltApi(app, master_config=None):
         if hasattr(cmds, 'get'): #convert to array
             cmds =  [cmds]
 
-        client = salt.client.api.APIClient()
+        client = salt.client.api.APIClient(opts)
         try:
             results = [client.run(tokenify(cmd, token)) for cmd in cmds]
         except EauthAuthenticationError as ex:
@@ -255,7 +255,7 @@ def loadSaltApi(app, master_config=None):
         if not token:
             bottle.abort(401, "Missing token.")
 
-        client = salt.client.api.APIClient()
+        client = salt.client.api.APIClient(opts)
 
         if not client.verify_token(token): #auth.get_tok(token):
             bottle.abort(401, "Invalid token.")
@@ -296,7 +296,7 @@ def loadSaltApi(app, master_config=None):
         if not token:
             bottle.abort(401, "Missing token.")
 
-        client = salt.client.api.APIClient()
+        client = salt.client.api.APIClient(opts)
 
         if not client.verify_token(token): #auth.get_tok(token):
             bottle.abort(401, "Invalid token.")
@@ -466,7 +466,7 @@ def startServer(level='info',
                 pempath='/etc/pki/tls/certs/localhost.pem',
                 devel=False,
                 coffee=False,
-                master_config=None,
+                opts=None,
                 **kwas
                 ):
     '''
@@ -521,7 +521,7 @@ def startServer(level='info',
 
     loadErrors(app)
     loadWebUI(app, devel=devel, coffee=coffee)
-    loadSaltApi(app, master_config)
+    loadSaltApi(app, opts)
     if cors:
         loadCors(app)
     app = rebase(base=base)

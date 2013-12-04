@@ -41,7 +41,7 @@ def start(hopts=None, debug=None):
             'certpath': '/etc/pki/tls/certs/localhost.crt',
             'keypath': '/etc/pki/tls/certs/localhost.key',
             'pempath': '/etc/pki/tls/certs/localhost.pem',
-            'master_config': hopts
+            'opts': hopts
         }
 
     if hopts:
