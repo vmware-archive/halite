@@ -8,8 +8,10 @@ OrdereMap service return new instance of OMap
 
 appUtilSrvc = angular.module("appUtilSrvc", [])
 
+class ArgInfo
+    constructor: (@value, @required) ->
 
-
+appUtilSrvc.value "ArgInfo", ArgInfo
 ###
 Item class used as item for Itemizer
 Creates object of form { key: key, val: val}
@@ -445,8 +447,8 @@ class Bosser extends Jobber
         return @
         
     processNewEvent: (data) ->
-        console.log "Run/Wheel New Event"
-        console.log data
+        # console.log "Run/Wheel New Event"
+        # console.log data
         
         @initResults(data.minions)
         @cmd =
@@ -459,8 +461,8 @@ class Bosser extends Jobber
         return @
     
     processRetEvent: (data) ->
-        console.log "Run/Wheel Ret Event"
-        console.log data
+        # console.log "Run/Wheel Ret Event"
+        # console.log data
         
         result = @results.get('master')
         result.done = true
@@ -475,8 +477,8 @@ class Bosser extends Jobber
             result.error = data.return
             @errors.push(data.return)
         
-        console.log "Run/Wheel Done. Fail = #{@fail}"
-        console.log @
+        # console.log "Run/Wheel Done. Fail = #{@fail}"
+        # console.log @
         
         if @errors.length > 0
             @defer?.reject(@errors)
@@ -518,7 +520,7 @@ class Pagerage
         return @
             
     displayPage: (page) ->
-        console.log "Display page " + page
+        # console.log "Display page " + page
         return @
 
 appUtilSrvc.value "Pagerage", Pagerage

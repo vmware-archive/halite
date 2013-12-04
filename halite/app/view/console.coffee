@@ -3,10 +3,10 @@ mainApp = angular.module("MainApp") #get reference to MainApp module
 mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filter', 
     '$templateCache',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
-    'Minioner', 'Resulter', 'Jobber', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
+    'Minioner', 'Resulter', 'Jobber', 'ArgInfo', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
     'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', '$filter',
     ($scope, $location, $route, $q, $filter, $templateCache, Configuration, 
-    AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, Runner, Wheeler, 
+    AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
     Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore ) ->
         $scope.location = $location
         $scope.route = $route
@@ -72,15 +72,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         
         $scope.newPagerage = (itemCount) ->
             return (new Pagerage(itemCount))
-        
-        $scope.commandTarget = ""
-        
+
         $scope.filterage =
             grains: ["any", "id", "host", "domain", "server_id"]
             grain: "any"
             target: ""
             express: ""
-        
+
         $scope.setFilterGrain = (index) ->
             $scope.filterage.grain = $scope.filterage.grains[index]
             $scope.setFilterExpress()
@@ -233,7 +231,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     tgt: '*'
         
         $scope.ply = (cmds) ->
-            target = if $scope.commandTarget isnt "" then $scope.commandTarget else "*"
+            target = if $scope.command.cmd.tgt isnt "" then $scope.command.cmd.tgt else "*"
             unless angular.isArray(cmds)
                 cmds = [cmds]
             for cmd in cmds
@@ -244,6 +242,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             result: {}
             history: {}
             lastCmds: null
+            parameters: null
             cmd:
                 mode: 'async'
                 fun: ''
@@ -256,11 +255,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             
             addArg: () ->
                 @cmd.arg.push('')
+                @parameters?.push('Enter Input')
                 #@cmd.arg[_.size(@cmd.arg)] = ""
                 
             delArg: () ->
                 if @cmd.arg.length > 1
                     @cmd.arg = @cmd.arg[0..-2]
+
+                if @parameters?.length > 0
+                    @parameters.pop()
                 #if _.size(@cmd.arg) > 1
                  #   delete @cmd.arg[_.size(@cmd.arg) - 1]
             
@@ -293,7 +296,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     cmds = @getCmds()
                 return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
                     when part? and part isnt '').join(' ') for cmd in cmds).join(',').trim())
-                    
+
+        $scope.command.cmd.tgt = ""
+
         $scope.expressionFormats = 
             Glob: 'glob'
             'Perl Regex': 'pcre'
@@ -611,7 +616,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
               result.done = true
               result.success = true
               result.fail = false
-            $scope.jobs.get($scope.tagMap[data.jid]).results = results
+            $scope.jobs.get($scope.tagMap[data.jid])?.results = results
           if data.success
             $scope.jobs.get($scope.tagMap[data.jid]).done = true
             $scope.jobs.get($scope.tagMap[data.jid]).fail = false
@@ -794,10 +799,76 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         
         $scope.testFocus = (name) ->
             console.log "focus #{name}"
-            
 
         $scope.removeLookupJidJobs = (job) ->
           return job.name != 'runner.jobs.lookup_jid'
+
+        $scope.removeArgspecJobs = (job) ->
+            return job.name.toLowerCase().indexOf('sys.argspec') != 0
+
+        $scope.jobPresentationFilter = (job) ->
+            return $scope.removeArgspecJobs(job) and $scope.removeLookupJidJobs(job)
+
+        $scope.setParameters = (requiredArgs, optionalArgs) ->
+          $scope.command.requiredArgs = requiredArgs
+          $scope.command.optionalArgs = optionalArgs
+          $scope.fillCommandArgs()
+          return true
+
+        $scope.commandArgs = []
+
+        $scope.fillCommandArgs = () ->
+          $scope.commandArgs = []
+          _.each($scope.command.requiredArgs, (arg) ->
+            $scope.commandArgs.push new ArgInfo(arg, true))
+          _.each($scope.command.optionalArgs, (arg) ->
+            $scope.commandArgs.push new ArgInfo(arg, false))
+          return true
+
+        $scope.argSpec = () ->
+          cmd =
+            module: $scope.command.cmd.fun
+            client: 'minion'
+            mode: 'sync'
+            tgt: '*'
+
+          SaltApiSrvc.signature($scope, cmd)
+          .success (data, status, headers, config) ->
+              minions = data.return?[0]
+              argspec = _.find(minions, (minion) ->
+                return minion[$scope.command.cmd.fun]?
+              )
+              if argspec?
+                info = argspec[$scope.command.cmd.fun]
+                if info.args?
+                  # info.args.splice(-info.defaults.length)
+                  if info.defaults?
+                    info.args[..info.args.length - info.defaults.length]
+                    $scope.setParameters(_.values(info.args[..info.args.length - info.defaults.length]),
+                        _.values(info.args[info.args.length - info.defaults.length + 1..]))
+                else
+                  $scope.setParameters([], null)
+              else
+                $scope.setParameters(null, null)
+              return true
+          .error (data, status, headers, config) ->
+              $scope.setParameters(null, null)
+              return true
+          return true
+
+        $scope.handleCommandChange = () ->
+          $scope.searchDocs()
+          $scope.argSpec()
+
+        $scope.isRunnerOrWheelCommand = () ->
+          cmdStrLower = $scope.command.cmd.fun?.toLowerCase()
+          if cmdStrLower?
+            return cmdStrLower.indexOf("runner") == 0 or cmdStrLower.indexOf("wheel") == 0
+          else
+            return false
+
+        $scope.canExecuteCommands = () ->
+          return not $scope.commandForm.$invalid and ($scope.isRunnerOrWheelCommand() or $scope.command.requiredArgs?)
 
         return true
     ]

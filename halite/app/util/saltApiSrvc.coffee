@@ -44,6 +44,26 @@ saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'Sessio
         $http.defaults.useXDomain = true # enable cors on IE
 
         servicer =
+          signature: ($scope, cmds) ->
+              headers =
+                "X-Auth-Token": SessionStore.get('saltApiAuth')?.token
+
+              config =
+                headers: headers
+              url = "#{base}/signature"
+              $http.post( url, cmds, config  )
+              .success((data, status, headers, config) ->
+                  #console.log SessionStore.get('saltApiAuth')?.token
+                  return true
+              )
+              .error((data, status, headers, config) ->
+                  error = data?.error
+                  if status == 401
+                    $scope.errorMsg = "Please Login! #{error}"
+                  else
+                    $scope.errorMsg = "Argspec call Failed! #{error}"
+                  return true
+              )
             run: ($scope, cmds) ->
                 headers =
                     "X-Auth-Token": SessionStore.get('saltApiAuth')?.token

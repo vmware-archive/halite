@@ -13,87 +13,6 @@
 </div>
 <div class="row">
   <div class="col-md-12 box flat-top">
-    <form class="form-inline wide">
-      <div class="form-group"> 
-        <div class="input-group input-group-fix" >
-          <div class="btn-group btn-group-left">
-            <a class="btn btn-default" ng-href="" ng-click="ply(actions.Test.ping)" 
-                title="Ping minions that match target">
-               <i class="fa-icon-bullhorn" 
-                  ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
-              </i>
-            </a>
-            <a class="btn btn-default btn-rightmost ss-dropdown-toggle" ng-href="">Action
-              <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li class="nav-header">State</li>
-              <li ng-repeat="(name, cmd) in actions.State track by $index">
-                <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
-              </li>
-              <li class="divider"></li>
-              <li class="nav-header">Test</li>
-              <li ng-repeat="(name, cmd) in actions.Test track by $index">
-                <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
-              </li>
-            </ul>
-          </div>
-          <div class="form-group" >
-            <input type="text" class="form-control input-rightend fat" 
-              placeholder="Enter target pattern" 
-              ng-model="commandTarget" title="Minion command target pattern">
-          </div>
-        </div>
-      </div>
-      <div class="form-group"> 
-        <div class="btn-group">
-          <div class="btn-group">
-            <button class="btn btn-default ss-dropdown-toggle leftmost" 
-              type="button"
-              ng-disabled="command.size(command.history)==0"
-              title="Execute saved lowstate command">
-              <i class="fa-icon-book" 
-                ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-book';">
-              </i>
-              <b class="caret"></b>
-            </button>
-            <ul class="dropdown-menu">
-              <li ng-repeat="(name, cmds) in command.history track by $index">
-                <a ng-href="" ng-click="action(cmds)">{{name}}</a>
-              </li>
-            </ul>
-          </div>
-          <button class="btn btn-default rightmost" type="button"
-              ng-init="collapsed=true" ng-click="collapsed = !collapsed">
-            <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display" 
-              ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>
-          </button>
-        </div>
-      </div>
-      
-      <div class="form-group pull-right" > 
-        <div class="btn-group">
-          <button class="btn btn-default" type="button" ng-click="openEventStream()" 
-            title="Open event stream">
-            <i class="fa-icon-rss"
-              ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
-            </i>
-          </button>
-          <button class="btn btn-default" type="button" ng-click="fetchGrains()" 
-            title="Fetch grains from all minions">
-            <i class="fa-icon-briefcase" 
-              ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-briefcase';">
-            </i>
-          </button>
-          <button class="btn btn-default" type="button" ng-click="fetchActives()" 
-            title="Fetch up/down status of all minions">
-            <i class="fa-icon-refresh" 
-              ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-refresh';">
-            </i>
-          </button>
-        </div>
-      </div>
-    </form> 
     <div class="clearfix"></div>
     <form class="form-inline tight wide animate-fade" name="commandForm" 
         ng-show="!collapsed" ng-cloak ng-submit="action();">
@@ -108,6 +27,33 @@
             ng-model="command.cmd.expr_form"
             ng-options="val as key for (key, val) in expressionFormats"></select>
         </div>
+        <div class="form-group skinnish" >
+          <label class="control-label tight">Macro</label>
+          <div class="btn-group btn-group-left">
+            <a class="btn btn-default" ng-href="" ng-click="ply(actions.Test.ping)"
+                title="Ping minions that match target">
+               <i class="fa-icon-bullhorn"
+                  ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
+              </i>
+            </a>
+            <a class="btn btn-default rightmost ss-dropdown-toggle" ng-href="" id="right-border-styled">Action
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="nav-header">State</li>
+              <li ng-repeat="(name, cmd) in actions.State track by $index">
+                <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
+              </li>
+              <li class="divider"></li>
+              <li class="nav-header">Test</li>
+              <li ng-repeat="(name, cmd) in actions.Test track by $index">
+                <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
+              </li>
+            </ul>
+          </div>
+          <input type="hidden"
+            ng-model="command.cmd.tgt" title="Minion command target pattern">
+        </div>
         <div class="form-group fatter">
           <label class="control-label tight" for="idFunctionTarget">Target</label>
           <input type="text" class="form-control" 
@@ -120,42 +66,42 @@
         </div>
         <div class="form-group fatter">
           <label class="control-label tight" for="idModuleFunction">Function</label>
-          <input type="text" class="form-control" 
+          <input type="search" class="form-control"
             id="idModuleFunction"
+            required="true"
             placeholder="Enter module.function"
             title="Module function" 
             ng-required="true"
             name="moduleFunction"
             ng-model="command.cmd.fun"
-            ng-change="searchDocs()">
+            ng-change="handleCommandChange()">
         </div>
         <div class="form-group fatter" style="margin-right: 4px;"
-            ng-repeat="arg in command.cmd.arg track by $index">
-          <label class="control-label tight" ng-bind="$first?'Arguments':''"></label>
-          <input type="text" class="form-control"
-            placeholder="Enter argument"
-            id="idArg{{$index}}"
-            ss-input-name="arg{{$index}}"
-            ng-model="command.cmd.arg[$index]">
+             ng-repeat="arg in commandArgs track by $index">
+          <span ng-if="arg.required">
+            <label class="control-label tight">{{arg.value}}*</label>
+            <input type="text" class="form-control"
+                   placeholder="Enter Input"
+                   id="idArgument{{$index}}"
+                   required="true"
+                   ss-input-name="arg{{$index}}"
+                   ng-model="command.cmd.arg[$index]">
+          </span>
+          <span ng-if="!arg.required">
+            <label class="control-label tight">{{arg.value}}</label>
+            <input type="text" class="form-control"
+                   placeholder="{{arg.value}}"
+                   id="idArgument{{$index}}"
+                   ss-input-name="arg{{$index}}"
+                   ng-model="command.cmd.arg[$index]">
+          </span>
         </div>
+
         <div class="form-group" style="margin-top: 20px;">
-          <div  class="btn-group">
-            <button class="btn btn-default" type="button"
-                title="Remove last argument" name="removearg"
-                ng-class="command.cmd.arg.length==1?'disabled':''" 
-                ng-click="command.delArg();">
-              <i class="fa-icon-minus"></i>
-            </button>
-            <button class="btn btn-default" type="button" 
-                title="Add another argument" name="addarg"
-                ng-click="command.addArg();">
-              <i class="fa-icon-plus"></i>
-            </button>
-          </div>
           <div  class="btn-group">
             <button class="btn btn-primary" type="submit" 
                 title="execute command" name="execute" 
-                ng-disabled="commandForm.$invalid">
+                ng-disabled="!canExecuteCommands()">
               <i class="fa-icon-play" 
                 ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
               </i>Execute 
@@ -177,9 +123,23 @@
   </div><!--box-->
 </div>
 
-<div class="row">
+<div class="row" id="monitorHeader">
   <div class="col-md-12 box box-title-bar">
-    <p class="text-center tight">Monitor</p>
+    <p class="text-center tight">Monitor
+      <span class="form-group pull-right" >
+        <span class="btn-group" id="monitorControls">
+          <i ng-click="openEventStream()" class="fa-icon-rss"
+            ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
+          </i>&nbsp;
+          <i ng-click="fetchGrains()" class="fa-icon-briefcase"
+            ng-class="graining?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-briefcase';">
+          </i>&nbsp;
+          <i ng-click="fetchActives()" class="fa-icon-refresh"
+            ng-class="statusing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-refresh';">
+          </i>&nbsp;
+        </span>
+      </span>
+    </p>
   </div>
 </div>
   
@@ -345,7 +305,7 @@
 
 <div class="row" ng-show="monitorMode == 'job'">
   <div class="col-md-12 box flat-top wide">
-    <div class="box box-no-border" ng-repeat="job in jobs.values() | filter:removeLookupJidJobs | orderBy:sortJobs:jobReverse | pagerize:jobPager">
+    <div class="box box-no-border" ng-repeat="job in jobs.values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-danger':'badge-success'">
