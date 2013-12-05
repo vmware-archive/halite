@@ -73,7 +73,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.newPagerage = (itemCount) ->
             return (new Pagerage(itemCount))
         
-        $scope.commandTarget = ""
+        $scope.command.cmd.tgt = ""
         
         $scope.filterage =
             grains: ["any", "id", "host", "domain", "server_id"]
@@ -233,7 +233,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     tgt: '*'
         
         $scope.ply = (cmds) ->
-            target = if $scope.commandTarget isnt "" then $scope.commandTarget else "*"
+            target = if $scope.command.cmd.tgt isnt "" then $scope.command.cmd.tgt else "*"
             unless angular.isArray(cmds)
                 cmds = [cmds]
             for cmd in cmds

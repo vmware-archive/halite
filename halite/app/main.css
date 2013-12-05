@@ -1,3 +1,7 @@
+#right-border-styled {
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+}
 div.progress {
     position: relative;
     margin-bottom: 0px;
