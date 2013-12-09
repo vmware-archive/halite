@@ -23,7 +23,7 @@
                   ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
               </i>
             </a>
-            <a class="btn btn-default btn-rightmost ss-dropdown-toggle" ng-href="">Action
+            <a class="btn btn-default rightmost ss-dropdown-toggle" ng-href="" id="right-border-styled">Action
               <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
@@ -38,11 +38,8 @@
               </li>
             </ul>
           </div>
-          <div class="form-group" >
-            <input type="text" class="form-control input-rightend fat" 
-              placeholder="Enter target pattern" 
-              ng-model="commandTarget" title="Minion command target pattern">
-          </div>
+          <input type="hidden"
+            ng-model="command.cmd.tgt" title="Minion command target pattern">
         </div>
       </div>
       <div class="form-group"> 
