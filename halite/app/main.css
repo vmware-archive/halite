@@ -1,11 +1,14 @@
+#leftMarginAdded {
+  margin-left: 44px;
+}
 #idModuleFunction, #idFunctionTarget {
   height: 35px;
 }
-#monitorControls > i {
+.monitorControls > i {
   cursor: pointer;
   border: 1px;
 }
-#monitorHeader {
+.monitorHeader {
   height: 25px;
 }
 #right-border-styled {

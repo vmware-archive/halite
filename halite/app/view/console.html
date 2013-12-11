@@ -6,9 +6,17 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row monitorHeader">
   <div class="col-md-12 box box-title-bar">
-    <p class="text-center tight">Command</p>
+    <p class="text-center tight">Command
+        <span class="form-group" id="leftMarginAdded">
+          <span class="btn-group pull-right monitorControls">
+            <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display"
+               ng-init="collapsed=true" ng-click="collapsed = !collapsed"
+               ng-class="collapsed?'fa-icon-chevron-down':'fa-icon-chevron-up'"></i>&nbsp;
+          </span>
+        </span>
+      </p>
   </div>
 </div>
 <div class="row">
@@ -16,6 +24,17 @@
     <div class="clearfix"></div>
     <form class="form-inline tight wide animate-fade" name="commandForm" 
         ng-show="!collapsed" ng-cloak ng-submit="action();">
+      <span class="btn-group pull-right monitorControls">
+        <i class="ss-dropdown-toggle fa-icon-book"
+           ng-disabled="command.size(command.history)==0"
+           ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-book';">
+        </i>&nbsp;
+         <ul class="dropdown-menu" ng-hide="command.size(command.history)==0">
+          <li ng-repeat="(name, cmds) in command.history track by $index">
+            <a ng-href="" ng-click="action(cmds)">{{name}}</a>
+          </li>
+        </ul>
+      </span>
       <div class="form-group">
         <div class="form-group skinnish">
           <label class="control-label tight" for="idExpressionFormat">Target Format</label>
@@ -62,7 +81,8 @@
             title="Minion target pattern"
             name="functionTarget"
             ng-model="command.cmd.tgt" 
-            ng-change="fixTarget()">
+            ng-change="fixTarget()"
+            required="true">
         </div>
         <div class="form-group fatter">
           <label class="control-label tight" for="idModuleFunction">Function</label>
@@ -120,14 +140,14 @@
       <pre ng-show="!!docSearchResults">{{docSearchResults}}</pre>
     </form>
     
-  </div><!--box-->
+  </div>
 </div>
 
-<div class="row" id="monitorHeader">
+<div class="row monitorHeader">
   <div class="col-md-12 box box-title-bar">
     <p class="text-center tight">Monitor
       <span class="form-group pull-right" >
-        <span class="btn-group" id="monitorControls">
+        <span class="btn-group monitorControls">
           <i ng-click="openEventStream()" class="fa-icon-rss"
             ng-class="eventing?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-rss';">
           </i>&nbsp;
