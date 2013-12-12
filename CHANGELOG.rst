@@ -1,3 +1,20 @@
+0.1.09 (2013-12-12)
+==================
+
+Features
+--------
+Fetch cached jobs and show under job subtab after Halite loads
+Dynamically change number of inputs to be the same as that required by the function
+Validate form on valid target, function and it's required inputs
+Have just one text box to enter function
+Make command box collapsible
+Changes to icon placements and display
+Rename `master_config` to `opts` for consistency (thanks to Pedro Algarvio)
+
+Bug fixes
+--------
+Pass the master opts up to Salt API initialization (thanks to Pedro Algarvio and Sam Smith)
+
 0.1.08 (2013-11-27)
 ==================
 
