@@ -835,13 +835,22 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
           SaltApiSrvc.signature($scope, cmd)
           .success (data, status, headers, config) ->
               minions = data.return?[0]
-              argspec = _.find(minions, (minion) ->
-                return minion[$scope.command.cmd.fun]?
-              )
+              argspec = null
+              cmdData = $scope.command.cmd.fun.split('.')
+              fun = $scope.command.cmd.fun
+              if cmdData.length > 2
+                keyData = [cmdData[1], cmdData[2]]
+                fun = keyData.join('.')
+                argspec = _.find(minions, (commandKey) ->
+                  return commandKey[fun]?
+                )
+              else
+                argspec = _.find(minions, (minion) ->
+                  return minion[fun]?
+                )
               if argspec?
-                info = argspec[$scope.command.cmd.fun]
+                info = argspec[fun]
                 if info.args?
-                  # info.args.splice(-info.defaults.length)
                   if info.defaults?
                     info.args[..info.args.length - info.defaults.length]
                     $scope.setParameters(_.values(info.args[..info.args.length - info.defaults.length]),
