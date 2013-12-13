@@ -832,6 +832,41 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             $scope.commandArgs.push new ArgInfo(arg, false))
           return true
 
+        $scope.extractArgSpec = (returnFrom) ->
+            required = []
+            defaults = []
+            argspec = null
+            cmdData = $scope.command.cmd.fun?.split('.')
+            return unless cmdData
+            fun = $scope.command.cmd.fun
+            if cmdData.length > 2
+                keyData = [cmdData[1], cmdData[2]]
+                fun = keyData.join('.')
+                argspec = _.find(returnFrom, (commandKey) ->
+                    return commandKey[fun]?
+                )
+            else
+                argspec = _.find(returnFrom, (minion) ->
+                    return minion[fun]?
+                )
+
+            if argspec?
+                info = argspec[fun]
+                if info.args?
+                    required = (String(x) for x in info.args)
+                    if info.defaults?
+                        required.pop() for arg in info.defaults
+                        defaults = (String(x) for x in info.defaults)
+                    else
+                        defaults = null
+                else
+                    defaults = null
+            else
+                defaults = null
+                required = null
+
+            return {required: required, defaults: defaults}
+
         $scope.argSpec = () ->
           cmd =
             module: $scope.command.cmd.fun
@@ -841,31 +876,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
           SaltApiSrvc.signature($scope, cmd)
           .success (data, status, headers, config) ->
-              minions = data.return?[0]
-              argspec = null
-              cmdData = $scope.command.cmd.fun.split('.')
-              fun = $scope.command.cmd.fun
-              if cmdData.length > 2
-                keyData = [cmdData[1], cmdData[2]]
-                fun = keyData.join('.')
-                argspec = _.find(minions, (commandKey) ->
-                  return commandKey[fun]?
-                )
-              else
-                argspec = _.find(minions, (minion) ->
-                  return minion[fun]?
-                )
-              if argspec?
-                info = argspec[fun]
-                if info.args?
-                  if info.defaults?
-                    info.args[..info.args.length - info.defaults.length]
-                    $scope.setParameters(_.values(info.args[..info.args.length - info.defaults.length]),
-                        _.values(info.args[info.args.length - info.defaults.length + 1..]))
-                else
-                  $scope.setParameters([], null)
-              else
-                $scope.setParameters(null, null)
+              argSpec = $scope.extractArgSpec(data.return?[0])
+              $scope.setParameters(argSpec['required'], argSpec['defaults'])
               return true
           .error (data, status, headers, config) ->
               $scope.setParameters(null, null)
