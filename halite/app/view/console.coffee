@@ -379,7 +379,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.fetchActives = () ->
             cmd =
                 mode: "async"
-                fun: "runner.manage.status"
+                fun: "runner.manage.present"
 
             $scope.statusing = true   
             SaltApiSrvc.run($scope, [cmd])
@@ -401,21 +401,28 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.assignActives = (job) ->
             for {key: mid, val: result} in job.results.items()
                 unless result.fail
-                    status = result.return
-                    mids = []
-                    for mid in status.up
+                    activeMinions = result.return
+                    inactiveMinions = _.difference($scope.minions.keys(), activeMinions)
+                    for mid in activeMinions
                         minion = $scope.snagMinion(mid)
                         minion.activize()
-                        mids.push mid
-                    for mid in status.down
+                    for mid in inactiveMinions
                         minion = $scope.snagMinion(mid)
+                        minion.unlinkJobs()
                         minion.deactivize()
-                        mids.push mid
-                    for key in $scope.minions.keys()
-                        unless key in mids
-                            minion = $scope.snagMinion(key)
-                            minion.unlinkJobs()
-                    $scope.minions?.filter(mids) #remove non status minions
+                    # for mid in status.up
+                    #     minion = $scope.snagMinion(mid)
+                    #     minion.activize()
+                    #     mids.push mid
+                    # for mid in status.down
+                    #     minion = $scope.snagMinion(mid)
+                    #     minion.deactivize()
+                    #     mids.push mid
+                    # for key in $scope.minions.keys()
+                    #     unless key in mids
+                    #         minion = $scope.snagMinion(key)
+                    #         minion.unlinkJobs()
+                    # $scope.minions?.filter(mids) #remove non status minions
             $scope.statusing = false
             return job
 
