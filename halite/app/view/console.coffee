@@ -869,15 +869,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
           $scope.searchDocs()
           $scope.argSpec()
 
-        $scope.isRunnerOrWheelCommand = () ->
-          cmdStrLower = $scope.command.cmd.fun?.toLowerCase()
-          if cmdStrLower?
-            return cmdStrLower.indexOf("runner") == 0 or cmdStrLower.indexOf("wheel") == 0
-          else
-            return false
 
         $scope.canExecuteCommands = () ->
-          return not $scope.commandForm.$invalid and ($scope.isRunnerOrWheelCommand() or $scope.command.requiredArgs?)
+          return not $scope.commandForm.$invalid and $scope.command.requiredArgs?
 
         return true
     ]
