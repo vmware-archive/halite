@@ -1,3 +1,13 @@
+0.1.10 (2013-12-13)
+==================
+
+Features
+--------
+
+Bug fixes
+--------
+Fixed argspec parsing for some inputs (thanks to Dave Boucha)
+
 0.1.09 (2013-12-13)
 ==================
 
