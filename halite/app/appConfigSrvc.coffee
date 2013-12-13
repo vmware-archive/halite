@@ -6,7 +6,7 @@
 configuration =
     baseUrl: ""
     date: "2013-12-13"
-    version: "0.1.09"
+    version: "0.1.10"
     views:
         home: 
             label: "home"
