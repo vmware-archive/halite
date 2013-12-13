@@ -1,4 +1,4 @@
-0.1.09 (2013-12-12)
+0.1.09 (2013-12-13)
 ==================
 
 Features
@@ -10,6 +10,7 @@ Have just one text box to enter function
 Make command box collapsible
 Changes to icon placements and display
 Rename `master_config` to `opts` for consistency (thanks to Pedro Algarvio)
+Call manage.present instead of manage.status (thanks to Sam Smith)
 
 Bug fixes
 --------
