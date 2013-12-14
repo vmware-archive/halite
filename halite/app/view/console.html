@@ -101,7 +101,7 @@
           <span ng-if="arg.required">
             <label class="control-label tight">{{arg.value}}*</label>
             <input type="text" class="form-control"
-                   placeholder="Enter Input"
+                   placeholder="{{arg.placeholder}}"
                    id="idArgument{{$index}}"
                    required="true"
                    ss-input-name="arg{{$index}}"
@@ -110,7 +110,7 @@
           <span ng-if="!arg.required">
             <label class="control-label tight">{{arg.value}}</label>
             <input type="text" class="form-control"
-                   placeholder="{{arg.value}}"
+                   placeholder="{{arg.placeholder}}"
                    id="idArgument{{$index}}"
                    ss-input-name="arg{{$index}}"
                    ng-model="command.cmd.arg[$index]">
