@@ -625,12 +625,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
               result.fail = false
             $scope.jobs.get($scope.tagMap[data.jid])?.results = results
           if data.success
-            $scope.jobs.get($scope.tagMap[data.jid]).done = true
-            $scope.jobs.get($scope.tagMap[data.jid]).fail = false
+            $scope.jobs.get($scope.tagMap[data.jid])?.done = true
+            $scope.jobs.get($scope.tagMap[data.jid])?.fail = false
             $scope.$emit("CacheFetch", {succes: true, jid: $scope.tagMap[data.jid]})
           if not data.success
-            $scope.jobs.get($scope.tagMap[data.jid]).done = false
-            $scope.jobs.get($scope.tagMap[data.jid]).fail = true
+            $scope.jobs.get($scope.tagMap[data.jid])?.done = false
+            $scope.jobs.get($scope.tagMap[data.jid])?.fail = true
             $scope.$emit("CacheFetch", {succes: false, jid: $scope.tagMap[data.jid]})
 
         $scope.processRunEvent = (jid, kind, edata) ->
@@ -816,9 +816,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.jobPresentationFilter = (job) ->
             return $scope.removeArgspecJobs(job) and $scope.removeLookupJidJobs(job)
 
-        $scope.setParameters = (requiredArgs, optionalArgs) ->
+        $scope.defaultVals = null
+
+        $scope.setParameters = (requiredArgs, optionalArgs, defaultvals) ->
           $scope.command.requiredArgs = requiredArgs
           $scope.command.optionalArgs = optionalArgs
+          $scope.defaultVals = defaultvals
           $scope.fillCommandArgs()
           return true
 
@@ -826,15 +829,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.fillCommandArgs = () ->
           $scope.commandArgs = []
+          $scope.command.cmd.arg = [""]
           _.each($scope.command.requiredArgs, (arg) ->
             $scope.commandArgs.push new ArgInfo(arg, true))
-          _.each($scope.command.optionalArgs, (arg) ->
-            $scope.commandArgs.push new ArgInfo(arg, false))
+          _.each($scope.command.optionalArgs, (arg, index) ->
+            $scope.commandArgs.push new ArgInfo(arg, false, $scope.defaultVals[index]))
           return true
 
         $scope.extractArgSpec = (returnFrom) ->
             required = []
             defaults = []
+            defaults_vals = null
             argspec = null
             cmdData = $scope.command.cmd.fun?.split('.')
             return unless cmdData
@@ -855,8 +860,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 if info.args?
                     required = (String(x) for x in info.args)
                     if info.defaults?
-                        required.pop() for arg in info.defaults
-                        defaults = (String(x) for x in info.defaults)
+                        defaults = (required.pop() for arg in info.defaults)
+                        defaults_vals = (String(x) for x in info.defaults)
                     else
                         defaults = null
                 else
@@ -865,7 +870,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 defaults = null
                 required = null
 
-            return {required: required, defaults: defaults}
+            return {required: required, defaults: defaults, defaults_vals: defaults_vals}
 
         $scope.argSpec = () ->
           cmd =
@@ -877,10 +882,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
           SaltApiSrvc.signature($scope, cmd)
           .success (data, status, headers, config) ->
               argSpec = $scope.extractArgSpec(data.return?[0])
-              $scope.setParameters(argSpec['required'], argSpec['defaults'])
+              $scope.setParameters(argSpec['required'], argSpec['defaults'], argSpec['defaults_vals'])
               return true
           .error (data, status, headers, config) ->
-              $scope.setParameters(null, null)
+              $scope.setParameters(null, null, null)
               return true
           return true
 

@@ -9,7 +9,7 @@ OrdereMap service return new instance of OMap
 appUtilSrvc = angular.module("appUtilSrvc", [])
 
 class ArgInfo
-    constructor: (@value, @required) ->
+    constructor: (@value, @required, @placeholder = 'Enter Input') ->
 
 appUtilSrvc.value "ArgInfo", ArgInfo
 ###
