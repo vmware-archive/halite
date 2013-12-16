@@ -1,3 +1,14 @@
+0.1.11 (2013-12-16)
+==================
+
+Features
+--------
+Show name as label and default value as placeholder for parameters having default values.
+
+Bug fixes
+--------
+Clear old parameters when a new command is found
+
 0.1.10 (2013-12-13)
 ==================
 
