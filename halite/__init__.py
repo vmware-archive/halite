@@ -6,7 +6,7 @@ halite package for Salt UI client side web application
 import os
 
 
-def start(hopts=None, debug=None):
+def start(hopts=None, debug=None, opts=None):
     '''
     Wrapper to start up and run server. Reads in the master config and supplies
     halite parameters to configure the server.
@@ -15,6 +15,18 @@ def start(hopts=None, debug=None):
     the dynamic api to salt used by the web application. This is meant to be run
     by Salt to provide out of the box WUI capability. For different installations
     use the appropriate server executable file such as server_bottle.py
+
+    Parameters:
+
+    hopts: Short for Halite opts. They are defined by the ``halite:`` section
+    in the Salt master config file.
+
+    opts: These are the options that get passed in to Salt API Client. They are generally
+    the same as the options that are passed in to Salt master. ``opts`` are set to
+    the ones defined in the salt master config file IF they are not passed in to this
+    subroutine.
+
+    debug: Controls the printing of debug options.
     '''
     import salt.config
     import salt.syspaths
@@ -25,11 +37,11 @@ def start(hopts=None, debug=None):
     logger = getLogger(name="Halite", level=LOGGING_LEVELS['debug'] )
 
 
-    if not hopts:
-        hopts = salt.config.client_config(
+    if not opts:
+        opts = salt.config.client_config(
                     os.environ.get(
                         'SALT_MASTER_CONFIG',
-                         os.path.join(salt.syspaths.CONFIG_DIR, 'master'))).get('halite')
+                         os.path.join(salt.syspaths.CONFIG_DIR, 'master')))
 
     kwparms = {
             'level': 'info',
@@ -41,7 +53,7 @@ def start(hopts=None, debug=None):
             'certpath': '/etc/pki/tls/certs/localhost.crt',
             'keypath': '/etc/pki/tls/certs/localhost.key',
             'pempath': '/etc/pki/tls/certs/localhost.pem',
-            'opts': hopts
+            'opts': opts
         }
 
     if hopts:
