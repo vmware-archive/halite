@@ -1,3 +1,13 @@
+0.1.13 (2013-12-17)
+==================
+
+Features
+--------
+
+Bug fixes
+--------
+Pass the right options to APIClient to prevent login errors (Thanks to Sam Smith and Seth House)
+
 0.1.12 (2013-12-16)
 ==================
 
