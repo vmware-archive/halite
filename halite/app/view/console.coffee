@@ -73,9 +73,13 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.newPagerage = (itemCount) ->
             return (new Pagerage(itemCount))
 
+        $scope.grainsSortBy = ["id"]
+        $scope.grainsSortBy = ["any", "id", "host", "domain", "server_id"] if AppPref.get('fetchGrains', false)
+        $scope.grainsFilterBy = "id"
+        $scope.grainsFilterBy = "any" if AppPref.get('fetchGrains', false)
         $scope.filterage =
-            grains: ["any", "id", "host", "domain", "server_id"]
-            grain: "any"
+            grains: $scope.grainsSortBy
+            grain: $scope.grainsFilterBy
             target: ""
             express: ""
 
@@ -90,7 +94,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return true
         
         $scope.setFilterExpress = () ->
-            #console.log "setFilterExpress"
+            # console.log "setFilterExpress"
             if $scope.filterage.grain is "any"
                 #$scope.filterage.express = $scope.filterage.target
                 regex = RegExp($scope.filterage.target, "i")
@@ -101,18 +105,26 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         
                     return false
             else
+                console.log "Else of setFilterExpress"
                 regex = RegExp($scope.filterage.target,"i")
                 name = $scope.filterage.grain
                 $scope.filterage.express = (minion) ->
-                    return minion.grains.get(name).toString().match(regex)
+                    console.log "In the innermost function"
+                    if AppPref.get('fetchGrains', false)
+                        console.log "In the if for the innermost function"
+                        return minion.grains.get(name).toString().match(regex)
+                    else
+                        console.log "In the else of the innermost function"
+                        return minion.id.match(regex)
             return true
         
         $scope.eventReverse = true
         $scope.jobReverse = true
         $scope.commandReverse = false
-        
+        $scope.minionSortageTargets = ["id"]
+        $scope.minionSortageTargets = ["id", "grains", "ping", "active"] if AppPref.get('fetchGrains', false)
         $scope.sortage =
-            targets: ["id", "grains", "ping", "active"]
+            targets: $scope.minionSortageTargets
             target: "id"
             reverse: false
 
@@ -122,7 +134,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             
         $scope.sortMinions = (minion) ->
             if $scope.sortage.target is "id"
-                result = minion.grains.get("id")
+                if AppPref.get('fetchGrains', false)
+                    result = minion.grains.get("id")
+                else
+                    result = minion.id
             else if $scope.sortage.target is "grains"
                 result = minion.grains.get($scope.sortage.target)?
             else
@@ -498,7 +513,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     job = $scope.startJob(result, cmd)
                     job.commit($q).then (donejob) ->
                         $scope.assignGrains(donejob)
-                    
+                        $scope.graining = false
                 return true
             .error (data, status, headers, config) ->
                 $scope.graining = false
@@ -549,10 +564,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             $scope.errorMsg = 'Failed to fetch Docs. Please check system and retry'
 
         $scope.fetchDocs = () ->
+            return unless $scope.minions?.keys()?.length > 0
             command =
                 fun: 'sys.doc'
                 mode: 'async'
-                tgt: '*'
+                tgt: $scope.minions.keys()[0]
                 expr_form: 'glob'
 
             # command = $scope.snagCommand($scope.humanize(commands), commands)
@@ -659,7 +675,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             minion = $scope.snagMinion(mid)
             minion.processEvent(edata)
             minion.activize()
-            $scope.fetchGrains(mid)
+            $scope.fetchGrains(mid) if AppPref.get('fetchGrains', false)
             return minion
         
         $scope.processKeyEvent = (edata) ->
@@ -786,13 +802,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             #console.log "Received #{event.name}"
             #console.log event
             $scope.fetchActives()
-            $scope.fetchDocs()
-            $scope.preloadJobCache()
+            $scope.preloadJobCache() if AppPref.get("preloadJobCache", false)
         
         $scope.marshallListener = (event) ->
             #console.log "Received #{event.name}"
             #console.log event
-            $scope.fetchGrains()
+            $scope.fetchGrains() if AppPref.get("fetchGrains", false)
+            $scope.fetchDocs()
+
 
         $scope.$on('ToggleAuth', $scope.authListener)
         $scope.$on('Activate', $scope.activateListener)
@@ -873,11 +890,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return {required: required, defaults: defaults, defaults_vals: defaults_vals}
 
         $scope.argSpec = () ->
+          return unless $scope.minions?.keys()?.length > 0
           cmd =
             module: $scope.command.cmd.fun
             client: 'minion'
             mode: 'sync'
-            tgt: '*'
+            tgt: $scope.minions.keys()[0]
 
           SaltApiSrvc.signature($scope, cmd)
           .success (data, status, headers, config) ->
@@ -896,6 +914,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.canExecuteCommands = () ->
           return not $scope.commandForm.$invalid and $scope.command.requiredArgs?
+
+        $scope.getGrainsIfRequired = (mid) ->
+            return if AppPref.get("fetchGrains", false)
+            $scope.fetchGrains mid
+            return true
 
         return true
     ]
