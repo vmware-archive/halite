@@ -489,7 +489,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
               return true
           return true
 
-        $scope.fetchGrains = (target) ->
+        $scope.fetchGrains = (target, noAjax = true) ->
             #target = if target then target else "*"
             cmd =
                 mode: "async"
@@ -504,7 +504,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 cmd.expr_form = 'list'
             
             
-            $scope.graining = true
+            $scope.graining = true if noAjax
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
                 #$scope.graining = false
@@ -513,10 +513,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     job = $scope.startJob(result, cmd)
                     job.commit($q).then (donejob) ->
                         $scope.assignGrains(donejob)
-                        $scope.graining = false
+                        $scope.graining = false if noAjax
                 return true
             .error (data, status, headers, config) ->
-                $scope.graining = false
+                $scope.graining = false if noAjax
             return true
         
         $scope.assignGrains = (job) ->
@@ -917,7 +917,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.getGrainsIfRequired = (mid) ->
             return if AppPref.get("fetchGrains", false)
-            $scope.fetchGrains mid
+            $scope.fetchGrains mid, false
             return true
 
         return true
