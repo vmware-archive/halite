@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'halite',
-    version = '0.1.13',
+    version = '0.1.14',
     description = 'SaltStack Web UI',
     url = 'https://github.com/saltstack/halite',
     author='SaltStack Inc',
@@ -24,7 +24,7 @@ setup(
                                       'screenshots', 'screenshots.*']),
     package_data={
         '':       ['*.txt',  '*.md', '*.rst', '*.json', '*.conf', '*.html',
-                   '*.css', '*.ico', '*.png', 'LICENSE'],
+                   '*.css', '*.ico', '*.png', '../LICENSE'],
         'halite': ['app/*.txt', 'app/*/*.txt',
                    'app/*.ico', 'app/*/*.ico',
                    'app/*.png', 'app/*/*.png', 
