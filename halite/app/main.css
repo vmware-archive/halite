@@ -1,3 +1,7 @@
+.displayed-in-center {
+  position: relative;
+  left: 50%;
+}
 #leftMarginAdded {
   margin-left: 44px;
 }

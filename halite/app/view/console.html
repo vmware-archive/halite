@@ -219,7 +219,7 @@
           </div>
         </div>
         
-        <div class="form-group" ng-show="monitorMode == 'minion'">
+<!--         <div class="form-group" ng-show="monitorMode == 'minion'">
           &nbsp;&nbsp;
           <label>Sort</label>
           <div class="btn-group btn-group" >
@@ -243,7 +243,7 @@
               <i ng-class="sortage.reverse?'fa-icon-arrow-up':'fa-icon-arrow-down'"></i>
             </button>
           </div>
-        </div>
+        </div> -->
 
       </div>
     </form><!--monitorForm-->
@@ -325,7 +325,8 @@
 
 <div class="row" ng-show="monitorMode == 'job'">
   <div class="col-md-12 box flat-top wide">
-    <div class="box box-no-border" ng-repeat="job in jobs.values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager">
+    <p ng-if="graining"><i class="fa-icon-spinner fa-icon-spin displayed-in-center"></i></p>
+    <div ng-if="!graining" class="box box-no-border" ng-repeat="job in jobs.values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-danger':'badge-success'">
@@ -336,7 +337,7 @@
           <span  class="larger-font-size">{{job.jid}}</span>
         </span>&nbsp;
         <span class="label label-default" title="Module function">
-          <span  class="larger-font-size job-name">{{job.name}}</span>
+          <span  class="larger-font-size job-name">{{job.name | truncate:25}}</span>
         </span>&nbsp;
         <span class="btn-group btn-group-sm">
           <button type="button" class="btn btn-default taut" ng-model="jobMode" 
@@ -434,7 +435,8 @@
 
 <div class="row"  ng-show="monitorMode == 'minion'">
   <div class="col-md-12 box flat-top wide">
-    <div class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | orderBy:sortMinions:sortage.reverse | pagerize:minionPager">
+    <p ng-if="graining"><i class="fa-icon-spinner fa-icon-spin displayed-in-center"></i></p>
+    <div ng-if="!graining" class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | pagerize:minionPager">
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-green':'badge-red'">
@@ -446,7 +448,7 @@
         </span>&nbsp;
         <span class="btn-group">
           <button type="button" class="btn btn-default btn-sm taut"  ng-model="minionMode" 
-            ss-toggle-union="'grain'">Grain<i class="icon-mono" 
+            ss-toggle-union="'grain'" ng-click="getGrainsIfRequired(minion.id)">Grain<i class="icon-mono"
                 ng-class="minionMode=='grain' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
           <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode" 
@@ -470,7 +472,7 @@
               </span>
             </kvi>
           </kvl>
-          <p ng-if="minion.grains.keys().length==0">No grains</p>
+          <p ng-if="minion.grains.keys().length==0">No grains&nbsp;<i class="fa-icon-spinner fa-icon-spin"></i></p>
         </div>
         
         <div class="col-md-12" ng-if="minionMode == 'event'">
@@ -536,7 +538,7 @@
         <span class="nook" title="Event Tag">{{event.tag}}</span>&nbsp;
         <span class="label label-default" title="Module function" 
             ng-show="humanize(event.data)">
-          <span class="larger-font-size">{{humanize(event.data)}}</span>
+          <span class="larger-font-size">{{humanize(event.data) | truncate:25}}</span>
         </span>&nbsp;
         <i class="btn btn-default btn-sm slack" 
           ng-init="expanded={'value': false}" 

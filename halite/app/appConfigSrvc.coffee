@@ -43,7 +43,8 @@ configuration =
             port: 0
             prefix: ""
             eauth: "pam"
-            
+        fetchGrains: false
+        preloadJobCache: false
 
 prefixify = (views, base) ->
     for name, item of views
