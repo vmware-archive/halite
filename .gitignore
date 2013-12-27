@@ -1,4 +1,5 @@
 halite/index.html
+halite/test/functional/config/override.conf
 halite/app/main.html
 node_modules
 dist
