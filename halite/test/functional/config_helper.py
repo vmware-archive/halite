@@ -4,15 +4,25 @@ import ConfigParser
 import os
 
 
+def get_file_names():
+    '''
+    Returns names of config and override file
+    '''
+    return (
+        "/root/halite/halite/test/functional/config/testing.conf",
+        "/root/halite/halite/test/functional/config/override.conf"
+    )
+
+
 def get_config():
     '''
     Instantiate parser and read file.
     Returns: parser
     '''
     config = ConfigParser.SafeConfigParser()
-    config.read('./halite/test/functional/config/testing.conf')
-    if os.path.exists('./halite/test/functional/config/override.conf'):
-        config.read('./halite/test/functional/config/override.conf')
+    config.read(get_file_names()[0])
+    if os.path.exists(get_file_names()[1]):
+        config.read(get_file_names()[1])
     return config
 
 
