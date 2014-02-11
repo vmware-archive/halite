@@ -20,6 +20,7 @@ class HaliteFunctionalTestCase(unittest.TestCase):
         Login to Halite and store token
         '''
         app = bottle.Bottle()
+        server_bottle.bottle = bottle
         server_bottle.createStaticMain()
         app = server_bottle.loadSaltApi(app)
         self.app = webtest.TestApp(app)
@@ -135,7 +136,7 @@ class HaliteFunctionalTestCase(unittest.TestCase):
         minion = ret_val.keys()[0]
         self.assertEqual(ret_val[minion], 'error')
 
-    def test_runner_manage_present_async(self):
+    def runner_manage_present_async(self):
         '''
         Make a call to runner.manage.present and
         test against returned SSE data
@@ -153,7 +154,7 @@ class HaliteFunctionalTestCase(unittest.TestCase):
             keep_looping = False
         self.assertNotEqual(sse, None)
 
-    def test_runner_manage_present_datastructure(self):
+    def runner_manage_present_datastructure(self):
         '''
         Make a call to runner.manage.present and
         test data structure integrity
