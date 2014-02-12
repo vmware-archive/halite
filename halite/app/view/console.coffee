@@ -4,10 +4,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
     '$templateCache',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
     'Minioner', 'Resulter', 'Jobber', 'ArgInfo', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
-    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', '$filter',
+    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', '$filter',
     ($scope, $location, $route, $q, $filter, $templateCache, Configuration, 
     AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
-    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore ) ->
+    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives ) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -390,29 +390,31 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 $scope.pinging = false
                 
             return true
-        
-        $scope.fetchActives = () ->
-            cmd =
-                mode: "async"
-                fun: "runner.manage.present"
 
-            $scope.statusing = true   
-            SaltApiSrvc.run($scope, [cmd])
-            .success (data, status, headers, config) ->
-                #$scope.statusing = false
-                result = data.return?[0] #result is tag
-                if result
-                    
-                    job = $scope.startRun(result, cmd) #runner result is tag
-                    job.commit($q).then (donejob) ->
-                        $scope.assignActives(donejob)
-                        $scope.$emit("Marshall")
-                    
-                return true
-            .error (data, status, headers, config) ->
-                $scope.statusing = false        
+        $scope.fetchActivesCmd = null
+
+        $scope.fetchActivesSuccess = (data, status, headers, config) ->
+          #$scope.statusing = false
+            result = data.return?[0] #result is tag
+            if result
+
+              job = $scope.startRun(result, $scope.fetchActivesCmd) #runner result is tag
+              job.commit($q).then (donejob) ->
+                $scope.assignActives(donejob)
+                $scope.$emit("Marshall")
+
             return true
-        
+
+        $scope.fetchActivesError = (data, status, headers, config) ->
+          $scope.statusing = false
+
+        $scope.fetchActives = () ->
+          $scope.statusing = true
+          FetchActives.fetchActives($scope)
+          .success($scope.fetchActivesSuccess)
+          .error($scope.fetchActivesError)
+          return true
+
         $scope.assignActives = (job) ->
             for {key: mid, val: result} in job.results.items()
                 unless result.fail
