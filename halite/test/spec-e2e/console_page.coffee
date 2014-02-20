@@ -1,9 +1,9 @@
 class ConsolePage
 
-  navigate: () ->
+  navigate: (username, password) ->
     browser.get 'console'
-    element(By.model('login.username')).sendKeys('adi')
-    element(By.model('login.password')).sendKeys('foobar')
+    element(By.model('login.username')).sendKeys(username)
+    element(By.model('login.password')).sendKeys(password)
     element(By.css('#login-button')).click()
 
   getManagePresentRow: () ->
