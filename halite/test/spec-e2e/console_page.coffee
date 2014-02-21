@@ -18,4 +18,13 @@ class ConsolePage
   getManageJobResultButton: () ->
     return @getManagePresentRow().findElement(By.css('button'))
 
+  toggleCommandPanelVisibility: () ->
+    element(By.css('.monitorControls')).click()
+
+  enterSearchQuery: (searchStr) ->
+    element(By.model('command.cmd.fun')).sendKeys(searchStr)
+
+  toggleSearchDocs: () ->
+    element(By.model('docSearch')).click()    
+
 module.exports = new ConsolePage
