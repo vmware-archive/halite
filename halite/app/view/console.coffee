@@ -774,6 +774,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 return data
             return true
         
+        $scope.isLoggedIn = () ->
+          SessionStore.get('loggedIn')
+
         $scope.closeEventStream = () ->
             #console.log "Closing Event Stream"
             SaltApiEvtSrvc.close()

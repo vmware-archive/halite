@@ -12,6 +12,9 @@
   cursor: pointer;
   border: 1px;
 }
+.highstate-cog-holder {
+  margin-right: -47px;
+}
 .monitorHeader {
   height: 25px;
 }
