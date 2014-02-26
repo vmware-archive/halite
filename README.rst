@@ -38,7 +38,8 @@ Installation quickstart
 
 This section explains installation of the ``devlopment`` version of Halite.
 If you are interested in installing Halite as an end user, please follow the
-`tutorial<https://github.com/pass-by-value/salt/compare/halite_doc_updates>`_ instead.
+`tutorial
+<https://github.com/pass-by-value/salt/compare/halite_doc_updates>`_ instead.
 
 * Setup permissions for users who will use Halite
 For example in master config:
