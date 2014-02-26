@@ -4,15 +4,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
     '$templateCache',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
     'Minioner', 'Resulter', 'Jobber', 'ArgInfo', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
-    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', '$filter',
+    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', 'HighstateCheck','$filter',
     ($scope, $location, $route, $q, $filter, $templateCache, Configuration, 
     AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
-    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives ) ->
+    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives, HighstateCheck ) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
         
-        #console.log("ConsoleCtlr")
+        # console.log(HighstateCheck.isHighstateCheckEnabled())
         $scope.errorMsg = ""
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
