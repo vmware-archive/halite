@@ -13,6 +13,30 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
       isHighstateCheckEnabled: () ->
         highStateCheck = AppPref.get('highStateCheck')
         return highStateCheck.performCheck
+      makeHighStateCall: ($scope) ->
+        # Call highstate with test=True
+        tgt = minions.keys().join(',')
+
+        cmd =
+          fun: 'state.highstate'
+          tgt: tgt
+          expr_form: 'list'
+          mode: 'async'
+          arg: [true]
+
+        SaltApiSrvc.run($scope, [cmd])
+        .success (data, status, headers, config) ->
+          result = data.return?[0]
+          if result
+            job = $scope.startJob(result, cmd)
+            job.commit($q).then (donejob) ->
+              console.log donejob
+              return
+          return true
+        .error (data, status, headers, config) ->
+          console.log "error"
+          cosole.log data
+          return
 
     return servicer
   ]

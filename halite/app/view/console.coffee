@@ -46,6 +46,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.isCheckingForHighstateConsistency = () ->
             return HighstateCheck.isHighstateCheckEnabled()
 
+        $scope.makeHighstateCall = () ->
+            HighstateCheck.makeHighStateCall($scope)
+            return
+
         $scope.snagCommand = (name, cmds) -> #get or create Command
             unless $scope.commands.get(name)?
                 $scope.commands.set(name, new Commander(name, cmds))
