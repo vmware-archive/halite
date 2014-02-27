@@ -9,7 +9,14 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
       AppData.set('jobs', new Itemizer())
     jobs = AppData.get('jobs')
 
+
+    class HighStateStatus
+      constructor: (@dirty = false, @messages = []) ->
+
     servicer =
+      clearOldHighstateStatuses: () ->
+        minion.highstateStatus = new HighStateStatus() for minion in minions.values()
+        return
       isHighstateDirty: (stateData) ->
         retVal = []
         for mangledName, val of stateData
@@ -19,14 +26,13 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
             retVal.push(comment)
         return retVal
       processHighstateCheckReturns: (items) ->
+        @clearOldHighstateStatuses()
         for i, item of items
           {key, val} = item
           result = @isHighstateDirty val.return
           if result.length > 0
             # Assign dirty status to minion
-            console.log "Dirty Minion is #{key}"
-            console.log minions.get(key)
-            console.log result
+            minions.get(key).highstateStatus = new HighStateStatus(true, result)
         return
       isHighstateCheckEnabled: () ->
         highStateCheck = AppPref.get('highStateCheck')

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <ss-alert type="'danger'" close="closeAlert()" ng-cloak 
+    <ss-alert type="'danger'" close="closeAlert()" ng-cloak
       ng-show="!!$parent.errorMsg">Error! {{errorMsg}}
     </ss-alert>
   </div>
@@ -22,7 +22,7 @@
 <div class="row">
   <div class="col-md-12 box flat-top">
     <div class="clearfix"></div>
-    <form class="form-inline tight wide animate-fade" name="commandForm" 
+    <form class="form-inline tight wide animate-fade" name="commandForm"
         ng-show="!collapsed" ng-cloak ng-submit="action();">
       <span class="btn-group pull-right monitorControls">
         <i class="ss-dropdown-toggle fa-icon-book"
@@ -38,7 +38,7 @@
       <div class="form-group">
         <div class="form-group skinnish">
           <label class="control-label tight" for="idExpressionFormat">Target Format</label>
-          <select class="form-control" 
+          <select class="form-control"
             id="idExpressionFormat"
             placeholder="Enter minion target pattern"
             title="Target pattern expression format"
@@ -75,12 +75,12 @@
         </div>
         <div class="form-group fatter">
           <label class="control-label tight" for="idFunctionTarget">Target</label>
-          <input type="text" class="form-control" 
+          <input type="text" class="form-control"
             id="idFunctionTarget"
             placeholder="Enter minion target pattern"
             title="Minion target pattern"
             name="functionTarget"
-            ng-model="command.cmd.tgt" 
+            ng-model="command.cmd.tgt"
             ng-change="fixTarget()"
             required="true">
         </div>
@@ -90,7 +90,7 @@
             id="idModuleFunction"
             required="true"
             placeholder="Enter module.function"
-            title="Module function" 
+            title="Module function"
             ng-required="true"
             name="moduleFunction"
             ng-model="command.cmd.fun"
@@ -119,12 +119,12 @@
 
         <div class="form-group" style="margin-top: 20px;">
           <div  class="btn-group">
-            <button class="btn btn-primary" type="submit" 
-                title="execute command" name="execute" 
+            <button class="btn btn-primary" type="submit"
+                title="execute command" name="execute"
                 ng-disabled="!canExecuteCommands()">
-              <i class="fa-icon-play" 
+              <i class="fa-icon-play"
                 ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
-              </i>Execute 
+              </i>Execute
             </button>
           </div>
         </div>
@@ -139,7 +139,7 @@
       </div>
       <pre ng-show="!!docSearchResults">{{docSearchResults}}</pre>
     </form>
-    
+
   </div>
 </div>
 
@@ -162,7 +162,7 @@
     </p>
   </div>
 </div>
-  
+
 <div class="row">
   <div class="col-md-12 box box-top flat-top flat-bottom">
     <form class="form-inline tight wide" name="monitorForm">
@@ -172,56 +172,56 @@
       <div>
         <div class="form-group">
           <div class="btn-group">
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
-              ss-toggle-union="'command'">Command<i class="icon-mono" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode"
+              ss-toggle-union="'command'">Command<i class="icon-mono"
                   ng-class="monitorMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode"
               ss-toggle-union="'job'">Job<i class="icon-mono"
                 ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'" id="job-button"></i>
             </button>
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode"
               ss-toggle-union="'minion'">Minion<i class="icon-mono"
                 ng-class="monitorMode=='minion' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
-            <button type="button" class="btn btn-default" ng-model="monitorMode" 
+            <button type="button" class="btn btn-default" ng-model="monitorMode"
               ss-toggle-union="'event'">Event<i class="icon-mono"
                 ng-class="monitorMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
           </div>
         </div>
-        
+
         <div class="form-group" ng-show="monitorMode == 'minion'">
           &nbsp;&nbsp;
           <label>Find</label>
           <div class="input-group input-group-fix">
             <div class="form-group fattish">
-              <input type="text" class="form-control" 
-                placeholder="Enter filter string" 
+              <input type="text" class="form-control"
+                placeholder="Enter filter string"
                 title="Minon filter string"
-                ng-model="filterage.target" 
+                ng-model="filterage.target"
                 ng-change="setFilterExpress()">
             </div>
             <div class="btn-group btn-group-right">
-              <a class="btn btn-default ss-dropdown-toggle" 
+              <a class="btn btn-default ss-dropdown-toggle"
                   title="Select grain to filter against" ng-href="">
                 <i class="fa-icon-filter"></i>
               </a>
               <ul class="dropdown-menu">
                 <li ng-repeat="grain in filterage.grains track by $index">
-                  <a ng-href="" ng-click="setFilterGrain($index)" 
+                  <a ng-href="" ng-click="setFilterGrain($index)"
                     ng-class="filterage.grain==grain?'filter-active':''">
                     {{grain}}
                   </a>
                 </li>
               </ul>
-              <a class="btn btn-default disabled" 
+              <a class="btn btn-default disabled"
                   title="Filter against this grain" ng-href="">in {{filterage.grain}}
               </a>
             </div>
           </div>
         </div>
-        
+
 <!--         <div class="form-group" ng-show="monitorMode == 'minion'">
           &nbsp;&nbsp;
           <label>Sort</label>
@@ -232,7 +232,7 @@
             </button>
             <ul class="dropdown-menu">
               <li ng-repeat="target in sortage.targets track by $index">
-                <a ng-href="" ng-click="setSortTarget($index)" 
+                <a ng-href="" ng-click="setSortTarget($index)"
                   ng-class="sortage.target==target?'filter-active':''">
                   {{target}}
                 </a>
@@ -252,7 +252,7 @@
     </form><!--monitorForm-->
   </div><!--/box-->
 </div><!--/row-->
-      
+
 <div class="row" ng-show="monitorMode == 'command'">
   <div class="col-md-12 box flat-top wide" >
     <div class="box box-no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse | pagerize:commandPager">
@@ -263,9 +263,9 @@
           </button>
         </div>
         <div class="btn-group">
-          <button class="btn btn-default btn-sm"  ng-model="commandMode" 
+          <button class="btn btn-default btn-sm"  ng-model="commandMode"
               ss-toggle-union="'job'">
-            <i class="icon-mono" 
+            <i class="icon-mono"
                 ng-class="commandMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'">
             </i>
           </button>
@@ -279,13 +279,13 @@
                 ng-class="job.fail?'badge-danger':'badge-success'">
               <i class="fa-icon-certificate icon-white"></i>
             </span>
-            <span class="label" title="Job Id: Black=done, Blue=not yet done" 
+            <span class="label" title="Job Id: Black=done, Blue=not yet done"
                 ng-class="job.done?'label-info':'label-primary'">
               <span class="larger-font-size">{{job.jid}}</span>
             </span>&nbsp;
             <span  class="label label-default" title="Module function">
               <span class="larger-font-size">{{job.name}}</span></span>
-          </div>  
+          </div>
         </div>
         <div class="clearfix"></div>
       </div><!--/box-->
@@ -295,25 +295,25 @@
     <form class="form-inline pull-right" name="commandPagerForm"
         ng-init="commandPager=newPagerage()">
       <div class="form-group">
-        <ss-pagination 
+        <ss-pagination
           class="pagination-sm tight"
           style="vertical-align: middle"
-          page="commandPager.page" 
-          total-items="commandPager.itemCount" 
+          page="commandPager.page"
+          total-items="commandPager.itemCount"
           items-per-page="commandPager.perPage"
           max-size="commandPager.pagerLimit"
           on-select-page="commandPager.displayPage(page)"
           num-pages
           direction-links="true"
-          previous-text="&lsaquo;" 
-          next-text="&rsaquo;" 
-          boundary-links="true" 
-          first-text="&laquo;" 
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          boundary-links="true"
+          first-text="&laquo;"
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
           <span style="font-size: smaller">per page</span>
-          <select class="form-control input-sm" 
+          <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="commandPager.perPage"
             name="ippSelect"
@@ -335,7 +335,7 @@
             ng-class="job.fail?'badge-danger':'badge-success'">
             <i class="fa-icon-certificate icon-white"></i>
         </span>
-        <span class="label" title="Job Id: Green=done, Blue=not yet done" 
+        <span class="label" title="Job Id: Green=done, Blue=not yet done"
           ng-class="job.done?'label-info':'label-primary'">
           <span  class="larger-font-size">{{job.jid}}</span>
         </span>&nbsp;
@@ -343,12 +343,12 @@
           <span  class="larger-font-size job-name">{{job.name | truncate:25}}</span>
         </span>&nbsp;
         <span class="btn-group btn-group-sm">
-          <button type="button" class="btn btn-default taut" ng-model="jobMode" 
-            ss-toggle-union="'result'">Result<i class="icon-mono" 
+          <button type="button" class="btn btn-default taut" ng-model="jobMode"
+            ss-toggle-union="'result'">Result<i class="icon-mono"
                 ng-class="jobMode=='result' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-default taut" ng-model="jobMode" 
-            ss-toggle-union="'event'">Event<i class="icon-mono" 
+          <button type="button" class="btn btn-default taut" ng-model="jobMode"
+            ss-toggle-union="'event'">Event<i class="icon-mono"
               ng-class="jobMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
         </span>
@@ -391,7 +391,7 @@
             <kvi>
               <span class="nook">{{event.data.stamp}}</span>&nbsp;
               <span class="nook">{{event.tag}}</span>
-              <span ng-repeat="ensual in ensuals(event.data)" 
+              <span ng-repeat="ensual in ensuals(event.data)"
                 ng-include="'ensual_nested.html'">
               </span>
             </kvi>
@@ -405,25 +405,25 @@
     <form class="form-inline pull-right" name="jobPagerForm"
         ng-init="jobPager=newPagerage()">
       <div class="form-group">
-        <ss-pagination 
+        <ss-pagination
           class="pagination-sm tight"
           style="vertical-align: middle"
-          page="jobPager.page" 
-          total-items="jobPager.itemCount" 
+          page="jobPager.page"
+          total-items="jobPager.itemCount"
           items-per-page="jobPager.perPage"
           max-size="jobPager.pagerLimit"
           on-select-page="jobPager.displayPage(page)"
           num-pages
           direction-links="true"
-          previous-text="&lsaquo;" 
-          next-text="&rsaquo;" 
-          boundary-links="true" 
-          first-text="&laquo;" 
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          boundary-links="true"
+          first-text="&laquo;"
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
           <span style="font-size: smaller">per page</span>
-          <select class="form-control input-sm" 
+          <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="jobPager.perPage"
             name="ippSelect"
@@ -440,27 +440,32 @@
   <div class="col-md-12 box flat-top wide">
     <p ng-if="graining"><i class="fa-icon-spinner fa-icon-spin displayed-in-center"></i></p>
     <div ng-if="!graining" class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | pagerize:minionPager">
+      <span class="pull-right" ng-show="minion.highstateStatus.dirty"><i class="fa-icon-flag"></i></span>
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
             ng-class="minion.active?'badge-green':'badge-red'">
             <i class="fa-icon-fire icon-white"></i>
         </span>
-        <span class="label" title="Minion Id: Blue=grains, Orange=no grains" 
+        <span class="label" title="Minion Id: Blue=grains, Orange=no grains"
           ng-class="minion.grains.keys().length?'label-info':'label-warning'">
           <span class="larger-font-size">{{minion.id}}</span>
         </span>&nbsp;
         <span class="btn-group">
-          <button type="button" class="btn btn-default btn-sm taut"  ng-model="minionMode" 
+          <button type="button" class="btn btn-default btn-sm taut"  ng-model="minionMode"
             ss-toggle-union="'grain'" ng-click="getGrainsIfRequired(minion.id)">Grain<i class="icon-mono"
                 ng-class="minionMode=='grain' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode" 
-            ss-toggle-union="'event'">Event<i class="icon-mono" 
+          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode"
+            ss-toggle-union="'event'">Event<i class="icon-mono"
               ng-class="minionMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
-          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode" 
+          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode"
             ss-toggle-union="'command'">Command<i class="icon-mono"
               ng-class="minionMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
+          </button>
+          <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode"
+            ss-toggle-union="'highstate'">Highstate<i class="icon-mono"
+              ng-class="minionMode=='highstate' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
         </span>
       </div>
@@ -470,20 +475,20 @@
           <kvl ng-repeat="grain in minion.grains.items()">
             <kvi>
               <span><b><i>{{grain.key}}: </i></b></span>
-              <span ng-repeat="ensual in ensuals(grain.val)" 
+              <span ng-repeat="ensual in ensuals(grain.val)"
                 ng-include="'ensual_nested.html'">
               </span>
             </kvi>
           </kvl>
           <p ng-if="minion.grains.keys().length==0">No grains&nbsp;<i class="fa-icon-spinner fa-icon-spin"></i></p>
         </div>
-        
+
         <div class="col-md-12" ng-if="minionMode == 'event'">
           <kvl ng-repeat="event in minion.events.values().reverse()">
             <kvi>
               <span class="nook">{{event.data.stamp}}</span>&nbsp;
               <span class="nook">{{event.tag}}</span>
-              <span ng-repeat="ensual in ensuals(event.data)" 
+              <span ng-repeat="ensual in ensuals(event.data)"
                 ng-include="'ensual_nested.html'">
               </span>
             </kvi>
@@ -494,6 +499,14 @@
         <div class="col-md-12 animate-fade " ng-if="minionMode == 'command'">
           <p>Not implemented yet</p>
         </div>
+        <div class="col-md-12" ng-if="minionMode == 'highstate'">
+          <span ng-if="minion.highstateStatus.messages.length>0">
+            <p class="text-info" ng-repeat="message in minion.highstateStatus.messages">{{message}}</p>
+          </span>
+          <p class="text-success" ng-if="minion.highstateStatus == null || minion.highstateStatus.messages.length==0">
+            This minion is in the correct state
+          </p>
+        </div>
         <div class="clearfix"></div>
       </div><!--collapsed-->
     </div> <!--/box repeated-->
@@ -502,25 +515,25 @@
     <form class="form-inline pull-right" name="minionPagerForm"
         ng-init="minionPager=newPagerage()">
       <div class="form-group">
-        <ss-pagination 
+        <ss-pagination
           class="pagination-sm tight"
           style="vertical-align: middle"
-          page="minionPager.page" 
-          total-items="minionPager.itemCount" 
+          page="minionPager.page"
+          total-items="minionPager.itemCount"
           items-per-page="minionPager.perPage"
           max-size="minionPager.pagerLimit"
           on-select-page="minionPager.displayPage(page)"
           num-pages
           direction-links="true"
-          previous-text="&lsaquo;" 
-          next-text="&rsaquo;" 
-          boundary-links="true" 
-          first-text="&laquo;" 
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          boundary-links="true"
+          first-text="&laquo;"
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
           <span style="font-size: smaller">per page</span>
-          <select class="form-control input-sm" 
+          <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="minionPager.perPage"
             name="ippSelect"
@@ -539,12 +552,12 @@
       <div>
         <span class="nook">{{event.data.stamp}}</span>&nbsp;
         <span class="nook" title="Event Tag">{{event.tag}}</span>&nbsp;
-        <span class="label label-default" title="Module function" 
+        <span class="label label-default" title="Module function"
             ng-show="humanize(event.data)">
           <span class="larger-font-size">{{humanize(event.data) | truncate:25}}</span>
         </span>&nbsp;
-        <i class="btn btn-default btn-sm slack" 
-          ng-init="expanded={'value': false}" 
+        <i class="btn btn-default btn-sm slack"
+          ng-init="expanded={'value': false}"
           ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
           ng-click="expanded.value = !expanded.value; $event.stopPropagation();">
         </i>
@@ -554,7 +567,7 @@
         <div class="col-md-12">
           <kvl>
             <kvi>
-              <span ng-repeat="ensual in ensuals(event.data)" 
+              <span ng-repeat="ensual in ensuals(event.data)"
                 ng-include="'ensual_nested_list.html'">
               </span>
             </kvi>
@@ -568,25 +581,25 @@
     <form class="form-inline pull-right" name="eventPagerForm"
         ng-init="eventPager=newPagerage()">
       <div class="form-group">
-        <ss-pagination 
+        <ss-pagination
           class="pagination-sm tight"
           style="vertical-align: middle"
-          page="eventPager.page" 
-          total-items="eventPager.itemCount" 
+          page="eventPager.page"
+          total-items="eventPager.itemCount"
           items-per-page="eventPager.perPage"
           max-size="eventPager.pagerLimit"
           on-select-page="eventPager.displayPage(page)"
           num-pages
           direction-links="true"
-          previous-text="&lsaquo;" 
-          next-text="&rsaquo;" 
-          boundary-links="true" 
-          first-text="&laquo;" 
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          boundary-links="true"
+          first-text="&laquo;"
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
           <span style="font-size: smaller">per page</span>
-          <select class="form-control input-sm" 
+          <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="eventPager.perPage"
             name="ippSelect"
@@ -608,8 +621,8 @@
         <n>{{value}}{{!$last ? " ," : ""}}</n>
       </span>]
     </span>
-    <span ng-switch-when="list"> 
-      <i class="btn btn-default btn-sm slack" 
+    <span ng-switch-when="list">
+      <i class="btn btn-default btn-sm slack"
         ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
@@ -621,7 +634,7 @@
       </kvl>
     </span>
     <span ng-switch-when="dict" >
-      <i class="btn btn-default btn-sm slack" 
+      <i class="btn btn-default btn-sm slack"
         ng-class="expanded.value?'fa-icon-caret-down':'fa-icon-caret-right'"
         ng-init="expanded={'value': false}" ng-click="expanded.value = !expanded.value">
       </i>
