@@ -42,6 +42,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             AppData.set('events', new Itemizer())
         $scope.events = AppData.get('events')
 
+
+        $scope.isCheckingForHighstateConsistency = () ->
+            return HighstateCheck.isHighstateCheckEnabled()
+
         $scope.snagCommand = (name, cmds) -> #get or create Command
             unless $scope.commands.get(name)?
                 $scope.commands.set(name, new Commander(name, cmds))
