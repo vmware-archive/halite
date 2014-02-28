@@ -72,6 +72,20 @@ that have inconsistent state have a flag next to them as shown in the screenshot
 
 .. image:: screenshots/MinionWithFlag.png
 
+The ``Highstate`` subtab for each minion displays the state items that lack
+consistency. All of the inconsistent items will be displayed here for easy
+visualization. The screenshot below shows a message that might appear
+when highstate consistency is disturbed.
+
+.. image: screenshot/HighstateSubtab.png
+
+The cog icon that appears in the ``Monitor`` section can be clicked to perform
+highstate consistency check. The on demand check only works in the
+scenario where polling is off. In the case where polling is switched on (as
+discussed above) the cog icon will appear to be spinning (and does not respond
+to clicks).
+
+.. image: HighstateCheckCog.png
 
 Installation quickstart
 =======================
