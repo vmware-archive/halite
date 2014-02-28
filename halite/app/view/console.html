@@ -169,7 +169,11 @@
       <span class="highstate-cog-holder pull-right" ng-show="isLoggedIn() && isCheckingForHighstateConsistency()">
         <i class="highstate-cog fa-icon-cog fa-icon-spin"></i>
       </span>
-      <span class="highstate-cog-holder pull-right monitorControls"
+      <span ng-if="isCheckingHighstateConsistency()" class="highstate-cog-holder pull-right monitorControls"
+        ng-show="isLoggedIn() && !isCheckingForHighstateConsistency()">
+        <i class="highstate-cog fa-icon-cog"></i>
+      </span>
+      <span ng-if="!isCheckingHighstateConsistency()" class="highstate-cog-holder pull-right monitorControls"
         ng-click="checkHighstateConsistency()" ng-show="isLoggedIn() && !isCheckingForHighstateConsistency()">
         <i class="highstate-cog fa-icon-cog"></i>
       </span>

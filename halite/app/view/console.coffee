@@ -836,6 +836,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
           HighstateCheck.makeHighStateCall($scope)
           return
 
+        $scope.isCheckingHighstateConsistency = () ->
+          return HighstateCheck.isChecking()
+
         $scope.$on('ToggleAuth', $scope.authListener)
         $scope.$on('Activate', $scope.activateListener)
         $scope.$on('Marshall', $scope.marshallListener)

@@ -24,6 +24,8 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
     class HighStateStatus
       constructor: (@dirty = false, @messages = []) ->
 
+    isCheckingHighstateConsistency = false
+
     servicer =
       clearOldHighstateStatuses: () ->
         minion.highstateStatus = new HighStateStatus() for minion in minions.values()
@@ -51,7 +53,10 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
       getTimeoutMilliSeconds: () ->
         highStateCheck = AppPref.get('highStateCheck')
         return highStateCheck.intervalSeconds * 1000
+      isChecking: () ->
+        return isCheckingHighstateConsistency
       makeHighStateCall: ($scope) ->
+        isCheckingHighstateConsistency = true
         # Call highstate with test=True
         tgt = minions.keys().join(',')
 
@@ -70,9 +75,11 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
             job = $scope.startJob(result, cmd)
             job.commit($q).then (donejob) =>
               @processHighstateCheckReturns donejob.results.items()
+              isCheckingHighstateConsistency = false
               return
           return true
         .error (data, status, headers, config) ->
+          isCheckingHighstateConsistency = false
           console.log "error"
           console.log data
           return
