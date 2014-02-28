@@ -67,7 +67,7 @@ To switch polling on navigate to the preferences tab and check
 default. Once these settings are updated click ``Update`` and reload the page.
 These options are depicted in the screenshot below.
 
-.. image:: screenshot/HighstatePollSettings.png
+.. image:: screenshots/HighstatePollSettings.png
 
 Installation quickstart
 =======================
