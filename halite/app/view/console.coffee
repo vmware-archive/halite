@@ -1,75 +1,83 @@
 mainApp = angular.module("MainApp") #get reference to MainApp module
 
-mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filter', 
-    '$templateCache',
-    'Configuration','AppData', 'AppPref', 'Item', 'Itemizer', 
+mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filter',
+    '$templateCache', '$timeout',
+    'Configuration','AppData', 'AppPref', 'Item', 'Itemizer',
     'Minioner', 'Resulter', 'Jobber', 'ArgInfo', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
-    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', '$filter',
-    ($scope, $location, $route, $q, $filter, $templateCache, Configuration, 
+    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', 'HighstateCheck','$filter',
+    ($scope, $location, $route, $q, $filter, $templateCache, $timeout, Configuration,
     AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
-    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives ) ->
+    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives, HighstateCheck ) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
-        
-        #console.log("ConsoleCtlr")
+
+        # console.log(HighstateCheck.isHighstateCheckEnabled())
         $scope.errorMsg = ""
         $scope.closeAlert = () ->
             $scope.errorMsg = ""
-            
+
         $scope.monitorMode = null
-        
+
         $scope.graining = false
         $scope.pinging = false
         $scope.statusing = false
         $scope.eventing = false
         $scope.commanding = false
         $scope.docSearch = false
-            
+
         if !AppData.get('commands')?
             AppData.set('commands', new Itemizer())
         $scope.commands = AppData.get('commands')
-        
+
         if !AppData.get('jobs')?
             AppData.set('jobs', new Itemizer())
         $scope.jobs = AppData.get('jobs')
-        
+
         if !AppData.get('minions')?
             AppData.set('minions', new Itemizer())
         $scope.minions = AppData.get('minions')
-        
+
         if !AppData.get('events')?
             AppData.set('events', new Itemizer())
         $scope.events = AppData.get('events')
+
+
+        $scope.isCheckingForHighstateConsistency = () ->
+            return HighstateCheck.isHighstateCheckEnabled()
+
+        $scope.makeHighstateCall = () ->
+            HighstateCheck.makeHighStateCall($scope)
+            return
 
         $scope.snagCommand = (name, cmds) -> #get or create Command
             unless $scope.commands.get(name)?
                 $scope.commands.set(name, new Commander(name, cmds))
             return ($scope.commands.get(name))
-        
+
         $scope.snagJob = (jid, cmd) -> #get or create Jobber
             if not $scope.jobs.get(jid)?
                 job = new Jobber(jid, cmd)
                 $scope.jobs.set(jid, job)
             return ($scope.jobs.get(jid))
-        
+
         $scope.snagRunner = (jid, cmd) -> #get or create Runner
             if not $scope.jobs.get(jid)?
                 job = new Runner(jid, cmd)
                 $scope.jobs.set(jid, job)
             return ($scope.jobs.get(jid))
-        
+
         $scope.snagWheel = (jid, cmd) -> #get or create Wheeler
             if not $scope.jobs.get(jid)?
                 job = new Wheeler(jid, cmd)
                 $scope.jobs.set(jid, job)
             return ($scope.jobs.get(jid))
-        
+
         $scope.snagMinion = (mid) -> # get or create Minion
             if not $scope.minions.get(mid)?
                 $scope.minions.set(mid, new Minioner(mid))
             return ($scope.minions.get(mid))
-        
+
         $scope.newPagerage = (itemCount) ->
             return (new Pagerage(itemCount))
 
@@ -87,12 +95,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             $scope.filterage.grain = $scope.filterage.grains[index]
             $scope.setFilterExpress()
             return true
-        
+
         $scope.setFilterTarget = (target) ->
             $scope.filterage.target = target
             $scope.setFilterExpress()
             return true
-        
+
         $scope.setFilterExpress = () ->
             # console.log "setFilterExpress"
             if $scope.filterage.grain is "any"
@@ -102,7 +110,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     for grain in minion.grains.values()
                         if angular.isString(grain) and grain.match(regex)
                             return true
-                        
+
                     return false
             else
                 console.log "Else of setFilterExpress"
@@ -117,7 +125,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         console.log "In the else of the innermost function"
                         return minion.id.match(regex)
             return true
-        
+
         $scope.eventReverse = true
         $scope.jobReverse = true
         $scope.commandReverse = false
@@ -131,7 +139,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.setSortTarget = (index) ->
             $scope.sortage.target = $scope.sortage.targets[index]
             return true
-            
+
         $scope.sortMinions = (minion) ->
             if $scope.sortage.target is "id"
                 if AppPref.get('fetchGrains', false)
@@ -144,24 +152,24 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 result = minion[$scope.sortage.target]
             result = if result? then result else false
             return result
-        
+
         $scope.sortJobs = (job) ->
             result = job.jid
             result = if result? then result else false
             return result
-        
+
         $scope.sortEvents = (event) ->
             result = event.utag
             result = if result? then result else false
             return result
-        
+
         $scope.sortCommands = (command) ->
             result = command.name
             result = if result? then result else false
             return result
-        
+
         $scope.resultKeys = ["retcode", "fail", "success", "done"]
-        
+
         $scope.expandMode = (ensual) ->
             if angular.isArray(ensual)
                 for x in ensual
@@ -171,12 +179,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             else if angular.isObject(ensual)
                 return 'dict'
             return 'lone'
-        
+
         $scope.ensuals = (ensual) ->
             #makes and array so we can create new scope with ng-repeat
             #work around to recursive scope expression for ng-include
             return ([ensual])
-                
+
         $scope.actions =
             State:
                 highstate:
@@ -244,7 +252,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 versions_information:
                     mode: 'async'
                     tgt: '*'
-        
+
         $scope.ply = (cmds) ->
             target = if $scope.command.cmd.tgt isnt "" then $scope.command.cmd.tgt else "*"
             unless angular.isArray(cmds)
@@ -252,7 +260,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             for cmd in cmds
                 cmd.tgt = target
             $scope.action(cmds)
-                
+
         $scope.command =
             result: {}
             history: {}
@@ -262,17 +270,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 mode: 'async'
                 fun: ''
                 tgt: '*'
-                arg: [""]  
+                arg: [""]
                 expr_form: 'glob'
-            
+
             size: (obj) ->
                 return _.size(obj)
-            
+
             addArg: () ->
                 @cmd.arg.push('')
                 @parameters?.push('Enter Input')
                 #@cmd.arg[_.size(@cmd.arg)] = ""
-                
+
             delArg: () ->
                 if @cmd.arg.length > 1
                     @cmd.arg = @cmd.arg[0..-2]
@@ -281,7 +289,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     @parameters.pop()
                 #if _.size(@cmd.arg) > 1
                  #   delete @cmd.arg[_.size(@cmd.arg) - 1]
-            
+
             getArgs: () ->
                 #return (val for own key, val of @cmd.arg when val isnt '')
                 return (arg for arg in @cmd.arg when arg isnt '')
@@ -294,7 +302,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         mode: @cmd.mode,
                         arg: @getArgs()
                     ]
-                else 
+                else
                     cmds =
                     [
                         fun: @cmd.fun,
@@ -305,7 +313,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     ]
 
                 return cmds
-            
+
             humanize: (cmds) ->
                 unless cmds
                     cmds = @getCmds()
@@ -314,7 +322,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.command.cmd.tgt = ""
 
-        $scope.expressionFormats = 
+        $scope.expressionFormats =
             Glob: 'glob'
             'Perl Regex': 'pcre'
             List: 'list'
@@ -324,31 +332,31 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             'Node Group': 'nodegroup'
             Range: 'range'
             Compound: 'compound'
-        
+
         $scope.$watch "command.cmd.expr_form", (newVal, oldVal, scope) ->
             if newVal == oldVal
                 return
-            if newVal == 'glob' 
+            if newVal == 'glob'
                 $scope.command.cmd.tgt = "*"
             else
                 $scope.command.cmd.tgt = ""
-        
+
         $scope.fixTarget = () ->
             if $scope.command.cmd.tgt? and $scope.command.cmd.expr_form == 'list' #remove spaces after commas
                 $scope.command.cmd.tgt = $scope.command.cmd.tgt.replace(/,\s+/g,',')
-        
+
         $scope.humanize = (cmds) ->
             unless angular.isArray(cmds)
                 cmds = [cmds]
             return (((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
                     when part? and part isnt '').join(' ') for cmd in cmds).join(',').trim())
-        
+
         $scope.action = (cmds) ->
             $scope.commanding = true
             if not cmds
                 cmds = $scope.command.getCmds()
             command = $scope.snagCommand($scope.humanize(cmds), cmds)
-            
+
             #console.log('Calling SaltApiSrvc.action')
             SaltApiSrvc.action($scope, cmds )
             .success (data, status, headers, config ) ->
@@ -356,7 +364,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 for result, index in results
                     if not _.isEmpty(result)
                         parts = cmds[index].fun.split(".") # split on "." character
-                        if parts.length == 3 
+                        if parts.length == 3
                             if parts[0] =='runner'
                                 job = $scope.startRun(result, cmds[index]) #runner result is tag
                                 command.jobs.set(job.jid, job)
@@ -370,14 +378,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 return true
             .error (data, status, headers, config) ->
                 $scope.commanding = false
-                
+
         $scope.fetchPings = (target) ->
             target = if target then target else "*"
             cmd =
                 mode: "async"
                 fun: "test.ping"
                 tgt: target
-            
+
             $scope.pinging = true
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
@@ -388,7 +396,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 return true
             .error (data, status, headers, config) ->
                 $scope.pinging = false
-                
+
             return true
 
         $scope.fetchActivesCmd = null
@@ -498,14 +506,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 fun: "grains.items"
                 tgt: target
                 expr_form: 'glob'
-                
+
             if not target?
                 minions = (minion.id for minion in $scope.minions.values() when minion.active is true)
                 target = minions.join(',')
                 cmd.tgt = target
                 cmd.expr_form = 'list'
-            
-            
+
+
             $scope.graining = true if noAjax
             SaltApiSrvc.run($scope, [cmd])
             .success (data, status, headers, config) ->
@@ -520,7 +528,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             .error (data, status, headers, config) ->
                 $scope.graining = false if noAjax
             return true
-        
+
         $scope.assignGrains = (job) ->
             for {key: mid, val: result} in job.results.items()
                 unless result.fail
@@ -528,8 +536,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     minion = $scope.snagMinion(mid)
                     minion.grains.reload(grains, false)
             $scope.graining = false
-            return job   
-        
+            return job
+
         $scope.docsLoaded = false
         $scope.docKeys = []
         $scope.docSearchResults = ''
@@ -586,16 +594,16 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             .error (data, status, headers, config) ->
                 return false
             return true
-            
-        
+
+
         $scope.startWheel = (data, cmd) ->
             #console.log "Start Wheel #{$scope.humanize(cmd)}"
             #console.log data
             parts = data.tag.split("/")
             jid = parts[2]
             job = $scope.snagWheel(jid, cmd)
-            return job    
-        
+            return job
+
         $scope.startRun = (data, cmd) ->
             #console.log "Start Run #{$scope.humanize(cmd)}"
             #console.log data
@@ -603,7 +611,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             jid = parts[2]
             job = $scope.snagRunner(jid, cmd)
             return job
-                        
+
         $scope.startJob = (result, cmd) ->
             #console.log "Start Job #{$scope.humanize(cmd)}"
             #console.log result
@@ -611,7 +619,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             job = $scope.snagJob(jid, cmd)
             job.initResults(result.minions)
             return job
-        
+
         $scope.processJobEvent = (jid, kind, edata) ->
             job = $scope.jobs.get(jid)
             job.processEvent(edata)
@@ -629,7 +637,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
               job.linkMinion(minion)
               job.processProgEvent(edata)
             return job
-        
+
         $scope.processLookupJID = (data) ->
           results = new Itemizer()
           for key, val of data.return
@@ -662,7 +670,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                   $scope.processLookupJID(data)
                 job.processRetEvent(data)
             return job
-        
+
         $scope.processWheelEvent = (jid, kind, edata) ->
             job = $scope.jobs.get(jid)
             job.processEvent(edata)
@@ -672,14 +680,14 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             else if kind == 'ret'
                 job.processRetEvent(data)
             return job
-        
+
         $scope.processMinionEvent = (mid, edata) ->
             minion = $scope.snagMinion(mid)
             minion.processEvent(edata)
             minion.activize()
             $scope.fetchGrains(mid) if AppPref.get('fetchGrains', false)
             return minion
-        
+
         $scope.processKeyEvent = (edata) ->
             data = edata.data
             mid = data.id
@@ -689,9 +697,9 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     minion.unlinkJobs()
                     $scope.minions.del(mid)
             return minion
-            
+
         $scope.stamp = () ->
-            date = new Date()          
+            date = new Date()
             stamp = [   "/#{date.getUTCFullYear()}",
                         "-#{('00' + date.getUTCMonth()).slice(-2)}",
                         "-#{('00' + date.getUTCDate()).slice(-2)}",
@@ -700,7 +708,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         ":#{('00' + date.getUTCSeconds()).slice(-2)}",
                         ".#{('000' + date.getUTCMilliseconds()).slice(-3)}"].join("")
             return stamp
-            
+
         $scope.processSaltEvent = (edata) ->
             #console.log "Process Salt Event: "
             #console.log edata
@@ -720,7 +728,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     $scope.snagJob(jid, edata.data)
                     kind = parts[3]
                     $scope.processJobEvent(jid, kind, edata)
-                    
+
                 else if parts[1] is 'run'
                     jid = parts[2]
                     if jid != edata.data.jid
@@ -730,7 +738,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     $scope.snagRunner(jid, edata.data)
                     kind = parts[3]
                     $scope.processRunEvent(jid, kind, edata)
-                
+
                 else if parts[1] is 'wheel'
                     jid = parts[2]
                     if jid != edata.data.jid
@@ -740,7 +748,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     $scope.snagWheel(jid, edata.data)
                     kind = parts[3]
                     $scope.processWheelEvent(jid, kind, edata)
-                    
+
                 else if parts[1] is 'minion' or parts[1] is 'syndic'
                     mid = parts[2]
                     if mid != edata.data.id
@@ -748,15 +756,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         $scope.errorMsg = "Bad minion event: MID #{mid} not match #{edata.data.id}"
                         return false
                     $scope.processMinionEvent(mid, edata)
-                
+
                  else if parts[1] is 'key'
                     $scope.processKeyEvent(edata)
-                    
+
             return edata
-            
+
         $scope.openEventStream = () ->
             $scope.eventing = true
-            $scope.eventPromise = SaltApiEvtSrvc.events($scope, 
+            $scope.eventPromise = SaltApiEvtSrvc.events($scope,
                 $scope.processSaltEvent, "salt/")
             .then (data) ->
                 #console.log "Opened Event Stream: "
@@ -773,12 +781,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 $scope.eventing = false
                 return data
             return true
-        
+
+        $scope.isLoggedIn = () ->
+          SessionStore.get('loggedIn')
+
         $scope.closeEventStream = () ->
             #console.log "Closing Event Stream"
             SaltApiEvtSrvc.close()
             return true
-        
+
         $scope.clearSaltData = () ->
             AppData.set('commands', new Itemizer())
             $scope.commands = AppData.get('commands')
@@ -788,7 +799,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             $scope.minions = AppData.get('minions')
             AppData.set('events', new Itemizer())
             $scope.events = AppData.get('events')
-        
+
         $scope.authListener = (event, loggedIn) ->
             #console.log "Received #{event.name}"
             #console.log event
@@ -798,31 +809,43 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 $scope.closeEventStream()
                 $scope.clearSaltData()
             return true
-                
-            
+
+
         $scope.activateListener = (event) ->
             #console.log "Received #{event.name}"
             #console.log event
             $scope.fetchActives()
             $scope.preloadJobCache() if AppPref.get("preloadJobCache", false)
-        
+
         $scope.marshallListener = (event) ->
             #console.log "Received #{event.name}"
             #console.log event
             $scope.fetchGrains() if AppPref.get("fetchGrains", false)
             $scope.fetchDocs()
+            $scope.highstatePoller()
 
+        $scope.highstatePoller = () ->
+          # Auto Check
+          return unless HighstateCheck.isHighstateCheckEnabled()
+          HighstateCheck.makeHighStateCall($scope)
+          $timeout $scope.highstatePoller, HighstateCheck.getTimeoutMilliSeconds()
+          return
+
+        $scope.checkHighstateConsistency = () ->
+          # On Demand Checks
+          HighstateCheck.makeHighStateCall($scope)
+          return
 
         $scope.$on('ToggleAuth', $scope.authListener)
         $scope.$on('Activate', $scope.activateListener)
         $scope.$on('Marshall', $scope.marshallListener)
-        
+
         if not SaltApiEvtSrvc.active and SessionStore.get('loggedIn') == true
             $scope.openEventStream()
-        
+
         $scope.testClick = (name) ->
             console.log "click #{name}"
-        
+
         $scope.testFocus = (name) ->
             console.log "focus #{name}"
 

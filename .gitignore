@@ -14,5 +14,5 @@ dist
 
 halite.egg-info/*
 .idea/
-*.map
+**/*.map
 

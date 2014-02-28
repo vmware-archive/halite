@@ -19,7 +19,7 @@ Creates object of form { key: key, val: val}
 
 class Item
     constructor: (@key, @val) ->
-    
+
 appUtilSrvc.value "Item", Item
 
 ###
@@ -32,7 +32,7 @@ Items can be accessed by item key but the order of entry or sort is preserved.
 Since each item is not a primitive type but an object, ng-repeat will be
 able to reference it as a model target.
 
-Angular 1.15+ provides the ng-repeat 
+Angular 1.15+ provides the ng-repeat
 which means one does not need the itemizations for ng-repeating but angular sort
 only works on arrays to need items list for that. Also angular filter string will
 work on nested itemizers but not itemizer with not itemizer values.
@@ -44,16 +44,16 @@ class Itemizer
         @_keys = [] # list of keys
         @update(stuff, deep)
         return @
-        
+
     get: (key, tag) ->
         if tag
             return @_data[key]?.val[tag]
         else
             return @_data[key]?.val
-    
+
     getItem: (key) ->
         return @_data[key]
-        
+
     set: (key, val, tag) ->
         if key in @_keys
             if tag
@@ -68,17 +68,17 @@ class Itemizer
             else
                 @_data[key] = new Item(key, val)
         return @
-    
+
     _isItem: (item) ->
         if item instanceof Item
             return true
-        if angular.isObject(item) and 
+        if angular.isObject(item) and
             not angular.isArray(item) and
-            "key" of item and 
+            "key" of item and
             "val" of item
                 return true
         return false
-        
+
     _isItemList: (items) ->
         if not angular.isArray(items)
             return false
@@ -88,7 +88,7 @@ class Itemizer
             if not @_isItem(item)
                 return false
         return true
-    
+
     deepSet: (key, val, update) ->
         itemizer = @_data[key]?.val
         if @_isItemList(val)
@@ -106,7 +106,7 @@ class Itemizer
         else
             @set key, val
         return @
-            
+
     del: (key, tag) ->
         if key in @_keys
             if tag
@@ -115,12 +115,12 @@ class Itemizer
                 @_keys = (_key for _key in @_keys when _key != key)
                 delete @_data[key]
         return @
-    
+
     clear: () ->
         @_data = {}
         @_keys = []
         return @
-    
+
     items: (deep) ->
         items = []
         for key in @_keys
@@ -129,13 +129,13 @@ class Itemizer
             else
                 items.push @_data[key]
         return items
-        
+
     keys: () ->
         return @_keys
-        
+
     values: () ->
         return (@_data[key].val for key in @_keys)
-        
+
     sort: (sorter, deep) ->
         if not sorter?
             return @_keys
@@ -145,7 +145,7 @@ class Itemizer
                 if @_data[key].val instanceof Itemizer
                     @_data[key].val.sort(sorter, deep)
         return @_keys
-    
+
     update: (stuff, deep) ->
         if stuff?
             if @_isItemList(stuff)
@@ -154,20 +154,20 @@ class Itemizer
                         @deepSet item.key, item.val, true
                     else
                         @set item.key, item.val
-            else if angular.isObject(stuff) and not angular.isArray(stuff) 
+            else if angular.isObject(stuff) and not angular.isArray(stuff)
                 for own key, val of stuff
                     if deep
                         @deepSet key, val, true
                     else
-                        @set key, val 
+                        @set key, val
         return @
-    
+
     reload: (stuff, deep) ->
         @clear()
         @update(stuff, deep)
         return @
-    
-    unitemize: () ->  
+
+    unitemize: () ->
         data = {}
         for item in @items()
             if item.val instanceof Itemizer
@@ -175,15 +175,15 @@ class Itemizer
             else
                 data[item.key] = item.val
         return data
-    
+
     filter: (keys) ->
         for key in @_keys
             if key not in keys
                 delete @_data[key]
         @_keys = (_key for _key in @_keys when _key in keys)
-                
+
         return @
-        
+
 appUtilSrvc.value "Itemizer", Itemizer
 
 
@@ -193,20 +193,21 @@ class Minioner
         @grains = new Itemizer()
         @jobs = new Itemizer()
         @events = new Itemizer()
+        @highstateStatus = null
         return @
-    
+
     activize: () ->
         @active = true
         return @
-    
+
     deactivize: () ->
         @active = false
         return @
-    
+
     grainize: (grains, update) ->
         @grains.deepSet(grains, update)
         return @
-    
+
     unlinkJobs: () ->
         for job in @jobs.values()
             job.minions.del(@id)
@@ -223,7 +224,7 @@ class Resulter
     constructor: (@id) ->
         @reset()
         return @
-    
+
     reset: () ->
         @active = null
         @done = false
@@ -233,14 +234,14 @@ class Resulter
         @return = null
         @retcode = null
         return @
-    
+
     mode:  () ->
         unless @return? or @error
             return ''
         if @error
             return 'error'
         return 'return'
-    
+
     results:  () ->
         unless @return? or @error
             return []
@@ -248,7 +249,7 @@ class Resulter
             return [@error]
         return [@return]
 
-appUtilSrvc.value "Resulter", Resulter  
+appUtilSrvc.value "Resulter", Resulter
 
 class Jobber
     @STATUS_SUCCESS = 'success'
@@ -273,25 +274,25 @@ class Jobber
         for mid in mids
             @results.set(mid, new Resulter(mid))
         return @
-        
+
     commit: ($q) ->  #return promise if already exists otherwise create and return
         unless @defer?
             @defer = $q.defer()
             @promise = @defer.promise
         return @promise
-    
+
     initResults: (mids=[]) ->
         for mid in mids
           unless @results.get(mid)?
             @results.set(mid, new Resulter(mid))
         return @
-    
+
     humanize: (cmd) ->
         unless cmd
             cmd = @cmd
         return ((part for part in [cmd.fun, cmd.tgt].concat(cmd.arg) \
                     when part? and part isnt '').join(' ').trim())
-    
+
     checkDone: () ->
         # active is true or null ie not false
         @done = _((result.done for result in @results.values() when\
@@ -300,37 +301,37 @@ class Jobber
           anyDone = _((result.done for result in @results.values() when result.active isnt false)).any()
           @defer.resolve @ if @resolveOnAnyPass and anyDone
           return false
-        
+
         @fail = _((result.fail for result in @results.values() when\
             result.active and result.done )).any()
-        
+
         #console.log "Job Done. Fail = #{@fail}"
         #console.log @
-        
+
         if @errors.length > 0
             @defer?.reject @errors
         else
             @defer?.resolve @
-        
+
         @defer = null
         @promise = null
         return true
-        
+
     linkMinion: (minion) ->
         minion.jobs.set(@jid, @)
         @minions.set(minion.id, minion)
         return @
-        
+
     unlinkMinion: (mid) ->
         minion = @minions.get(mid)
         @minions.del(mid)
         minion?.get('jobs').del(@jid)
         return @
-    
+
     processEvent: (edata) ->
         @events.set(edata.tag, edata)
         return @
-    
+
     processNewEvent: (data) ->
         #console.log "Job New Event"
         @initResults(data.minions)
@@ -340,14 +341,14 @@ class Jobber
             tgt: data.tgt
             arg: data.arg
         return @
-    
+
     processRetEvent: (data) ->
         #console.log "Job Ret Event"
         mid = data.id
         unless @results.get(mid)?
             @results.set(mid, new Resulter(mid))
         result = @results.get(mid)
-        
+
         result['done'] = true
         result['active'] = true
         result['success'] = data.success
@@ -360,7 +361,7 @@ class Jobber
             else
                 result['error'] = "Error retcode = #{data.retcode}"
                 @errors.push(result['error'])
-        else 
+        else
             result['error'] = data.return
             @errors.push(result['error'])
         return @
@@ -445,11 +446,11 @@ class Bosser extends Jobber
     constructor: (@jid, @cmd) ->
         super(jid, cmd, ['master']) #one result with id 'master'
         return @
-        
+
     processNewEvent: (data) ->
         # console.log "Run/Wheel New Event"
         # console.log data
-        
+
         @initResults(data.minions)
         @cmd =
             mode: 'async'
@@ -459,27 +460,27 @@ class Bosser extends Jobber
         if data.arg
             @cmd['arg'] = data.arg
         return @
-    
+
     processRetEvent: (data) ->
         # console.log "Run/Wheel Ret Event"
         # console.log data
-        
+
         result = @results.get('master')
         result.done = true
         @done = true
         result.success = data.success
         result.fail = ! result.success
         @fail = result.fail
-               
+
         if result.success == true
             result.return = data.return
         else
             result.error = data.return
             @errors.push(data.return)
-        
+
         # console.log "Run/Wheel Done. Fail = #{@fail}"
         # console.log @
-        
+
         if @errors.length > 0
             @defer?.reject(@errors)
         else
@@ -498,8 +499,8 @@ class Commander
     constructor: (@name, @cmds) ->
         @jobs = new Itemizer()
         return @
-        
-appUtilSrvc.value "Commander", Commander  
+
+appUtilSrvc.value "Commander", Commander
 
 
 ###
@@ -511,18 +512,16 @@ Pagerage class used to manage pagination control form
 class Pagerage
     constructor: (@itemCount=0, @pagerLimit=5, @perPage=20, @page=1) ->
         return @
-    
+
     itemOffset: () ->
         return (Math.max(@page-1,0) * @perPage)
-  
+
     setPage: (page) ->
         @page = page;
         return @
-            
+
     displayPage: (page) ->
         # console.log "Display page " + page
         return @
 
 appUtilSrvc.value "Pagerage", Pagerage
-
-
