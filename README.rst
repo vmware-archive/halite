@@ -3,15 +3,11 @@ Halite
 ======
 
 (Code-name) Halite is a Salt GUI. Status is pre-alpha. Contributions are
-very welcome. Join us in #salt-devel on Freenode or on the salt-users mailing
+very welcome. Join us in #salt on Freenode or on the salt-users mailing
 list.
 
-This version 0.0.3+ is substantially changed from the prior versions.
-Any application based on a prior version will be broken. This version only works
-with the develop branch of Salt. The changes to Salt needed to support this version
-of Halite will be rolled into the upcoming 0.17 release of Salt. If one is not
-comfortable working off the develop branch, please wait until the 0.17 release.
-
+For best results it is recommended to use Halite with the develop branch of Salt.
+Halite is, however, known to work with Salt version greater than ``Hydrogen``.
 To install the develop branch of Salt:
 
 .. code-block:: bash  
@@ -21,23 +17,11 @@ To install the develop branch of Salt:
   $ salt-master --version
   $ salt-master -l debug
 
-This version is substantially different. Notable changes include:
-
-* Use of a new unified api in salt/client/api.py for talking to salt.
-Does not use Salt-API. The rest service is now integral to halite.
-
-* Use of Server Sent Events (SSE) to receive realtime streaming of events 
-from the Salt Event Bus.
-
-* Use of Bottle web framework included with choice of WSGI web servers. The server must
-be multithreaded or gevented or the equivalent in order to support SSE. The tested
-servers are "paste", "cherrypy", and "gevent".
-
-* Simplified web API that is a thin wrapper around salt/client/api.py.
-
 This version of Halite is designed to work out of the box with SaltStack when 
 the PyPi package version of Halite is installed. The PyPi (PIP) version of Halite 
 is a minified version tailored for this purpose. (https://pypi.python.org/pypi/halite)
+Halite makes use of the ``Bottle`` (WSGI) web framework. Servers that are tested and
+known to work with Halite are ``paste``, ``cherrypy`` and ``gevent``.
 
 To pip install Halite.
 
@@ -52,6 +36,11 @@ and also for development of future features for the Salt packaged version.
 Installation quickstart
 =======================
 
+This section explains installation of the ``devlopment`` version of Halite.
+If you are interested in installing Halite as an end user, please follow the
+`tutorial
+<https://github.com/pass-by-value/salt/compare/halite_doc_updates>`_ instead.
+
 * Setup permissions for users who will use Halite
 For example in master config:
   
@@ -64,8 +53,8 @@ For example in master config:
           - '@runner'
           - '@wheel'
 
-Halite uses the runner manage.status to get the status of minions so runner
-permissions are required.  Currently halite allows but does not require any 
+Halite uses the runner ``manage.present`` to get the status of minions so runner
+permissions are required.  Currently Halite allows but does not require any 
 wheel modules.
 
 * Clone the Halite repository::
@@ -107,7 +96,7 @@ The navbar has a login form. Enter the eauth username and password to login to s
 
 .. image:: screenshots/LoggedOut.png
 
-Once logged in, the navbar will display the username hilited in blue and a logout button.
+Once logged in, the navbar will display the username highlighted in blue and a logout button.
 To logout click on the logout button.
 
 .. image:: screenshots/LoggedIn.png
@@ -120,15 +109,22 @@ Click on the SaltStack logo to go to the preferences page
 
 On this page one can change the eauth method to something other than 'pam' such
 as 'ldap'.
-Enter the new eauth method string into the field saltApi.eauth and hit update.
-Now refresh the browser page and the new eauth method will be enabled. Login.
-  
+
+Check ``fetchGrains`` if you want grains data to be loaded when Halite loads.
+Checking ``preloadJobCache`` will fetch all previously completed, cached jobs.
+
+Once all changes are made click ``Update`` and refresh the browser page.  
+
 Commands
 ----------
 
 To navigate to the console view click on the 'console' tab. 
 
 .. image:: screenshots/HomeConsole.png
+
+This view has two sections. The ``Command`` section and the ``Monitor`` section.
+The ``Command`` section is collapsed by default. Clicking on the downward chevron will
+expand the ``Command`` section.
 
 The top section of the Console view has controls for entering basic salt commands.
 The target field will target minions with the command selected. There is ping button
@@ -139,13 +135,24 @@ Expanded Commands
 
 .. image:: screenshots/CommandForm.png
 
-Click on the downward chevron button to expand the command form with additional
+Click on the downward chevron button to expand the ``Command`` form with additional
 fields for entering any salt module function. To enter "runner" functions prepend
 "runner." to the function name. For example, "runner.manage.status". To enter wheel
 functions prepend "wheel." to the wheel function name. For example, "wheel.config.values".
-For commands that require arguments enter them in the arguments fiels. Click the "plus"
-button to add addition arguments.
+For commands that require arguments enter them in the arguments fields. The number of argument
+fields equals the number of arguments accepted by the function.
+
 Click on the Execute button or press the Return key to execute the command.
+
+You can choose the ``Target Format`` which will be used by the ``Target`` field to target minions.
+
+There is a ping button with the bullhorn icon and the Macro menu has some preselected commands
+for "speed dial".
+
+There is also a history feature which appears as a book icon on the top right corner of the ``Command`` panel.
+
+Checking ``Live Doc Search`` will show the documentation related to the command being
+entered in the ``Function`` field. Un-check it to conserve screen real estate.
 
 Monitors
 ---------
@@ -228,6 +235,7 @@ Client side web application requirements:
 * CoffeeScript Python/Ruby like javascript transpiler (http://coffeescript.org/)
 * Karma Test Runner (http://karma-runner.github.io/0.8/index.html)
 * Jasmine unit test framework (http://pivotal.github.io/jasmine/)
+* Protractor E2E test framework for angular apps (https://github.com/angular/protractor)
 
 Optional dependencies: 
 
@@ -382,37 +390,60 @@ The following diagram illustrates how the various pieces to Halite interact.
 Testing
 -------
 
-To run the karma jasmine unit test runner
+To run the karma jasmine ``unit test`` runner
 
 .. code-block:: bash
 
   $ cd halite
   $ karma start karma_unit.conf.js
 
-To run the karma angular scenario e2e test runner first start up a web server.
-A multithreaded or asynchronous one will be needed if more than one browser is
-tested at once.
+To run the protractor ``e2e test`` runner first start up a web server. More information
+about using protractor can be found on their website.
 
 Make sure that the end to end test is setup to login to Halite
 
 .. code-block:: bash
-  $ vim halite/test/mock/loginConf.coffee
+  $ vim halite/test/spec-e2e/credentials.coffee
 
 In that file change the following
 
-.. code-block:: javascript
+.. code-block:: coffeescript
 
-   loginInfo =
+   login =
        username: 'your_halite_username'
        password: 'your_halite_password'
 
-Now you can run the tests using the following commands
+Now you can run the tests using the following commands.
+Make sure you have the ``webdriver-manager`` started.
+More info can be found on the `Protractor <https://github.com/angular/protractor>`_
+webpage.
 
 .. code-block:: bash
 
   $ cd halite
-  $ karma start karma_e2e.conf.js
+  $ protractor protractor.conf.js
 
+To run the ``functional`` tests make sure you have the Python ``webtest``
+and ``nose`` modules installed.
+
+Enter your credentials and the minion name in a new file called
+``halite/test/functional/config/override.conf``
+
+.. code-block:: python
+
+  [login]
+  username = your_user_name
+  password = your_password
+
+  [minions]
+  apache = minion_connected_to_this_master
+
+The functional tests can be run via ``nose``.
+
+.. code-block:: bash
+
+  $ cd halite
+  $ nosetests
 
 You might have to build the distribution (for development)
 
