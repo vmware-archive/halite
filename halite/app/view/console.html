@@ -169,6 +169,10 @@
       <span class="highstate-cog-holder pull-right" ng-show="isLoggedIn() && isCheckingForHighstateConsistency()">
         <i class="highstate-cog fa-icon-cog fa-icon-spin"></i>
       </span>
+      <span class="highstate-cog-holder pull-right monitorControls"
+        ng-click="checkHighstateConsistency()" ng-show="isLoggedIn() && !isCheckingForHighstateConsistency()">
+        <i class="highstate-cog fa-icon-cog"></i>
+      </span>
       <div>
         <div class="form-group">
           <div class="btn-group">
@@ -503,8 +507,11 @@
           <span ng-if="minion.highstateStatus.messages.length>0">
             <p class="text-info" ng-repeat="message in minion.highstateStatus.messages">{{message}}</p>
           </span>
-          <p class="text-success" ng-if="minion.highstateStatus == null || minion.highstateStatus.messages.length==0">
+          <p class="text-success" ng-if="minion.highstateStatus.messages.length==0">
             This minion is in the correct state
+          </p>
+          <p class="text-muted" ng-if="minion.highstateStatus == null">
+            Minion state unverified
           </p>
         </div>
         <div class="clearfix"></div>
