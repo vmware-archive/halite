@@ -70,7 +70,6 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
         SaltApiSrvc.run($scope, [cmd])
         .success (data, status, headers, config) =>
           result = data.return?[0]
-          console.log result
           if result.jid?
             job = $scope.startJob(result, cmd)
             job.commit($q).then (donejob) =>
