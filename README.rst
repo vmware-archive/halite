@@ -77,7 +77,7 @@ consistency. All of the inconsistent items will be displayed here for easy
 visualization. The screenshot below shows a message that might appear
 when highstate consistency is disturbed.
 
-.. image: screenshots/HighstateSubtab.png
+.. image:: screenshots/HighstateSubtab.png
 
 The cog icon that appears in the ``Monitor`` section can be clicked to perform
 highstate consistency check. The on demand check only works in the
@@ -85,7 +85,7 @@ scenario where polling is off. In the case where polling is switched on (as
 discussed above) the cog icon will appear to be spinning (and does not respond
 to clicks).
 
-.. image: screenshots/HighstateCheckCog.png
+.. image:: screenshots/HighstateCheckCog.png
 
 Installation quickstart
 =======================
