@@ -67,6 +67,12 @@ These options are depicted in the screenshot below.
 
 .. image:: screenshots/HighstatePollSettings.png
 
+Highstate consistency check results can be seen on the minion view. Minions
+that have inconsistent state have a flag next to them as shown in the screenshot.
+
+.. image:: screenshots/MinionWithFlag.png
+
+
 Installation quickstart
 =======================
 
