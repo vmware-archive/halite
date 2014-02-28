@@ -57,9 +57,7 @@ Highstate Consistency Check
 
 Halite can poll for highstate consistency. This is similar to executing
 ``salt \* state.highstate test=True`` and checking for the results.
-
-.. note::
-  Polling is turned OFF by default.
+Polling is turned ``OFF`` by default.
 
 To switch polling on navigate to the preferences tab and check
 ``highStateCheck.performCheck``. The poll timer can be adjusted using
