@@ -45,6 +45,9 @@ configuration =
             eauth: "pam"
         fetchGrains: false
         preloadJobCache: false
+        highStateCheck:
+            performCheck: false
+            intervalSeconds: 300
 
 prefixify = (views, base) ->
     for name, item of views
