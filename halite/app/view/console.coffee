@@ -580,7 +580,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 mode: 'async'
                 tgt: $scope.minions.keys()[0]
                 expr_form: 'glob'
-
             # command = $scope.snagCommand($scope.humanize(commands), commands)
             SaltApiSrvc.run($scope, command)
             .success (data, status, headers, config) ->

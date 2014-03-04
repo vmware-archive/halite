@@ -10,6 +10,8 @@ describe 'Console Controller Spec', () ->
     disk_usage = null
     test_ping = null
     runner_manage_status = null
+    Itemizer = null
+    Minioner = null
 
     docs =
         'test.ping': 'foo'
@@ -17,8 +19,10 @@ describe 'Console Controller Spec', () ->
 
     beforeEach module('MainApp')
 
-    beforeEach inject ($rootScope, $controller, _$httpBackend_) ->
+    beforeEach inject ($rootScope, $controller, _$httpBackend_, _Itemizer_, _Minioner_) ->
         $scope = $rootScope.$new()
+        Itemizer = _Itemizer_
+        Minioner = _Minioner_
         $httpBackend = _$httpBackend_
 
         docKeys = ['test.ping', 'network.ping']
@@ -127,9 +131,25 @@ describe 'Console Controller Spec', () ->
 
         expect($scope.docSearchResults).toBe('')
 
+    it 'returns immediately when there are no minons', () ->
+      $httpBackend.whenPOST('/run').respond({return: [true]})
+      $httpBackend.whenGET('/static/app/view/console.html').respond('')
+      $scope.fetchDocs()
+      $scope.startJob = jasmine.createSpy('startJob').andCallFake () ->
+        obj =
+          commit: jasmine.createSpy('commitSpy').andCallFake () ->
+            obj2 =
+              then: jasmine.createSpy('thenSpy')
+        return obj
+      $httpBackend.flush()
+      expect($scope.startJob).not.toHaveBeenCalled()
+
     it 'submits a job and calls startJob in fetchDocs', () ->
       $httpBackend.whenPOST('/run').respond({return: [true]})
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
+      $scope.minions = new Itemizer()
+      $scope.minions.set('A', new Minioner('A'))
+      $scope.minions.set('B', new Minioner('B'))
       $scope.fetchDocs()
       $scope.startJob = jasmine.createSpy('startJob').andCallFake () ->
         obj =
@@ -141,8 +161,11 @@ describe 'Console Controller Spec', () ->
       expect($scope.startJob).toHaveBeenCalled()
 
     it 'submits a job and calls commit on job in fetchDocs', () ->
-      $httpBackend.whenPOST('/run').respond({return: [true]})
+      $httpBackend.whenPOST('/run').respond({return: [{'jid': 12345, 'minions': ['A']}]})
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
+      $scope.minions = new Itemizer()
+      $scope.minions.set('A', new Minioner('A'))
+      $scope.minions.set('B', new Minioner('B'))
       $scope.fetchDocs()
       commitSpy = jasmine.createSpy('commitSpy').andCallFake () ->
         obj2 =
@@ -157,6 +180,9 @@ describe 'Console Controller Spec', () ->
     it 'calls success callback on success in fetchDocs', () ->
       $httpBackend.whenPOST('/run').respond({return: [true]})
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
+      $scope.minions = new Itemizer()
+      $scope.minions.set('A', new Minioner('A'))
+      $scope.minions.set('B', new Minioner('B'))
       $scope.fetchDocs()
       $scope.fetchDocsDone = jasmine.createSpy('fetchDocsDone spy')
       commitSpy = jasmine.createSpy('commitSpy').andCallFake ($q) ->
@@ -173,6 +199,9 @@ describe 'Console Controller Spec', () ->
     it 'calls error callback on error in fetchDocs', () ->
       $httpBackend.whenPOST('/run').respond({return: [true]})
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
+      $scope.minions = new Itemizer()
+      $scope.minions.set('A', new Minioner('A'))
+      $scope.minions.set('B', new Minioner('B'))
       $scope.fetchDocs()
       $scope.fetchDocsFailed = jasmine.createSpy('fetchDocsFailed spy')
       commitSpy = jasmine.createSpy('commitSpy').andCallFake ($q) ->
