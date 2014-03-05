@@ -30,19 +30,19 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
       clearOldHighstateStatuses: () ->
         minion.highstateStatus = new HighStateStatus() for minion in minions.values()
         return
-      isHighstateDirty: (stateData) ->
+      highstateDirtyComments: (stateData) ->
         retVal = []
         for mangledName, val of stateData
           {comment, result} = val
           if result isnt true
-            # Needs highstate check
+            # Needs highstate
             retVal.push(comment)
         return retVal
       processHighstateCheckReturns: (items) ->
         @clearOldHighstateStatuses()
         for i, item of items
           {key, val} = item
-          result = @isHighstateDirty val.return
+          result = @highstateDirtyComments val.return
           if result.length > 0
             # Assign dirty status to minion
             minions.get(key)?.highstateStatus = new HighStateStatus(true, result)
