@@ -4,10 +4,10 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
     '$templateCache', '$timeout',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer',
     'Minioner', 'Resulter', 'Jobber', 'ArgInfo', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
-    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', 'HighstateCheck','$filter',
+    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'FetchActives', 'HighstateCheck', 'ErrorReporter','$filter',
     ($scope, $location, $route, $q, $filter, $templateCache, $timeout, Configuration,
     AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
-    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives, HighstateCheck ) ->
+    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, FetchActives, HighstateCheck, ErrorReporter ) ->
         $scope.location = $location
         $scope.route = $route
         $scope.winLoc = window.location
@@ -80,6 +80,15 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.newPagerage = (itemCount) ->
             return (new Pagerage(itemCount))
+
+        $scope.alerts = () ->
+          return ErrorReporter.getAlerts()
+        $scope.closeAlert = (index) ->
+          ErrorReporter.removeAlert(index)
+          return
+        $scope.addAlert = (type, msg) ->
+          ErrorReporter.addAlert(type, msg)
+          return
 
         $scope.grainsSortBy = ["id"]
         $scope.grainsSortBy = ["any", "id", "host", "domain", "server_id"] if AppPref.get('fetchGrains', false)
@@ -395,6 +404,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 $scope.pinging = false
                 return true
             .error (data, status, headers, config) ->
+                ErrorReporter.addAlert("warning", "Failed to ping minions")
                 $scope.pinging = false
 
             return true
@@ -414,6 +424,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return true
 
         $scope.fetchActivesError = (data, status, headers, config) ->
+          ErrorReporter.addAlert("danger", "Cannot determine minion presence!")
           $scope.statusing = false
 
         $scope.fetchActives = () ->
@@ -463,6 +474,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
           .success (data, status, headers, config) ->
             result = data.return[0]
             $scope.tagMap[result.tag.split('/')[2]] = job_id
+          .error () ->
+            ErrorReporter.addAlert("warning", "Failed to lookup info for job #{job_id}")
           return true
 
         $scope.cachedJIDs = []
@@ -527,6 +540,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 return true
             .error (data, status, headers, config) ->
                 $scope.graining = false if noAjax
+                ErrorReporter.addAlert("warning", "Failed to get grains for #{target}")
             return true
 
         $scope.assignGrains = (job) ->
@@ -571,7 +585,8 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return
 
         $scope.fetchDocsFailed = () ->
-            $scope.errorMsg = 'Failed to fetch Docs. Please check system and retry'
+            ErrorReporter.addAlert("warning", 'Failed to fetch Docs. Please check system and retry')
+            return
 
         $scope.fetchDocs = () ->
             return unless $scope.minions?.keys()?.length > 0
@@ -722,7 +737,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     jid = parts[2]
                     if jid != edata.data.jid
                         console.log "Bad job event"
-                        $scope.errorMsg = "Bad job event: JID #{jid} not match #{edata.data.jid}"
+                        ErrorReporter.addAlert('danger', "Bad job event: JID #{jid} not match #{edata.data.jid}")
                         return false
                     $scope.snagJob(jid, edata.data)
                     kind = parts[3]
@@ -732,7 +747,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     jid = parts[2]
                     if jid != edata.data.jid
                         console.log "Bad run event"
-                        $scope.errorMsg = "Bad run event: JID #{jid} not match #{edata.data.jid}"
+                        ErrorReporter.addAlert('danger', "Bad run event: JID #{jid} not match #{edata.data.jid}")
                         return false
                     $scope.snagRunner(jid, edata.data)
                     kind = parts[3]
@@ -742,7 +757,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     jid = parts[2]
                     if jid != edata.data.jid
                         console.log "Bad wheel event"
-                        $scope.errorMsg = "Bad wheel event: JID #{jid} not match #{edata.data.jid}"
+                        ErrorReporter.addAlert('danger', "Bad wheel event: JID #{jid} not match #{edata.data.jid}")
                         return false
                     $scope.snagWheel(jid, edata.data)
                     kind = parts[3]
@@ -752,7 +767,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     mid = parts[2]
                     if mid != edata.data.id
                         console.log "Bad minion event"
-                        $scope.errorMsg = "Bad minion event: MID #{mid} not match #{edata.data.id}"
+                        ErrorReporter.addAlert('danger', "Bad mid event: JID #{mid} not match #{edata.data.jid}")
                         return false
                     $scope.processMinionEvent(mid, edata)
 
@@ -771,12 +786,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 $scope.$emit('Activate')
                 $scope.eventing = false
             , (data) ->
-                console.log "Error Opening Event Stream"
+                ErrorReporter.addAlert('danger', "Error opening event stream")
                 #console.log data
                 if SessionStore.get('loggedIn') == false
-                    $scope.errorMsg = "Cannot open event stream! Must login first!"
+                    ErrorReporter.addAlert('danger', "Cannot open event stream! Must login first!")
                 else
-                    $scope.errorMsg = "Cannot open event stream!"
+                    ErrorReporter.addAlert('danger', "Cannot open event stream!")
                 $scope.eventing = false
                 return data
             return true
@@ -930,6 +945,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
               $scope.setParameters(argSpec['required'], argSpec['defaults'], argSpec['defaults_vals'])
               return true
           .error (data, status, headers, config) ->
+              ErrorReporter.addAlert('info', "Cannot get function signature for #{cmd.module}")
               $scope.setParameters(null, null, null)
               return true
           return true
