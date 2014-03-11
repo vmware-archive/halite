@@ -12,18 +12,19 @@ describe 'Console Controller Spec', () ->
     runner_manage_status = null
     Itemizer = null
     Minioner = null
-
+    ErrorReporter = null
     docs =
         'test.ping': 'foo'
         'network.ping': 'bar'
 
     beforeEach module('MainApp')
 
-    beforeEach inject ($rootScope, $controller, _$httpBackend_, _Itemizer_, _Minioner_) ->
+    beforeEach inject ($rootScope, $controller, _$httpBackend_, _Itemizer_, _Minioner_, _ErrorReporter_) ->
         $scope = $rootScope.$new()
         Itemizer = _Itemizer_
         Minioner = _Minioner_
         $httpBackend = _$httpBackend_
+        ErrorReporter = _ErrorReporter_
 
         docKeys = ['test.ping', 'network.ping']
 
@@ -218,4 +219,4 @@ describe 'Console Controller Spec', () ->
     it 'sets an error message in fetchDocsFailed method', () ->
       $scope.errorMsg = null
       $scope.fetchDocsFailed()
-      expect($scope.errorMsg).not.toBeNull()
+      expect($scope.alerts()).not.toBeNull()
