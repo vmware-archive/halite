@@ -717,7 +717,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             stamp = [   "/#{date.getUTCFullYear()}",
                         "-#{('00' + date.getUTCMonth()).slice(-2)}",
                         "-#{('00' + date.getUTCDate()).slice(-2)}",
-                        "_#{('00' + date.getUTCHours()).slice(-2)}",
+                        "T#{('00' + date.getUTCHours()).slice(-2)}",
                         ":#{('00' + date.getUTCMinutes()).slice(-2)}",
                         ":#{('00' + date.getUTCSeconds()).slice(-2)}",
                         ".#{('000' + date.getUTCMilliseconds()).slice(-3)}"].join("")
