@@ -186,7 +186,7 @@
             </button>
             <button type="button" class="btn btn-default" ng-model="monitorMode"
               ss-toggle-union="'job'">Job<i class="icon-mono"
-                ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'" id="job-button"></i>
+                ng-class="monitorMode=='job' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
             </button>
             <button type="button" class="btn btn-default" ng-model="monitorMode"
               ss-toggle-union="'minion'">Minion<i class="icon-mono"
@@ -366,7 +366,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="box top-border bottom-border animate-fade" ng-show="jobMode">
-        <div class="col-md-12 job-results" ng-if="jobMode == 'result'">
+        <div class="col-md-12 " ng-if="jobMode == 'result'">
           <kvl class="row" ng-repeat="result in job.results.values()">
             <kvi>
               <span class="label" ng-class="result.done?'label-info':'label-primary'">
@@ -507,6 +507,7 @@
         <div class="col-md-12 animate-fade " ng-if="minionMode == 'command'">
           <p>Not implemented yet</p>
         </div>
+
         <div class="col-md-12" ng-if="minionMode == 'highstate'">
           <span ng-if="minion.highstateStatus.messages.length>0">
             <p class="text-info" ng-repeat="message in minion.highstateStatus.messages">{{message}}</p>

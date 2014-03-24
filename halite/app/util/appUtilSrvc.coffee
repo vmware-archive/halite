@@ -193,7 +193,6 @@ class Minioner
         @grains = new Itemizer()
         @jobs = new Itemizer()
         @events = new Itemizer()
-        @highstateStatus = null
         return @
 
     activize: () ->
