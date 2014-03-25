@@ -9,8 +9,8 @@ automatic polling for highstate checks is enabled and ones that get the timeout
 value and convert it to milliseconds.
 This service is intended to be called from a controller.
 ###
-angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSrvc', 'appPrefSrvc']).factory "HighstateCheck",
-  ['AppData', 'Itemizer', 'SaltApiSrvc', 'AppPref', '$q', (AppData, Itemizer, SaltApiSrvc, AppPref, $q) ->
+angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSrvc', 'appPrefSrvc', 'jobSrvc', 'errorReportingSrvc']).factory "HighstateCheck",
+  ['ErrorReporter', 'AppData', 'Itemizer', 'SaltApiSrvc', 'AppPref', '$q', 'JobDelegate', (ErrorReporter, AppData, Itemizer, SaltApiSrvc, AppPref, $q, JobDelegate) ->
 
     if !AppData.get('minions')?
       AppData.set('minions', new Itemizer())
@@ -71,16 +71,18 @@ angular.module("highstateCheckSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSr
         .success (data, status, headers, config) =>
           result = data.return?[0]
           if result.jid?
-            job = $scope.startJob(result, cmd)
+            job = JobDelegate.startJob(result, cmd)
             job.commit($q).then (donejob) =>
               @processHighstateCheckReturns donejob.results.items()
               isCheckingHighstateConsistency = false
               return
+            , (error) =>
+              ErrorReporter.addAlert('danger', 'Failed to determine highstate status. Invalid value returned.')
+              return
           return true
         .error (data, status, headers, config) ->
           isCheckingHighstateConsistency = false
-          console.log "error"
-          console.log data
+          ErrorReporter.addAlert('danger', 'Failed to determine highstate status. HTTP error.')
           return
 
     return servicer

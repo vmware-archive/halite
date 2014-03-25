@@ -219,7 +219,7 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
             events: ($scope, process, tag) ->
                 token = SessionStore.get('saltApiAuth')?.token
                 tag = if tag? then encodeURIComponent(tag) else ""
-                url = "#{base}/event/#{token}?tag=#{tag}"
+                url = "#{base}/event/#{token}"
                 #console.log "event url"
                 #console.log url
                 sse = new EventSource(url);

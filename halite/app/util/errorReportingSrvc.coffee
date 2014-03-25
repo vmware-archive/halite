@@ -1,7 +1,7 @@
 ###
 Service to handle operations related to displayig errors on the UI.
 
-Maintains a list of all alerts. Exposes methods thar add to and remove
+Maintains a list of all alerts. Exposes methods that add to and remove
 items from that list.
 
 Call ErrorReporter.getAlerts() to get the whole list of alerts.
