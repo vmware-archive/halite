@@ -1,4 +1,4 @@
-### 
+###
 Useful directives for the SaltStack Web App
 Uses 'ss' (short for SaltStack) as the prefix to distinguish from built in 'ng'
 
@@ -6,7 +6,7 @@ Uses 'ss' (short for SaltStack) as the prefix to distinguish from built in 'ng'
 
 
 
-appDrtv = angular.module "appDrtv", []
+appDrtv = angular.module "appDrtv", ['appStoreSrvc', 'saltApiSrvc']
 
 # Add custom progress bar since
 # Angular UI is not yet ported to Twitter Bootstrap 3
@@ -24,13 +24,13 @@ appDrtv.directive("ssProgress", ->
 ###
 ss-input-name  ssInputName
 
-This directive enables dynamic naming of form input controls 
+This directive enables dynamic naming of form input controls
 to allow dyanmic form creation
 
 This works around a problem in the angular control directives that the
 control name is a string that is not parsed so it cannot be dynamically
 generated. This causes a problem with form validation as there is no
-way to access the error state of the dynamically generated controls 
+way to access the error state of the dynamically generated controls
 without unique names
 
 Usage:
@@ -48,11 +48,11 @@ $scope.users = [ "John", "Mary"]
 </form>
 ###
 
-appDrtv.directive 'ssInputName', 
+appDrtv.directive 'ssInputName',
     [ '$interpolate', ($interpolate) ->
-        ddo = 
+        ddo =
             restrict: 'A' # only activate on element attribute
-            require: ['?ngModel', '^?form'] 
+            require: ['?ngModel', '^?form']
             link: ($scope, elm, attrs, ctrls)->
                 #return if !ctrls # do nothing if no ctrls
                 ex = $interpolate(elm.attr(attrs.$attr.ssInputName));
@@ -63,7 +63,7 @@ appDrtv.directive 'ssInputName',
                 formCtrl = ctrls[1]
                 formCtrl.$addControl(modelCtrl)
                 return true
-        return ddo        
+        return ddo
     ]
 
 ###
@@ -83,7 +83,7 @@ ss-form-name will set the form name to its computed value
 and replace it as a subform on the form with name given by ss-outer-form
 
 Example:
-$scope.users = 
+$scope.users =
 [
     first: "John"
     last: "Smith"
@@ -106,13 +106,13 @@ $scope.users =
 
 ###
 
-appDrtv.directive 'ssFormName', 
+appDrtv.directive 'ssFormName',
     [ '$interpolate', ($interpolate) ->
-        ddo = 
+        ddo =
             restrict: 'A' # only activate on element attribute
-            require: '?form' 
+            require: '?form'
             link: ($scope, elm, attrs, ctrl)->
-                #return if !ctrl # do nothing if no ctrl 
+                #return if !ctrl # do nothing if no ctrl
                 ex = $interpolate(elm.attr(attrs.$attr.ssFormName));
                 innerFormName = ex($scope)
                 innerFormCtrl = ctrl
@@ -122,19 +122,19 @@ appDrtv.directive 'ssFormName',
                 elm.attr("name",innerFormName)
                 formCtrl.$addControl(innerFormCtrl)
                 return true
-        return ddo        
+        return ddo
     ]
 
 
 ###
 ss-toggle-union ssToggleUnion
 
-Button control that only allows either none or only one of group of buttons 
-to be active at a time. 
+Button control that only allows either none or only one of group of buttons
+to be active at a time.
 
 A click on any inactive button toggles it active and also makes inactive any
 other btn in the group that may be active. Another click on the same btn
-toggles it inactive. 
+toggles it inactive.
 
 Suppose for example there are three buttons in the group. The states of the group
 can be:
@@ -149,7 +149,7 @@ Usage:
 
 Upon click when control element's class includes 'active'
     The control element's class has 'active' removed ie toggled off
-    The control element's associated ngModel property is set to the value given by 
+    The control element's associated ngModel property is set to the value given by
     its ss-toggle-union attribute
 
 Upon click when control element's class does not include 'active'
@@ -157,7 +157,7 @@ Upon click when control element's class does not include 'active'
     The control element's associated ngModel property is set to null
 
 
-Any other elements in the same scope that share the same ngModel property 
+Any other elements in the same scope that share the same ngModel property
 will be made inactive because their render function checks the ngModel property
 to see if it matches the element's associated ss-toggle-union attribute value
 and if not removes 'active' from the elements class
@@ -170,11 +170,11 @@ $scope.toggleModel = 'Middle';
 h4>Toggle Union</h4>
 <pre>{{toggleModel}}</pre>
 <div class="btn-group">
-    <button type="button" class="btn btn-primary" ng-model="toggleModel" 
+    <button type="button" class="btn btn-primary" ng-model="toggleModel"
         ss-toggle-union="'Left'">Left</button>
-    <button type="button" class="btn btn-primary" ng-model="toggleModel" 
+    <button type="button" class="btn btn-primary" ng-model="toggleModel"
         ss-toggle-union="'Middle'">Middle</button>
-    <button type="button" class="btn btn-primary" ng-model="toggleModel" 
+    <button type="button" class="btn btn-primary" ng-model="toggleModel"
         ss-toggle-union="'Right'">Right</button>
 </div>
 
@@ -188,11 +188,11 @@ appDrtv.constant 'toggleUnionConfig',
   toggleEvent: 'click'
 
 
-appDrtv.directive 'ssToggleUnion', 
+appDrtv.directive 'ssToggleUnion',
     [ 'toggleUnionConfig', (toggleUnionConfig) ->
         activeClass = toggleUnionConfig.activeClass || 'active'
         toggleEvent = toggleUnionConfig.toggleEvent || 'click'
-        
+
         ddo =
             restrict: 'A' # only activate on element attribute
             require: 'ngModel'
@@ -200,26 +200,26 @@ appDrtv.directive 'ssToggleUnion',
                 # ctrl should be ngModelController
                 ### Model to View  ###
                 ctrl.$render = () ->
-                    elm.toggleClass( activeClass, 
-                        angular.equals(ctrl.$modelValue, 
+                    elm.toggleClass( activeClass,
+                        angular.equals(ctrl.$modelValue,
                             $scope.$eval(attrs.ssToggleUnion)))
                     return true
-                
+
                 ### View to Model ###
                 elm.bind toggleEvent, () ->
                     if !elm.hasClass(activeClass)
                         $scope.$apply () ->
                             ctrl.$setViewValue $scope.$eval(attrs.ssToggleUnion)
                             ctrl.$render()
-                            return true 
+                            return true
                     else
                         $scope.$apply () ->
                             ctrl.$setViewValue null
                             ctrl.$render()
-                            return true 
-                    
+                            return true
+
                 return true
-        
+
         return ddo
     ]
 
@@ -232,7 +232,7 @@ which will be bootstrap 3 compatible
 
 Apparently the way it works is that a click toggles on the class "open"
 on the parent element of the dropdown-toggle element.
-Via css this results in the sibling element with class "dropdown-menu" 
+Via css this results in the sibling element with class "dropdown-menu"
 becoming visible.
 
 Also the click binds to the click the closeMenu function
@@ -247,7 +247,7 @@ and then is not propagated further.
       </li>
     </ul>
   </li>
-  
+
 <div class="dropdown">
   <button class="btn ss-dropdown-toggle">Action<b class="caret"></b></button>
   <ul class="dropdown-menu">
@@ -263,7 +263,7 @@ and then is not propagated further.
 ###
 
 
-appDrtv.directive 'ssDropdownToggle', 
+appDrtv.directive 'ssDropdownToggle',
     ['$document', '$location', ($document, $location) ->
         openElement = null
         closeMenu = angular.noop
@@ -271,35 +271,35 @@ appDrtv.directive 'ssDropdownToggle',
             restrict: 'CA',
             link: ($scope, elm, attrs) ->
                 $scope.$watch '$location.path', () -> closeMenu()
-                    
+
                 elm.parent().bind 'click', () -> closeMenu()
                 elm.bind 'click', (event) ->
                     elementWasOpen = (elm == openElement)
                     event.preventDefault()
                     event.stopPropagation()
-          
+
                     if !!openElement then closeMenu()
-          
+
                     if !elementWasOpen
                         elm.parent().addClass('open');
                         openElement = elm;
-                        
+
                         closeMenu = (event) ->
                             if event
                                 event.preventDefault()
                                 event.stopPropagation()
-                            
+
                             $document.unbind 'click', closeMenu
                             elm.parent().removeClass 'open'
                             closeMenu = angular.noop
                             openElement = null
                             return true
-                            
+
                         $document.bind 'click', closeMenu
                     return true
-                    
+
                 return true
-                
+
         return ddo
     ]
 
@@ -310,11 +310,11 @@ ss-alert ssAlert
 Replacement for ui-bootstrap alert
 
 
-<ss-alert type="'error'" close="closeAlert()" ng-cloak 
+<ss-alert type="'error'" close="closeAlert()" ng-cloak
       ng-show="!!$parent.errorMsg">Error! {{errorMsg}}
 </ss-alert>
 
-<ss-alert ng-repeat="alert in alerts" type="alert.type" 
+<ss-alert ng-repeat="alert in alerts" type="alert.type"
     close="closeAlert($index)">{{alert.msg}}</ss-alert>
 
 Directive templates replace the directive element.
@@ -326,13 +326,13 @@ appDrtv.directive 'ssAlert', () ->
         templateUrl:'template/alert/ss_alert.html'
         transclude: true
         replace: true
-        scope: 
+        scope:
             type: '=',
             close: '&'
         link: ($scope, elm, attrs, ctlr) ->
             $scope.closeable = attrs.close?;
             return true
-    
+
     return ddo
 
 
@@ -343,19 +343,19 @@ ss-pagination ssPagination Directive
 
 replacement for UI-bootstrap pagination
 
-<ss-pagination 
+<ss-pagination
     class="pagination-sm tight"
-    page="currentPage" 
-    total-items="totalItems" 
+    page="currentPage"
+    total-items="totalItems"
     items-per-page="itemsPerPage"
     max-size="maxSize"
     on-select-page="displayPage(page)"
     num-pages
     direction-links="true"
-    previous-text="&lsaquo;" 
-    next-text="&rsaquo;" 
-    boundary-links="true" 
-    first-text="&laquo;" 
+    previous-text="&lsaquo;"
+    next-text="&rsaquo;"
+    boundary-links="true"
+    first-text="&laquo;"
     last-text="&raquo;">
 </ss-pagination>
 
@@ -366,7 +366,7 @@ $scope.itemsPerPage = 10
 
 $scope.setPage = (pageNo) ->
     $scope.currentPage = pageNo;
-    
+
 $scope.displayPage = (pageNo) ->
     $scope.stuff = "info from page" + pageNo
 
@@ -374,14 +374,14 @@ $scope.displayPage = (pageNo) ->
 
 Pagination Settings attributes of ssPagination element
 
-Settings can be provided as attributes in the <pagination> or 
+Settings can be provided as attributes in the <pagination> or
 globally configured through the paginationConfig.
 
 page  : Current page number. First page is 1.
 total-items  : Total number of items in all pages.
-items-per-page  (Defaults: 10) : Maximum number of items per page. 
+items-per-page  (Defaults: 10) : Maximum number of items per page.
         A value less than one indicates all items on one page.
-on-select-page (page) (Default: null) : An optional expression called when a 
+on-select-page (page) (Default: null) : An optional expression called when a
     page is selected having the page number as argument.
 max-size  (Defaults: null) : Limit number of page buttons to display for pagination size.
 num-pages readonly : Total number of pages to display.
@@ -399,7 +399,7 @@ last-text (Default: 'Last') : Text for Last button.
 ###
 
 
-appDrtv.controller("PaginationController", ["$scope", "$attrs", "$parse", "$interpolate", 
+appDrtv.controller("PaginationController", ["$scope", "$attrs", "$parse", "$interpolate",
 ($scope, $attrs, $parse, $interpolate) ->
     self = this
     @init = (defaultItemsPerPage) ->
@@ -407,50 +407,50 @@ appDrtv.controller("PaginationController", ["$scope", "$attrs", "$parse", "$inte
             $scope.$parent.$watch $parse($attrs.itemsPerPage), (value) ->
                 self.itemsPerPage = parseInt(value, 10)
                 $scope.totalPages = self.calculateTotalPages()
-    
+
         else
              @itemsPerPage = defaultItemsPerPage
-  
+
     @noPrevious = ->
         @page is 1
-  
+
     @noNext = ->
         @page is $scope.totalPages
-  
+
     @isActive = (page) ->
         @page is page
-  
+
     @calculateTotalPages = ->
         (if @itemsPerPage < 1 then 1 else Math.ceil($scope.totalItems / @itemsPerPage))
-  
+
     @getAttributeValue = (attribute, defaultValue, interpolate) ->
         (if angular.isDefined(attribute) then (
-            (if interpolate then $interpolate(attribute)($scope.$parent) 
-            else $scope.$parent.$eval(attribute))) 
+            (if interpolate then $interpolate(attribute)($scope.$parent)
+            else $scope.$parent.$eval(attribute)))
         else defaultValue)
-  
+
     @render = ->
         @page = parseInt($scope.page, 10) or 1
         $scope.pages = @getPages(@page, $scope.totalPages)
-  
+
     $scope.selectPage = (page) ->
         if not self.isActive(page) and page > 0 and page <= $scope.totalPages
             $scope.page = page
             $scope.onSelectPage page: page
-    
+
     $scope.$watch "totalItems", ->
         $scope.totalPages = self.calculateTotalPages()
-  
+
     $scope.$watch "totalPages", (value) ->
         $scope.numPages = value  if $attrs.numPages
         if self.page > value
             $scope.selectPage value
         else
             self.render()
-  
+
     $scope.$watch "page", ->
         self.render()
-    
+
     return true
 ])
 
@@ -497,22 +497,22 @@ appDrtv.directive "ssPagination", ["$parse", "paginationConfig", ($parse, config
             scope.$parent.$watch $parse(attrs.maxSize), (value) ->
                 maxSize = parseInt(value, 10)
                 paginationCtrl.render()
-    
+
         paginationCtrl.getPages = (currentPage, totalPages) ->
             pages = []
-            
+
             # Default page limits
             startPage = 1
             endPage = totalPages
             isMaxSized = (angular.isDefined(maxSize) and maxSize < totalPages)
-            
+
             # recompute if maxSize
             if isMaxSized
                 if rotate
                     # Current page is displayed in the middle of the visible ones
                     startPage = Math.max(currentPage - Math.floor(maxSize / 2), 1)
                     endPage = startPage + maxSize - 1
-                    
+
                     # Adjust if limit is exceeded
                     if endPage > totalPages
                         endPage = totalPages
@@ -520,18 +520,18 @@ appDrtv.directive "ssPagination", ["$parse", "paginationConfig", ($parse, config
                 else
                     # Visible pages are paginated with maxSize
                     startPage = ((Math.ceil(currentPage / maxSize) - 1) * maxSize) + 1
-                    
+
                     # Adjust last page if limit is exceeded
                     endPage = Math.min(startPage + maxSize - 1, totalPages)
-            
+
             # Add page number links
             number = startPage
-    
+
             while number <= endPage
                 page = makePage(number, number, paginationCtrl.isActive(number), false)
                 pages.push page
                 number++
-            
+
             # Add links to move between page sets
             if isMaxSized and not rotate
                 if startPage > 1
@@ -540,14 +540,14 @@ appDrtv.directive "ssPagination", ["$parse", "paginationConfig", ($parse, config
                 if endPage < totalPages
                     nextPageSet = makePage(endPage + 1, "...", false, false)
                     pages.push nextPageSet
-            
+
             # Add previous & next links
             if directionLinks
                 previousPage = makePage(currentPage - 1, previousText, false, paginationCtrl.noPrevious())
                 pages.unshift previousPage
                 nextPage = makePage(currentPage + 1, nextText, false, paginationCtrl.noNext())
                 pages.push nextPage
-            
+
             # Add first & last links
             if boundaryLinks
                 firstPage = makePage(1, firstText, false, paginationCtrl.noPrevious())
@@ -562,15 +562,15 @@ ss-pager ssPager
 
 Replacement for UI-Bootstrap pager directive
 
-Settings can be provided as attributes in the <ss-pager> or globally configured 
-through the pagerConfig. 
+Settings can be provided as attributes in the <ss-pager> or globally configured
+through the pagerConfig.
 
 page  : Current page number. First page is 1.
 total-items  : Total number of items in all pages.
-items-per-page  (Defaults: 10) : Maximum number of items per page. 
+items-per-page  (Defaults: 10) : Maximum number of items per page.
         A value less than one indicates all items on one page.
-on-select-page (page) (Default: null) : An optional expression called when a 
-    page is selected having the page number as argument. 
+on-select-page (page) (Default: null) : An optional expression called when a
+    page is selected having the page number as argument.
 
 Other settings are:
 
@@ -595,14 +595,14 @@ appDrtv.directive "ssPager", ["pagerConfig", (config) ->
         totalItems: "="
         onSelectPage: " &"
         numPages: "="
-  
+
     controller: "PaginationController"
     templateUrl: "template/pagination/pager.html"
     replace: true
     link: (scope, element, attrs, paginationCtrl) ->
-      
+
       # Setup configuration parameters
-      
+
       # Create page object used in template
       makePage = (number, text, isDisabled, isPrevious, isNext) ->
             number: number
@@ -615,10 +615,120 @@ appDrtv.directive "ssPager", ["pagerConfig", (config) ->
       align = paginationCtrl.getAttributeValue(attrs.align, config.align)
       paginationCtrl.init config.itemsPerPage
       paginationCtrl.getPages = (currentPage) ->
-        [makePage(currentPage - 1, previousText, paginationCtrl.noPrevious(), true, false), 
+        [makePage(currentPage - 1, previousText, paginationCtrl.noPrevious(), true, false),
             makePage(currentPage + 1, nextText, paginationCtrl.noNext(), false, true)]
 ]
 
+
+###
+Directive to handle login to Salt.
+Attaches login and logout functionality to $scope.
+
+Prerequisites:
+--------------
+Needs two inputs on $scope that represent the username and password namely
+$scope.login.username
+$scope.login.password
+Example below shows how they are used as:
+
+<ss-login>
+  <form class="navbar-form pull-right" name="loginForm" ng-cloak ng-show="!loggedIn">
+    <div>
+      <span ng-style="{color:'red'}" ng-cloak ng-show="errorMsg">{{errorMsg}}</span>
+    </div>
+    <div class="form-group">
+      <input class="span2" type="text" placeholder="Username" ng-model="login.username" name="username" required>
+      <input class="span2" type="password" placeholder="Password" ng-model="login.password" name="password" required>
+      <button type="submit" class="btn btn-default btn-sm" id="login-button" ng-click="loginUser()" ng-disabled="loginForm.$invalid">Login</button>
+    </div>
+  </form>
+  <form class="navbar-form pull-right" name="logoutForm" ng-cloak ng-show="!!loggedIn">
+    <div>
+      <span ng-style="{color:'red'}" ng-cloak ng-show="errorMsg">{{errorMsg}}  </span>
+    </div>
+    <span class="label label-big label-info" style="vertical-align:middle">{{login.username}}</span>
+    <button type="submit" class="btn btn-default btn-sm" ng-click="logoutUser()">Logout</button>
+  </form>
+</ss-login>
+
+
+Side Effects:
+--------------
+$scope.login.username and $scope.login.password are (re)initialized to empty
+string at directive compile time.
+###
+appDrtv.controller("LoginController", ['SaltApiSrvc', '$rootScope', 'SessionStore', '$scope', '$transclude',
+(SaltApiSrvc, $rootScope, SessionStore, $scope, $transclude) ->
+  $scope.login =
+    username: ""
+    password: ""
+
+  $scope.loggedIn = if SessionStore.get('loggedIn')? then SessionStore.get('loggedIn') else false
+
+  $scope.errorMsg = ""
+
+  $scope.login.username = SessionStore.get('saltApiAuth')?.user
+
+  $scope.logoutUser = () ->
+    $scope.errorMsg = ""
+    $scope.loggedIn = false
+    $scope.login =
+      username: ""
+      password: ""
+
+    $scope.saltApiLogoutPromise = SaltApiSrvc.logout $scope
+    $scope.saltApiLogoutPromise.success (data, status, headers, config) ->
+      #console.log("SaltApi Logout success")
+      #console.log data
+      if data?.return?[0]?
+        SessionStore.set('loggedIn',$scope.loggedIn)
+        SessionStore.remove('saltApiAuth')
+        $rootScope.$broadcast('ToggleAuth', $scope.loggedIn)
+
+        #console.log SessionStore.get('loggedIn')
+        #console.log SessionStore.get('saltApiAuth')
+      return true
+    return true
+
+  $scope.loginUser = () ->
+    $scope.errorMsg = ""
+    #console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
+    $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, $scope.login.username, $scope.login.password
+    $scope.saltApiLoginPromise.success (data, status, headers, config) ->
+      #console.log("SaltApi Login success")
+      #console.log data
+      if data?.return?[0]?
+        auth = data.return[0]
+        saltApiAuth =
+          user: auth.user
+          token: auth.token
+          eauth: auth.eauth
+          start: auth.start
+          expire: auth.expire
+          perms: auth.perms[0]
+
+        $scope.loggedIn = true
+        SessionStore.set('loggedIn', $scope.loggedIn)
+        $scope.username = saltApiAuth.user
+        SessionStore.set('saltApiAuth', saltApiAuth )
+
+        $rootScope.$broadcast('ToggleAuth', $scope.loggedIn)
+
+        #console.log SessionStore.get('loggedIn')
+        #console.log SessionStore.get('saltApiAuth')
+      return true
+
+    return true
+])
+
+appDrtv.directive 'ssLogin', ['SaltApiSrvc', '$rootScope', 'SessionStore', (SaltApiSrvc, $rootScope, SessionStore) ->
+  ddo =
+    restrict: 'E'
+    transclude: true
+    template: '<span ng-transclude></span>'
+    controller: 'LoginController'
+  return ddo
+]
 
 appDrtv.run ["$templateCache", ($templateCache) ->
     $templateCache.put( "template/alert/ss_alert.html",
@@ -629,7 +739,7 @@ appDrtv.run ["$templateCache", ($templateCache) ->
 </div>
     """
     )
-    
+
     $templateCache.put( "template/pagination/ss_pagination.html",
     """
 <ul class="pagination">
@@ -637,7 +747,7 @@ appDrtv.run ["$templateCache", ($templateCache) ->
 </ul>
     """
     )
-    
+
     $templateCache.put( "template/pagination/ss_pager.html",
     """
 <ul class="pager">
@@ -656,4 +766,3 @@ appDrtv.run ["$templateCache", ($templateCache) ->
     """
     )
 ]
-
