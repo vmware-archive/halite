@@ -68,6 +68,9 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$rootScope', '$location', '$route',
         $scope.username = SessionStore.get('saltApiAuth')?.user
 
         $scope.views = Configuration.views
+        $scope.login =
+          username: ''
+          password: ''
 
         $scope.navery =
             'navs': {}
@@ -106,77 +109,19 @@ mainApp.controller 'NavbarCtlr', ['$scope', '$rootScope', '$location', '$route',
             return true
         )
 
-        $scope.login =
-            username: ""
-            password: ""
-
-
-        $scope.logoutUser = () ->
-            $scope.errorMsg = ""
-            $scope.username = null
-            $scope.loggedIn = false
-            $scope.login =
-                username: ""
-                password: ""
-
-            $scope.saltApiLogoutPromise = SaltApiSrvc.logout $scope
-            $scope.saltApiLogoutPromise.success (data, status, headers, config) ->
-                #console.log("SaltApi Logout success")
-                #console.log data
-                if data?.return?[0]?
-                    SessionStore.set('loggedIn',$scope.loggedIn)
-                    SessionStore.remove('saltApiAuth')
-                    $rootScope.$broadcast('ToggleAuth', $scope.loggedIn)
-
-                    #console.log SessionStore.get('loggedIn')
-                    #console.log SessionStore.get('saltApiAuth')
-                return true
-
-            return true
-
-        $scope.loginUser = () ->
-            $scope.errorMsg = ""
-            #console.log "Logging in as #{$scope.login.username} with #{$scope.login.password}"
-            $scope.saltApiLoginPromise = SaltApiSrvc.login $scope, $scope.login.username, $scope.login.password
-            $scope.saltApiLoginPromise.success (data, status, headers, config) ->
-                #console.log("SaltApi Login success")
-                #console.log data
-                if data?.return?[0]?
-                    auth = data.return[0]
-                    saltApiAuth =
-                        user: auth.user
-                        token: auth.token
-                        eauth: auth.eauth
-                        start: auth.start
-                        expire: auth.expire
-                        perms: auth.perms[0]
-
-                    $scope.loggedIn = true
-                    SessionStore.set('loggedIn', $scope.loggedIn)
-                    $scope.username = saltApiAuth.user
-                    SessionStore.set('saltApiAuth', saltApiAuth )
-
-                    $rootScope.$broadcast('ToggleAuth', $scope.loggedIn)
-
-                    #console.log SessionStore.get('loggedIn')
-                    #console.log SessionStore.get('saltApiAuth')
-                return true
-
-            return true
-
-        $scope.loginFormError = () ->
-            msg = ""
-            if $scope.loginForm.$dirty and $scope.loginForm.$invalid
-                requiredFields = ["username", "password"]
-
-                erroredFields =
-                    for name in requiredFields when $scope.loginForm[name].$error.required
-                        $scope.loginForm[name].$name.substring(0,1).toUpperCase() + $scope.loginForm[name].$name.substring(1)
-
-                if erroredFields
-                    msg = erroredFields.join(" & ") + " missing!"
-
-            return msg
+        # $scope.loginFormError = () ->
+        #     msg = ""
+        #     if $scope.loginForm.$dirty and $scope.loginForm.$invalid
+        #         requiredFields = ["username", "password"]
+        #
+        #         erroredFields =
+        #             for name in requiredFields when $scope.loginForm[name].$error.required
+        #                 $scope.loginForm[name].$name.substring(0,1).toUpperCase() + $scope.loginForm[name].$name.substring(1)
+        #
+        #         if erroredFields
+        #             msg = erroredFields.join(" & ") + " missing!"
+        #
+        #     return msg
 
         return true
 ]
