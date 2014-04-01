@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: halite/app/view/home.html
+msgid "About"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Base Url:"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Date:"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Error!"
+msgstr ""
+
+#: halite/app/navbar.html
+msgid "Login"
+msgstr ""
+
+#: halite/app/navbar.html
+msgid "Logout"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Preferences"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Reset"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Update"
+msgstr ""
+
+#: halite/app/view/home.html
+msgid "Version:"
+msgstr ""

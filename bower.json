@@ -6,5 +6,8 @@
     "**/.*",
     "node_modules",
     "components"
-  ]
+  ],
+  "dependencies": {
+    "angular-gettext": "~0.2.8"
+  }
 }
