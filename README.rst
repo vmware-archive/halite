@@ -491,5 +491,7 @@ You might have to build the distribution (for development)
    $ ./prep_dist.py
 
 
+Subtree can be fetched by running ``git subtree pull --prefix=halite/lattice lattice master --squash``
+
 .. ............................................................................
 .. _`halite`: https://github.com/saltstack/halite
