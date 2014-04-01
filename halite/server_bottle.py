@@ -35,10 +35,10 @@ logger = aiding.getLogger(name="Bottle")
 HALITE_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 
 # Web application specific static files
-STATIC_APP_PATH = os.path.join(HALITE_DIR_PATH, 'app')
+STATIC_APP_PATH = os.path.join(HALITE_DIR_PATH, 'lattice/app')
 
 # Third party static web libraries
-STATIC_LIB_PATH =  os.path.join(HALITE_DIR_PATH, 'lib')
+STATIC_LIB_PATH =  os.path.join(HALITE_DIR_PATH, 'lattice/lib')
 
 # Main templates directory
 MOLD_DIR_PATH = os.path.join(HALITE_DIR_PATH, 'mold')
