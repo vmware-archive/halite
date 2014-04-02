@@ -11,10 +11,22 @@ module.exports = (grunt) ->
         'i18n/halite.pot': ['halite/app/*.html',
                             'halite/app/view/*.html']
         }
-      }
+      },
+
+    nggettext_compile: {
+      all: {
+        options: {
+          module: 'MainApp'
+        },
+        files: {
+          'i18n/translations.js': ['i18n/*.po']
+        }
+      },
+    }
 
   # Load external Grunt task plugins.
   grunt.loadNpmTasks "grunt-angular-gettext"
 
   # Default task.
-  grunt.registerTask "default", ["nggettext_extract"]
+  grunt.registerTask "default", ["nggettext_extract", "nggettext_compile"]
+

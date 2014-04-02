@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: Halite\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-04-02\n"
+"Last-Translator: <nicolas.laurance@gmail.com>\n"
+"Language-Team:  <nicolas.laurance@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: fr\n"
+
+#: halite/app/view/home.html
+msgid "About"
+msgstr "À propos"
+
+#: halite/app/view/home.html
+msgid "Base Url:"
+msgstr "Url de base:"
+
+#: halite/app/view/home.html
+msgid "Date:"
+msgstr "Date:"
+
+#: halite/app/view/home.html
+msgid "Error!"
+msgstr "Erreur!"
+
+#: halite/app/navbar.html
+msgid "Login"
+msgstr "Connexion"
+
+#: halite/app/navbar.html
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: halite/app/view/home.html
+msgid "Preferences"
+msgstr "Préférences"
+
+#: halite/app/view/home.html
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: halite/app/view/home.html
+msgid "Update"
+msgstr "Mise à jour"
+
+#: halite/app/view/home.html
+msgid "Version:"
+msgstr "Version:"
