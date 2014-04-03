@@ -7,15 +7,17 @@ describe 'Base Controller Spec', () ->
     Itemizer = null
     Minioner = null
     JobDelegate = null
+    AppData = null
 
     beforeEach module('MainApp')
 
-    beforeEach inject ($rootScope, $controller, _$httpBackend_, _Itemizer_, _Minioner_, _JobDelegate_) ->
+    beforeEach inject ($rootScope, $controller, _$httpBackend_, _Itemizer_, _Minioner_, _JobDelegate_, _AppData_) ->
         $scope = $rootScope.$new()
         Itemizer = _Itemizer_
         Minioner = _Minioner_
         $httpBackend = _$httpBackend_
         JobDelegate = _JobDelegate_
+        AppData = _AppData_
 
         $controller 'BaseController',
             $scope: $scope
@@ -36,9 +38,8 @@ describe 'Base Controller Spec', () ->
     it 'submits a job and calls startJob in fetchDocs', () ->
       $httpBackend.whenPOST('/run').respond({return: [true]})
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
-      $scope.minions = new Itemizer()
-      $scope.minions.set('A', new Minioner('A'))
-      $scope.minions.set('B', new Minioner('B'))
+      AppData.getMinions().set('A', new Minioner('A'))
+      AppData.getMinions().set('B', new Minioner('B'))
       $scope.fetchDocs()
       JobDelegate.startJob = jasmine.createSpy('startJob').andCallFake () ->
         obj =
@@ -52,9 +53,8 @@ describe 'Base Controller Spec', () ->
     it 'submits a job and calls commit on job in fetchDocs', () ->
       $httpBackend.whenPOST('/run').respond({return: [{'jid': 12345, 'minions': ['A']}]})
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
-      $scope.minions = new Itemizer()
-      $scope.minions.set('A', new Minioner('A'))
-      $scope.minions.set('B', new Minioner('B'))
+      AppData.getMinions().set('A', new Minioner('A'))
+      AppData.getMinions().set('B', new Minioner('B'))
       $scope.fetchDocs()
       commitSpy = jasmine.createSpy('commitSpy').andCallFake () ->
         obj2 =
@@ -74,9 +74,8 @@ describe 'Base Controller Spec', () ->
       data.return.push dt
       $httpBackend.whenPOST('/run').respond(data)
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
-      $scope.minions = new Itemizer()
-      $scope.minions.set('A', new Minioner('A'))
-      $scope.minions.set('B', new Minioner('B'))
+      AppData.getMinions().set('A', new Minioner('A'))
+      AppData.getMinions().set('B', new Minioner('B'))
       $scope.fetchDocs()
       $scope.fetchDocsDone = jasmine.createSpy('fetchDocsDone spy')
       commitSpy = jasmine.createSpy('commitSpy').andCallFake ($q) ->
@@ -98,9 +97,8 @@ describe 'Base Controller Spec', () ->
       data.return.push dt
       $httpBackend.whenPOST('/run').respond(data)
       $httpBackend.whenGET('/static/app/view/console.html').respond('')
-      $scope.minions = new Itemizer()
-      $scope.minions.set('A', new Minioner('A'))
-      $scope.minions.set('B', new Minioner('B'))
+      AppData.getMinions().set('A', new Minioner('A'))
+      AppData.getMinions().set('B', new Minioner('B'))
       $scope.fetchDocs()
       $scope.fetchDocsFailed = jasmine.createSpy('fetchDocsFailed spy')
       commitSpy = jasmine.createSpy('commitSpy').andCallFake ($q) ->
@@ -115,6 +113,5 @@ describe 'Base Controller Spec', () ->
       expect($scope.fetchDocsFailed).toHaveBeenCalled()
 
     it 'sets an error message in fetchDocsFailed method', () ->
-      $scope.errorMsg = null
       $scope.fetchDocsFailed()
       expect($scope.alerts()).not.toBeNull()
