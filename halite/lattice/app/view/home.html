@@ -1,12 +1,12 @@
 <div class="row">
   <div class="col-md-12">
     <div class="alert alert-error" ng-cloak ng-show="!!errorMsg">
-      <strong>Error!</strong> {{errorMsg}}
+      <strong translate>Error!</strong> {{errorMsg}}
     </div>
-    <h3>About</h3>
-    <p>Version: {{config.version}}</p>
-    <p>Date: {{config.date}}</p>
-    <p>Base Url: {{config.baseUrl}}</p>
+    <h3 translate>About</h3>
+    <p><span translate>Version: </span>{{config.version}}</p>
+    <p><span translate>Date: </span>{{config.date}}</p>
+    <p><span translate>Base Url: </span>{{config.baseUrl}}</p>
   </div><!--/span-->
 </div><!--/row-->
 
@@ -14,7 +14,7 @@
 <ng-form name="prefForm" class="form-inline">
   <div class="row">
     <div class="col-md-12">
-      <legend>Preferences</legend>
+      <legend translate>Preferences</legend>
       <div ng-repeat="item in prefs.items()">
         <div ng-if="!isObject(item.val)">
           <div class="checkbox" ng-if="isBoolean(item.val)">
@@ -74,8 +74,8 @@
   <div class='row col-md-12'>
     <p></p>
     <div class="form-group">
-      <button class="btn btn-default" ng-click="resetPrefs()">Reset</button>
-      <button  class="btn btn-primary" type="submit" ng-click="updatePrefs()">Update</button>
+      <button class="btn btn-default" ng-click="resetPrefs()" translate>Reset</button>
+      <button  class="btn btn-primary" type="submit" ng-click="updatePrefs()" translate>Update</button>
     </div>
   </div>
 </ng-form> <!-- outer form-->

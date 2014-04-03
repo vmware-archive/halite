@@ -16,7 +16,7 @@
   "author": "SaltStack",
   "license": "BSD",
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~0.4.4",
     "karma-script-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-chrome-launcher": "~0.1.0",
@@ -29,6 +29,7 @@
     "karma-safari-launcher": "~0.1.1",
     "karma-ng-scenario": "~0.1.0",
     "karma-junit-reporter": "~0.1.0",
-    "coffee-script": "~1.7.1"
+    "coffee-script": "~1.7.1",
+    "grunt-angular-gettext": "~0.2.12"
   }
 }
