@@ -4,18 +4,6 @@ Service to handle event processing.
 angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc', 'appPrefSrvc', 'jobSrvc']).factory "EventDelegate",
   ['AppData', 'Itemizer', 'AppPref', '$q', 'ErrorReporter', 'JobDelegate', (AppData, Itemizer, AppPref, $q, ErrorReporter, JobDelegate) ->
 
-    if !AppData.get('minions')?
-      AppData.set('minions', new Itemizer())
-    minions = AppData.get('minions')
-
-    if !AppData.get('jobs')?
-      AppData.set('jobs', new Itemizer())
-    jobs = AppData.get('jobs')
-
-    if !AppData.get('events')?
-      AppData.set('events', new Itemizer())
-    events = AppData.get('events')
-
     servicer =
       processKeyEvent: (edata) ->
         data = edata.data
@@ -33,7 +21,7 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
         $scope.fetchGrains(mid) if AppPref.get('fetchGrains', false)
         return minion
       processWheelEvent: (jid, kind, edata) ->
-        job = jobs.get(jid)
+        job = AppData.getJobs().get(jid)
         job.processEvent(edata)
         data = edata.data
         if kind == 'new'
@@ -42,7 +30,7 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
           job.processRetEvent(data)
         return job
       processRunEvent: ($scope, jid, kind, edata) ->
-        job = jobs.get(jid)
+        job = AppData.getJobs().get(jid)
         job.processEvent(edata)
         data = edata.data
         if kind == 'new'
@@ -53,7 +41,7 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
           job.processRetEvent(data)
         return job
       processJobEvent: (jid, kind, edata) ->
-        job = jobs.get(jid)
+        job = AppData.getJobs().get(jid)
         job.processEvent(edata)
         data = edata.data
         if kind == 'new'
@@ -86,7 +74,7 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
           edata.data._stamp = @stamp()
         edata.utag = [edata.tag, edata.data._stamp].join("/")
         edata.data.stamp = edata.data._stamp # fixes ng 1.2 error expression private data
-        events.set(edata.utag, edata)
+        AppData.getEvents().set(edata.utag, edata)
         parts = edata.tag.split("/") # split on "/" character
         if parts[0] is 'salt'
           if parts[1] is 'job'

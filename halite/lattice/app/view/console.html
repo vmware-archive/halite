@@ -337,7 +337,7 @@
 <div class="row" ng-show="monitorMode == 'job'">
   <div class="col-md-12 box flat-top wide">
     <p ng-if="graining"><i class="fa-icon-spinner fa-icon-spin displayed-in-center"></i></p>
-    <div ng-if="!graining" class="box box-no-border" ng-repeat="job in jobs.values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager">
+    <div ng-if="!graining" class="box box-no-border" ng-repeat="job in getJobs().values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager">
       <div class="pull-left">
         <span class="badge" title="Failure status: Green=success, Red=fail"
             ng-class="job.fail?'badge-danger':'badge-success'">
@@ -447,7 +447,7 @@
 <div class="row"  ng-show="monitorMode == 'minion'">
   <div class="col-md-12 box flat-top wide">
     <p ng-if="graining"><i class="fa-icon-spinner fa-icon-spin displayed-in-center"></i></p>
-    <div ng-if="!graining" class="box box-no-border" ng-repeat="minion in minions.values() | filter:filterage.express | pagerize:minionPager">
+    <div ng-if="!graining" class="box box-no-border" ng-repeat="minion in getMinions().values() | filter:filterage.express | pagerize:minionPager">
       <span class="pull-right" ng-show="minion.highstateStatus.dirty"><i class="fa-icon-flag"></i></span>
       <div class="pull-left">
         <span class="badge" title="Latest active status: Green=up, Red=down"
@@ -560,7 +560,7 @@
 
 <div class="row" ng-show="monitorMode == 'event'">
   <div class="col-md-12 box flat-top wide" >
-    <div class="box box-no-border" ng-repeat="event in events.values().reverse() | pagerize:eventPager">
+    <div class="box box-no-border" ng-repeat="event in getEvents().values().reverse() | pagerize:eventPager">
       <div>
         <span class="nook">{{event.data.stamp}}</span>&nbsp;
         <span class="nook" title="Event Tag">{{event.tag}}</span>&nbsp;
