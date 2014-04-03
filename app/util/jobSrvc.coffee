@@ -7,14 +7,6 @@ angular.module("jobSrvc", ['appUtilSrvc']).factory "JobDelegate",
   ['AppData', 'Itemizer', 'Wheeler', 'Jobber', 'Minioner', 'Runner',
   (AppData, Itemizer, Wheeler, Jobber, Minioner, Runner) ->
 
-    if !AppData.get('minions')?
-      AppData.set('minions', new Itemizer())
-    minions = AppData.get('minions')
-
-    if !AppData.get('jobs')?
-      AppData.set('jobs', new Itemizer())
-    jobs = AppData.get('jobs')
-
     if !AppData.get('events')?
       AppData.set('events', new Itemizer())
     events = AppData.get('events')
@@ -42,23 +34,23 @@ angular.module("jobSrvc", ['appUtilSrvc']).factory "JobDelegate",
         job.initResults(result.minions)
         return job
       snagWheel: (jid, cmd) -> #get or create Wheeler
-        if not jobs.get(jid)?
+        if not AppData.getJobs().get(jid)?
           job = new Wheeler(jid, cmd)
-          jobs.set(jid, job)
-        return (jobs.get(jid))
+          AppData.getJobs().set(jid, job)
+        return (AppData.getJobs().get(jid))
       snagRunner: (jid, cmd) -> #get or create Runner
-        if not jobs.get(jid)?
+        if not AppData.getJobs().get(jid)?
           job = new Runner(jid, cmd)
-          jobs.set(jid, job)
-        return (jobs.get(jid))
+          AppData.getJobs().set(jid, job)
+        return (AppData.getJobs().get(jid))
       snagMinion: (mid) -> # get or create Minion
-        if not minions.get(mid)?
-          minions.set(mid, new Minioner(mid))
-        return (minions.get(mid))
+        if not AppData.getMinions().get(mid)?
+          AppData.getMinions().set(mid, new Minioner(mid))
+        return (AppData.getMinions().get(mid))
       snagJob: (jid, cmd) -> #get or create Jobber
-        if not jobs.get(jid)?
+        if not AppData.getJobs().get(jid)?
           job = new Jobber(jid, cmd)
-          jobs.set(jid, job)
-        return (jobs.get(jid))
+          AppData.getJobs().set(jid, job)
+        return (AppData.getJobs().get(jid))
     return servicer
   ]

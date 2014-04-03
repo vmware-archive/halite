@@ -23,22 +23,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
         $scope.commanding = false
         $scope.docSearch = false
 
-        if !AppData.get('commands')?
-            AppData.set('commands', new Itemizer())
-        $scope.commands = AppData.get('commands')
-
-        if !AppData.get('jobs')?
-            AppData.set('jobs', new Itemizer())
-        $scope.jobs = AppData.get('jobs')
-
-        if !AppData.get('minions')?
-            AppData.set('minions', new Itemizer())
-        $scope.minions = AppData.get('minions')
-
-        if !AppData.get('events')?
-            AppData.set('events', new Itemizer())
-        $scope.events = AppData.get('events')
-
         $scope.newPagerage = (itemCount) ->
             return (new Pagerage(itemCount))
 
@@ -357,54 +341,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
             return true
 
-        $scope.tagMap = {}
-
-        $scope.lookupJID = (job_id) ->
-          command =
-            fun: 'runner.jobs.lookup_jid'
-            kwarg:
-              jid: job_id
-
-          SaltApiSrvc.run($scope, command)
-          .success (data, status, headers, config) ->
-            result = data.return[0]
-            $scope.tagMap[result.tag.split('/')[2]] = job_id
-          return true
-
-        $scope.cachedJIDs = []
-        $scope.failedCachedJIDs = []
-
-        $scope.$on "CacheFetch", (event, edata) ->
-          if edata?
-            $scope.cachedJIDs = _.difference($scope.cachedJIDs, [edata.jid])
-            $scope.failedCachedJIDs.push(edata.jid) unless edata.success
-          $scope.lookupJID($scope.cachedJIDs[0]) unless $scope.cachedJIDs.length == 0
-          return
-
-        $scope.preloadJobCache = () ->
-          command =
-            fun: 'runner.jobs.list_jobs'
-            tgt: []
-
-          SaltApiSrvc.run($scope, command)
-          .success (data, status, headers, config) ->
-              result = data.return[0]
-              job = JobDelegate.startRun(result, command)
-              job.commit($q).then (donejob) ->
-                for jid, val of donejob.results.items()[0].val.results()[0]
-                  cmd =
-                    fun: val.Function
-                  cmd.tgt = val.Target if val.Target?
-                  if not $scope.jobs.get(jid)
-                    $scope.jobs.set(jid, new Runner(jid, cmd))
-                    $scope.cachedJIDs.push(jid)
-                $scope.$emit("CacheFetch")
-              , () ->
-                ErrorReporter.addAlert("warning", "List all jobs failed! Please retry")
-                return true
-              return true
-          return true
-
         $scope.searchDocs = () ->
             if not $scope.command.cmd.fun? or not $scope.docSearch or $scope.command.cmd.fun == ''
                 $scope.docSearchResults = ''
@@ -417,27 +353,6 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.isSearchable = () ->
             return $scope.docsLoaded
-
-        $scope.processLookupJID = (data) ->
-          results = new Itemizer()
-          for key, val of data.return
-            result = new Resulter()
-            result.return = val
-            result.id = key
-            results.set(key, result)
-            if data.success
-              result.done = true
-              result.success = true
-              result.fail = false
-            $scope.jobs.get($scope.tagMap[data.jid])?.results = results
-          if data.success
-            $scope.jobs.get($scope.tagMap[data.jid])?.done = true
-            $scope.jobs.get($scope.tagMap[data.jid])?.fail = false
-            $scope.$emit("CacheFetch", {succes: true, jid: $scope.tagMap[data.jid]})
-          if not data.success
-            $scope.jobs.get($scope.tagMap[data.jid])?.done = false
-            $scope.jobs.get($scope.tagMap[data.jid])?.fail = true
-            $scope.$emit("CacheFetch", {succes: false, jid: $scope.tagMap[data.jid]})
 
         $scope.testClick = (name) ->
             console.log "click #{name}"
@@ -511,12 +426,12 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             return {required: required, defaults: defaults, defaults_vals: defaults_vals}
 
         $scope.argSpec = () ->
-          return unless $scope.minions?.keys()?.length > 0
+          return unless $scope.getMinions()?.keys()?.length > 0
           cmd =
             module: $scope.command.cmd.fun
             client: 'minion'
             mode: 'sync'
-            tgt: $scope.minions.keys()[0]
+            tgt: $scope.getMinions().keys()[0]
 
           SaltApiSrvc.signature($scope, cmd)
           .success (data, status, headers, config) ->
