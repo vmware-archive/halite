@@ -111,8 +111,8 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
               return false
             @processMinionEvent($scope, mid, edata)
 
-         else if parts[1] is 'key'
-           @processKeyEvent(edata)
+          else if parts[1] is 'key'
+            @processKeyEvent(edata)
 
         return edata
     return servicer
