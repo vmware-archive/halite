@@ -25,8 +25,17 @@ angular.module("appDataSrvc", ['appConfigSrvc', "appUtilSrvc"]).factory "AppData
     JOBS = 'jobs'
     MINIONS = 'minions'
     EVENTS = 'events'
+    COMMANDS = 'commands'
+
+    appData[JOBS] = new Itemizer()
+    appData[COMMANDS] = new Itemizer()
+    appData[MINIONS] = new Itemizer()
+    appData[EVENTS] = new Itemizer()
 
     servicer =
+      getCommands: () ->
+        return @get(COMMANDS)
+
       getJobs: () ->
         return @get(JOBS)
 
@@ -64,7 +73,7 @@ angular.module("appDataSrvc", ['appConfigSrvc', "appUtilSrvc"]).factory "AppData
         return (key for own key of appData)
 
       clearSaltData: () ->
-        @set('commands', new Itemizer())
+        @set(COMMANDS, new Itemizer())
         @set(JOBS, new Itemizer())
         @set(MINIONS, new Itemizer())
         @set(EVENTS, new Itemizer())
