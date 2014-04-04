@@ -7,7 +7,7 @@ class ConsolePage
     element(By.css('#login-button')).click()
 
   getManagePresentRow: () ->
-    return element(By.repeater('job in jobs.values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager').row(1))
+    return element(By.repeater('job in getJobs().values() | filter:jobPresentationFilter | orderBy:sortJobs:jobReverse | pagerize:jobPager').row(1))
 
   getJobButton: () ->
     return element(By.css('#job-button'))
