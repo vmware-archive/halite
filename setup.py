@@ -20,7 +20,7 @@ pkg_files = [
               'lib/*/*.png','lib/*/*/*.png',
               'lib/*/*.woff', 'lib/*/*/*.woff',
               'lib/angular/*.min.js', 'lib/angular/*.min.js.map',
-              'lib/angular/i18n/*','lib/angular/angular-csp.css',
+              'lib/angular/i18n/*',
               'lib/angular/angular-loader.js',
               'lib/angular-ui/bootstrap/*-tpls.min.js',
               'lib/angular-ui/router/*.min.js',
