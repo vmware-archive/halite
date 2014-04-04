@@ -9,13 +9,11 @@ mainApp.controller 'BaseController', ['$scope', '$location', '$route', '$q', '$f
     AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
     Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, ErrorReporter, HighstateCheck, EventDelegate, JobDelegate ) ->
 
-
-      if !AppData.get('commands')?
-          AppData.set('commands', new Itemizer())
-      $scope.commands = AppData.get('commands')
-
       $scope.getAppData = () ->
         AppData
+
+      $scope.getCommands = () ->
+        return AppData.getCommands()
 
       $scope.getJobs = () ->
         return AppData.getJobs()
@@ -81,9 +79,9 @@ mainApp.controller 'BaseController', ['$scope', '$location', '$route', '$q', '$f
           return job
 
       $scope.snagCommand = (name, cmds) -> #get or create Command
-          unless $scope.commands.get(name)?
-              $scope.commands.set(name, new Commander(name, cmds))
-          return ($scope.commands.get(name))
+          unless $scope.getCommands().get(name)?
+              $scope.getCommands().set(name, new Commander(name, cmds))
+          return ($scope.getCommands().get(name))
 
       $scope.fetchActives = () ->
           cmd =

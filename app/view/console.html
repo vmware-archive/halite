@@ -263,7 +263,7 @@
 
 <div class="row" ng-show="monitorMode == 'command'">
   <div class="col-md-12 box flat-top wide" >
-    <div class="box box-no-border" ng-repeat="command in commands.values() | orderBy:sortCommands:commandReverse | pagerize:commandPager">
+    <div class="box box-no-border" ng-repeat="command in getCommands().values() | orderBy:sortCommands:commandReverse | pagerize:commandPager">
       <div class="btn-toolbar">
         <div class="btn-group pull-left" >
           <button class="btn btn-default btn-sm" title="Command Function. Click to run again."
