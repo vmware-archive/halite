@@ -1,3 +1,23 @@
+0.1.16 (2014-04-)
+=========
+
+Features
+--------
+Add highstate consistency check. (As a result of a brainstorming session with  Dan Garthwaite at Salt Conf - 2014)
+New service to handle alerts
+Add job service
+Documentation changes
+Change e2e framework to Protractor
+
+Fixes
+-----
+Refactor events to own service
+Refactor Job handling to be in it's own service
+Refactor Minion, Command, Event and Job storage so that App Data is the single source of information for them
+Move preload cache to base scope
+Move methods to base scope so that they are available to all views
+Add tests
+
 0.1.15 (2013-12-20)
 ==================
 
