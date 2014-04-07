@@ -456,5 +456,11 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
             $scope.fetchGrains mid, false
             return true
 
+        $scope.clearSaltData = () ->
+            $scope.command.history = {}
+            return
+
+        $scope.$on "ClearSaltData", $scope.clearSaltData
+
         return true
     ]
