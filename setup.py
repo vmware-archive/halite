@@ -20,7 +20,7 @@ pkg_files = [
               'lib/*/*.png','lib/*/*/*.png',
               'lib/*/*.woff', 'lib/*/*/*.woff',
               'lib/angular/*.min.js', 'lib/angular/*.min.js.map',
-              'lib/angular/i18n/*','lib/angular/angular-csp.css',
+              'lib/angular/i18n/*',
               'lib/angular/angular-loader.js',
               'lib/angular-ui/bootstrap/*-tpls.min.js',
               'lib/angular-ui/router/*.min.js',
@@ -32,7 +32,7 @@ pkg_files = [
 pkg_files = ['lattice/{0}'.format(x) for x in pkg_files]
 setup(
     name = 'halite',
-    version = '0.1.15',
+    version = '0.1.16',
     description = 'SaltStack Web UI',
     url = 'https://github.com/saltstack/halite',
     author='SaltStack Inc',

@@ -12,7 +12,7 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
         if data.result is true
           if data.act is 'delete'
             minion.unlinkJobs()
-            minions.del(mid)
+            AppData.getMinions().del(mid)
         return minion
       processMinionEvent: ($scope, mid, edata) ->
         minion = JobDelegate.snagMinion(mid)
@@ -111,8 +111,8 @@ angular.module("eventSrvc", ['appConfigSrvc', 'appUtilSrvc', 'errorReportingSrvc
               return false
             @processMinionEvent($scope, mid, edata)
 
-         else if parts[1] is 'key'
-           @processKeyEvent(edata)
+          else if parts[1] is 'key'
+            @processKeyEvent(edata)
 
         return edata
     return servicer
