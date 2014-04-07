@@ -165,6 +165,7 @@ mainApp.controller 'BaseController', ['$scope', '$location', '$route', '$q', '$f
 
       $scope.clearSaltData = () ->
         AppData.clearSaltData()
+        $scope.$broadcast "ClearSaltData"
 
       $scope.authListener = (event, loggedIn) ->
           #console.log "Received #{event.name}"
