@@ -1,10 +1,13 @@
 {
   "name": "halite",
   "version": "0.0.1",
-  "main": "halite/app/main.html",
+  "main": "halite/lattice/app/main.html",
   "ignore": [
     "**/.*",
     "node_modules",
     "components"
-  ]
+  ],
+  "dependencies": {
+    "angular-gettext": "~0.2.8"
+  }
 }

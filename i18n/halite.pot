@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: halite/lattice/app/view/home.html
+msgid "About"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Action"
+msgstr ""
+
+#: halite/lattice/app/view/home.html
+msgid "Base Url:"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Command"
+msgstr ""
+
+#: halite/lattice/app/view/home.html
+msgid "Date:"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Doc Search Results"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+#: halite/lattice/app/view/home.html
+msgid "Error!"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Event"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Execute"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Find"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Function"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Grain"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Highstate"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Live Doc Search"
+msgstr ""
+
+#: halite/lattice/app/navbar.html
+msgid "Login"
+msgstr ""
+
+#: halite/lattice/app/navbar.html
+msgid "Logout"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Macro"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Monitor"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "No grains"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "No minion events"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Not implemented yet"
+msgstr ""
+
+#: halite/lattice/app/navbar.html
+msgid "Password"
+msgstr ""
+
+#: halite/lattice/app/view/home.html
+msgid "Preferences"
+msgstr ""
+
+#: halite/lattice/app/view/project.html
+msgid "Project View"
+msgstr ""
+
+#: halite/lattice/app/view/home.html
+msgid "Reset"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Result"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "State"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Target"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Target Format"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "Test"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "This minion is in the correct state"
+msgstr ""
+
+#: halite/lattice/app/view/home.html
+msgid "Update"
+msgstr ""
+
+#: halite/lattice/app/navbar.html
+msgid "Username"
+msgstr ""
+
+#: halite/lattice/app/view/home.html
+msgid "Version:"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "in"
+msgstr ""
+
+#: halite/lattice/app/view/console.html
+msgid "per page"
+msgstr ""

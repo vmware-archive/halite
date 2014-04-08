@@ -1,0 +1,156 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Halite\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-04-03 20:00+0100\n"
+"Last-Translator: Nicolas Laurance <nicolas.laurance@gmail.com>\n"
+"Language-Team:  <nicolas.laurance@gmail.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: halite/lattice/app/view/home.html
+msgid "About"
+msgstr "À propos"
+
+#: halite/lattice/app/view/console.html
+msgid "Action"
+msgstr "Action"
+
+#: halite/lattice/app/view/home.html
+msgid "Base Url:"
+msgstr "Url de base:"
+
+#: halite/lattice/app/view/console.html
+msgid "Command"
+msgstr "Commande"
+
+#: halite/lattice/app/view/home.html
+msgid "Date:"
+msgstr "Date:"
+
+#: halite/lattice/app/view/console.html
+msgid "Doc Search Results"
+msgstr "Résultats de la recherche dans la documentation"
+
+#: halite/lattice/app/view/console.html halite/lattice/app/view/home.html
+msgid "Error!"
+msgstr "Erreur!"
+
+#: halite/lattice/app/view/console.html
+msgid "Event"
+msgstr "Evénement"
+
+#: halite/lattice/app/view/console.html
+msgid "Execute"
+msgstr "Exécuter"
+
+#: halite/lattice/app/view/console.html
+msgid "Find"
+msgstr "Chercher"
+
+#: halite/lattice/app/view/console.html
+msgid "Function"
+msgstr "Fonction"
+
+#: halite/lattice/app/view/console.html
+msgid "Grain"
+msgstr "Grain"
+
+#: halite/lattice/app/view/console.html
+msgid "Highstate"
+msgstr "Highstate"
+
+#: halite/lattice/app/view/console.html
+msgid "Live Doc Search"
+msgstr "Documentation en ligne"
+
+#: halite/lattice/app/navbar.html
+msgid "Login"
+msgstr "Connexion"
+
+#: halite/lattice/app/navbar.html
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: halite/lattice/app/view/console.html
+msgid "Macro"
+msgstr "Macro"
+
+#: halite/lattice/app/view/console.html
+msgid "Monitor"
+msgstr "Superviseur"
+
+#: halite/lattice/app/view/console.html
+msgid "No grains"
+msgstr "Pas de grains"
+
+#: halite/lattice/app/view/console.html
+msgid "No minion events"
+msgstr "Pas d'évènement sur le minion"
+
+#: halite/lattice/app/view/console.html
+msgid "Not implemented yet"
+msgstr "Pas encore implémenté"
+
+#: halite/lattice/app/navbar.html
+msgid "Password"
+msgstr "Mot de passe"
+
+#: halite/lattice/app/view/home.html
+msgid "Preferences"
+msgstr "Préférences"
+
+#: halite/lattice/app/view/project.html
+msgid "Project View"
+msgstr "Vue Projet"
+
+#: halite/lattice/app/view/home.html
+msgid "Reset"
+msgstr "Réinitialiser"
+
+#: halite/lattice/app/view/console.html
+msgid "Result"
+msgstr "Résultat"
+
+#: halite/lattice/app/view/console.html
+msgid "State"
+msgstr "Etat"
+
+#: halite/lattice/app/view/console.html
+msgid "Target"
+msgstr "Cible"
+
+#: halite/lattice/app/view/console.html
+msgid "Target Format"
+msgstr "Format de cible"
+
+#: halite/lattice/app/view/console.html
+msgid "Test"
+msgstr "Test"
+
+#: halite/lattice/app/view/console.html
+msgid "This minion is in the correct state"
+msgstr "Ce minion est conforme"
+
+#: halite/lattice/app/view/home.html
+msgid "Update"
+msgstr "Mise à jour"
+
+#: halite/lattice/app/navbar.html
+msgid "Username"
+msgstr "Identifiant"
+
+#: halite/lattice/app/view/home.html
+msgid "Version:"
+msgstr "Version:"
+
+#: halite/lattice/app/view/console.html
+msgid "in"
+msgstr "dans"
+
+#: halite/lattice/app/view/console.html
+msgid "per page"
+msgstr "par page"

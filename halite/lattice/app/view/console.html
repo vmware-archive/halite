@@ -1,14 +1,14 @@
 <div class="row">
   <div class="col-md-12">
     <ss-alert ng-repeat="alert in alerts()" type="alert.type" close="closeAlert($index)" ng-cloak>
-      Error! {{alert.msg}}
+      <span translate>Error! </span>{{alert.msg}}
     </ss-alert>
   </div>
 </div>
 
 <div class="row monitorHeader">
   <div class="col-md-12 box box-title-bar">
-    <p class="text-center tight">Command
+    <p class="text-center tight"><span translate>Command</span>
         <span class="form-group" id="leftMarginAdded">
           <span class="btn-group pull-right monitorControls">
             <i class="fa-icon-chevron-down icon-black" title="Click to toggle command form display"
@@ -37,7 +37,7 @@
       </span>
       <div class="form-group">
         <div class="form-group skinnish">
-          <label class="control-label tight" for="idExpressionFormat">Target Format</label>
+          <label class="control-label tight" for="idExpressionFormat" translate>Target Format</label>
           <select class="form-control"
             id="idExpressionFormat"
             placeholder="Enter minion target pattern"
@@ -47,7 +47,7 @@
             ng-options="val as key for (key, val) in expressionFormats"></select>
         </div>
         <div class="form-group skinnish" >
-          <label class="control-label tight">Macro</label>
+          <label class="control-label tight" translate>Macro</label>
           <div class="btn-group btn-group-left">
             <a class="btn btn-default" ng-href="" ng-click="ply(actions.Test.ping)"
                 title="Ping minions that match target">
@@ -55,16 +55,16 @@
                   ng-class="pinging?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-bullhorn';">
               </i>
             </a>
-            <a class="btn btn-default rightmost ss-dropdown-toggle" ng-href="" id="right-border-styled">Action
+            <a class="btn btn-default rightmost ss-dropdown-toggle" ng-href="" id="right-border-styled"><span translate>Action</span>
               <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li class="nav-header">State</li>
+              <li class="nav-header" translate>State</li>
               <li ng-repeat="(name, cmd) in actions.State track by $index">
                 <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
               </li>
               <li class="divider"></li>
-              <li class="nav-header">Test</li>
+              <li class="nav-header" translate>Test</li>
               <li ng-repeat="(name, cmd) in actions.Test track by $index">
                 <a ng-href="" ng-click="ply(cmd)">{{name}}</a>
               </li>
@@ -74,7 +74,7 @@
             ng-model="command.cmd.tgt" title="Minion command target pattern">
         </div>
         <div class="form-group fatter">
-          <label class="control-label tight" for="idFunctionTarget">Target</label>
+          <label class="control-label tight" for="idFunctionTarget" translate>Target</label>
           <input type="text" class="form-control"
             id="idFunctionTarget"
             placeholder="Enter minion target pattern"
@@ -85,7 +85,7 @@
             required="true">
         </div>
         <div class="form-group fatter">
-          <label class="control-label tight" for="idModuleFunction">Function</label>
+          <label class="control-label tight" for="idModuleFunction" translate>Function</label>
           <input type="search" class="form-control"
             id="idModuleFunction"
             required="true"
@@ -124,17 +124,17 @@
                 ng-disabled="!canExecuteCommands()">
               <i class="fa-icon-play"
                 ng-class="commanding?'fa-icon-spinner fa-icon-spin icon-blue':'fa-icon-play';">
-              </i>Execute
+              </i><span translate>Execute</span>
             </button>
           </div>
         </div>
       </div>
       <hr />
-      <Label>Doc Search Results</Label>
+      <Label translate>Doc Search Results</Label>
       <div class="checkbox">
         <label>
           <input type="checkbox" ng-disabled="!isSearchable()"
-            ng-change="searchDocs()" ng-model="docSearch" id="search-checkbox"> Live Doc Search
+            ng-change="searchDocs()" ng-model="docSearch" id="search-checkbox"><span translate>Live Doc Search</span>
           </label>
       </div>
       <pre ng-show="!!docSearchResults">{{docSearchResults}}</pre>
@@ -145,7 +145,7 @@
 
 <div class="row monitorHeader">
   <div class="col-md-12 box box-title-bar">
-    <p class="text-center tight">Monitor
+    <p class="text-center tight"><span translate>Monitor</span>
       <span class="form-group pull-right" >
         <span class="btn-group monitorControls">
           <i ng-click="openEventStream()" class="fa-icon-rss"
@@ -201,7 +201,7 @@
 
         <div class="form-group" ng-show="monitorMode == 'minion'">
           &nbsp;&nbsp;
-          <label>Find</label>
+          <label translate>Find</label>
           <div class="input-group input-group-fix">
             <div class="form-group fattish">
               <input type="text" class="form-control"
@@ -224,7 +224,7 @@
                 </li>
               </ul>
               <a class="btn btn-default disabled"
-                  title="Filter against this grain" ng-href="">in {{filterage.grain}}
+                  title="Filter against this grain" ng-href=""><span translate>in </span>{{filterage.grain}}
               </a>
             </div>
           </div>
@@ -320,7 +320,7 @@
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
-          <span style="font-size: smaller">per page</span>
+          <span style="font-size: smaller" translate>per page</span>
           <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="commandPager.perPage"
@@ -352,11 +352,11 @@
         </span>&nbsp;
         <span class="btn-group btn-group-sm">
           <button type="button" class="btn btn-default taut" ng-model="jobMode"
-            ss-toggle-union="'result'">Result<i class="icon-mono"
+            ss-toggle-union="'result'"><span translate>Result</span><i class="icon-mono"
                 ng-class="jobMode=='result' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
           <button type="button" class="btn btn-default taut" ng-model="jobMode"
-            ss-toggle-union="'event'">Event<i class="icon-mono"
+            ss-toggle-union="'event'"><span translate>Event</span><i class="icon-mono"
               ng-class="jobMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
         </span>
@@ -430,7 +430,7 @@
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
-          <span style="font-size: smaller">per page</span>
+          <span style="font-size: smaller" translate>per page</span>
           <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="jobPager.perPage"
@@ -460,19 +460,19 @@
         </span>&nbsp;
         <span class="btn-group">
           <button type="button" class="btn btn-default btn-sm taut"  ng-model="minionMode"
-            ss-toggle-union="'grain'" ng-click="getGrainsIfRequired(minion.id)">Grain<i class="icon-mono"
+            ss-toggle-union="'grain'" ng-click="getGrainsIfRequired(minion.id)"><span translate>Grain</span><i class="icon-mono"
                 ng-class="minionMode=='grain' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
           <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode"
-            ss-toggle-union="'event'">Event<i class="icon-mono"
+            ss-toggle-union="'event'"><span translate>Event</span><i class="icon-mono"
               ng-class="minionMode=='event' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
           <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode"
-            ss-toggle-union="'command'">Command<i class="icon-mono"
+            ss-toggle-union="'command'"><span translate>Command</span><i class="icon-mono"
               ng-class="minionMode=='command' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
           <button type="button" class="btn btn-default btn-sm taut" ng-model="minionMode"
-            ss-toggle-union="'highstate'">Highstate<i class="icon-mono"
+            ss-toggle-union="'highstate'"><span translate>Highstate</span><i class="icon-mono"
               ng-class="minionMode=='highstate' ? 'fa-icon-caret-down':'fa-icon-caret-right'"></i>
           </button>
         </span>
@@ -488,7 +488,7 @@
               </span>
             </kvi>
           </kvl>
-          <p ng-if="minion.grains.keys().length==0">No grains&nbsp;<i class="fa-icon-spinner fa-icon-spin"></i></p>
+          <p ng-if="minion.grains.keys().length==0"><span translate>No grains</span>&nbsp;<i class="fa-icon-spinner fa-icon-spin"></i></p>
         </div>
 
         <div class="col-md-12" ng-if="minionMode == 'event'">
@@ -501,23 +501,19 @@
               </span>
             </kvi>
           </kvl>
-          <p ng-if="minion.events.keys().length==0">No minion events</p>
+          <p ng-if="minion.events.keys().length==0" translate>No minion events</p>
         </div>
 
         <div class="col-md-12 animate-fade " ng-if="minionMode == 'command'">
-          <p>Not implemented yet</p>
+          <p translate>Not implemented yet</p>
         </div>
 
         <div class="col-md-12" ng-if="minionMode == 'highstate'">
           <span ng-if="minion.highstateStatus.messages.length>0">
             <p class="text-info" ng-repeat="message in minion.highstateStatus.messages">{{message}}</p>
           </span>
-          <p class="text-success" ng-if="minion.highstateStatus.messages.length==0">
-            This minion is in the correct state
-          </p>
-          <p class="text-muted" ng-if="minion.highstateStatus == null">
-            Minion state unverified
-          </p>
+          <p class="text-success" ng-if="minion.highstateStatus.messages.length==0" translate>This minion is in the correct state</p>
+          <p class="text-muted" ng-if="minion.highstateStatus == null" translates>Minion state unverified</p>
         </div>
         <div class="clearfix"></div>
       </div><!--collapsed-->
@@ -544,7 +540,7 @@
           last-text="&raquo;">
         </ss-pagination>&nbsp;
         <div class="form-group">
-          <span style="font-size: smaller">per page</span>
+          <span style="font-size: smaller" translate>per page</span>
           <select class="form-control input-sm"
             style="width: 50px; direction: rtl"
             ng-model="minionPager.perPage"
@@ -657,7 +653,7 @@
         </kvi>
       </kvl>
     </span>
-    <span ng-switch-default>Whoops</span>
+    <span ng-switch-default translate>Whoops</span>
   </span>
 </script>
 
@@ -687,6 +683,6 @@
         </kvi>
       </kvl>
     </span>
-    <span ng-switch-default>Whoops</span>
+    <span ng-switch-default translate>Whoops</span>
   </span>
 </script>
