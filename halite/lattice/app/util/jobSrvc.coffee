@@ -3,7 +3,8 @@ Service to handle Jobs, Minions and Wheel interaction.
 Exposes functions that create a new Job / Wheel / Minioner
 that can listen for events and update in memory data accordingly.
 ###
-angular.module("jobSrvc", ['appUtilSrvc']).factory "JobDelegate",
+jobSrvc = angular.module("jobSrvc", ['appUtilSrvc'])
+jobSrvc.factory "JobDelegate",
   ['AppData', 'Itemizer', 'Wheeler', 'Jobber', 'Minioner', 'Runner',
   (AppData, Itemizer, Wheeler, Jobber, Minioner, Runner) ->
 
