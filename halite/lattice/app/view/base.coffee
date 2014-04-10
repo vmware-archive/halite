@@ -4,14 +4,19 @@ mainApp.controller 'BaseController', ['$scope', '$location', '$route', '$q', '$f
     '$templateCache', '$timeout',
     'Configuration','AppData', 'AppPref', 'Item', 'Itemizer',
     'Minioner', 'Resulter', 'Jobber', 'ArgInfo', 'Runner', 'Wheeler', 'Commander', 'Pagerage',
-    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'ErrorReporter', 'HighstateCheck', 'EventDelegate', 'JobDelegate','$filter',
+    'SaltApiSrvc', 'SaltApiEvtSrvc', 'SessionStore', 'ErrorReporter', 'HighstateCheck', 'EventDelegate', 'JobDelegate', 'FetchActives', 'Salt','$filter',
     ($scope, $location, $route, $q, $filter, $templateCache, $timeout, Configuration,
     AppData, AppPref, Item, Itemizer, Minioner, Resulter, Jobber, ArgInfo, Runner, Wheeler,
-    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, ErrorReporter, HighstateCheck, EventDelegate, JobDelegate ) ->
+    Commander, Pagerage, SaltApiSrvc, SaltApiEvtSrvc, SessionStore, ErrorReporter, HighstateCheck, EventDelegate, JobDelegate, FetchActives, Salt ) ->
 
       $scope.getAppData = () ->
         AppData
 
+      $scope.getSalt = () ->
+        Salt
+
+      $scope.getFetchActives = () ->
+        FetchActives
       $scope.getCommands = () ->
         return AppData.getCommands()
 
