@@ -8,6 +8,45 @@ Uses 'ss' (short for SaltStack) as the prefix to distinguish from built in 'ng'
 
 appDrtv = angular.module "appDrtv", []
 
+
+appDrtv.directive 'ssInputName',
+    [ '$interpolate', ($interpolate) ->
+        ddo =
+            restrict: 'A' # only activate on element attribute
+            require: ['?ngModel', '^?form']
+            link: ($scope, elm, attrs, ctrls)->
+                #return if !ctrls # do nothing if no ctrls
+                ex = $interpolate(elm.attr(attrs.$attr.ssInputName));
+                nameTransformed = ex($scope)
+                modelCtrl = ctrls[0]
+                modelCtrl.$name = nameTransformed
+                elm.attr("name",nameTransformed)
+                formCtrl = ctrls[1]
+                formCtrl.$addControl(modelCtrl)
+                return true
+        return ddo
+    ]
+
+
+###
+Workaround so that model values are updated after autofill.
+Please look at https://github.com/angular/angular.js/issues/1460 for
+more details.
+###
+appDrtv.directive "ssAutofillWorkaround", ["$timeout", ($timeout)->
+  ddo =
+    restrict: 'A'
+    require: 'ngModel'
+    link: (scope, attrs, element, modelController) ->
+      $timeout () ->
+        preFilledValue = element.$$element[0].value
+        modelController.$setViewValue(preFilledValue) if modelController.$pristine and preFilledValue?
+      , 1000
+      return
+  return ddo
+]
+
+
 # Add custom progress bar since
 # Angular UI is not yet ported to Twitter Bootstrap 3
 appDrtv.directive("ssProgress", ->
