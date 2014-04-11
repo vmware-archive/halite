@@ -40,7 +40,7 @@ appDrtv.directive "ssAutofillWorkaround", ["$timeout", ($timeout)->
     link: (scope, attrs, element, modelController) ->
       $timeout () ->
         preFilledValue = element.$$element[0].value
-        modelController.$setViewValue(preFilledValue) if modelController.$pristine and preFilledValue?
+        modelController.$setViewValue(preFilledValue) if modelController.$pristine and preFilledValue? and preFilledValue != ''
       , 1000
       return
   return ddo
