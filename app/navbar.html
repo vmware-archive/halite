@@ -22,8 +22,8 @@
           <span ng-style="{color:'red'}" ng-cloak ng-show="loginFormError()">{{loginFormError()}}  </span>
         </div>
         <div class="form-group">
-          <input class="span2" type="text" placeholder="Username" ng-model="login.username" name="username" required>
-          <input class="span2" type="password" placeholder="Password" ng-model="login.password" name="password" required>
+          <input class="span2" type="text" placeholder="Username" ng-model="login.username" name="username" required ss-autofill-workaround>
+          <input class="span2" type="password" placeholder="Password" ng-model="login.password" name="password" required ss-autofill-workaround>
           <button type="submit" class="btn btn-default btn-sm" id="login-button" ng-click="loginUser()" ng-disabled="loginForm.$invalid">Login</button>
         </div>
       </form>
