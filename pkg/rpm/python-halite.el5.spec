@@ -9,7 +9,7 @@
 %global _realname halite
 
 Name:           python-halite
-Version:        0.1.13
+Version:        0.1.16
 Release:        1%{?dist}
 Summary:        SaltStack Web UI
 
@@ -57,6 +57,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*
 
 %changelog
+* Tue Apr 22 2014 Erik Johnson <erik@saltstack.com> - 0.1.16-1
+- Updated to version 0.1.16.
+
 * Thu Dec 19 2013 Erik Johnson <erik@saltstack.com> - 0.1.13-1
 - Updated to version 0.1.13.
 
