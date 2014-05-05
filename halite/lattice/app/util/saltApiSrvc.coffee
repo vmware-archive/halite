@@ -22,7 +22,7 @@ mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiSrvc',
 ###
 
 
-saltApiSrvc = angular.module("saltApiSrvc", ['appConfigSrvc', 'appPrefSrvc', 'appStoreSrvc'])
+saltApiSrvc = angular.module("saltApiSrvc", ['appConfigSrvc', 'appPrefSrvc', 'appStoreSrvc', 'errorReportingSrvc'])
 
 saltApiSrvc.factory "SaltApiSrvc", ['$http', 'Configuration', 'AppPref', 'SessionStore',
     ($http, Configuration, AppPref, SessionStore) ->
@@ -165,8 +165,8 @@ mainApp.controller 'MyCtlr', ['$scope', ...,'SaltApiEvtSrvc',
         return true
 
 ###
-saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'SessionStore', '$q',
-    ($rootScope, $http, AppPref, SessionStore, $q) ->
+saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'SessionStore', '$q', 'ErrorReporter',
+    ($rootScope, $http, AppPref, SessionStore, $q, ErrorReporter) ->
         saltApi = AppPref.get('saltApi')
         if saltApi.scheme or saltApi.host or saltApi.port # absolute
             if not saltApi.scheme
@@ -185,10 +185,18 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
         
         defer = null
         sse = null
-        
+        counter = 0
+
         onError = (event) ->
             #console.log "SSE Error:"
             #console.log event
+            counter = counter + 1
+            retries = AppPref.get('SseRetries') or 50
+            if counter > retries
+              ErrorReporter.addAlert('danger', "Event Stream Connection Lost! Please check server connection and refresh the page.")
+              servicer.close()
+              $rootScope.$apply()
+
             if defer?
                 console.log "SSE Open Error"
                 $rootScope.$apply defer.reject("SSE Errored")
@@ -196,8 +204,8 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
             return true
         
         onOpen = (event) ->
-            #console.log "SSE Open:" 
-            #console.log event 
+            # console.log "SSE Open:"
+            #console.log event
             if defer?
                 $rootScope.$apply defer.resolve(event)
                 defer = null
@@ -224,7 +232,7 @@ saltApiSrvc.factory "SaltApiEvtSrvc", [ '$rootScope', '$http', 'AppPref', 'Sessi
                 #console.log url
                 sse = new EventSource(url);
                 sse.onerror = onError
-                sse.onopen =onOpen
+                sse.onopen = onOpen
                 sse.onmessage = onMessage
                 @process = process #callback to process an event with data
                 @active = true

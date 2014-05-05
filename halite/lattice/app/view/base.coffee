@@ -101,6 +101,10 @@ mainApp.controller 'BaseController', ['$scope', '$location', '$route', '$q', '$f
               if result
 
                   job = JobDelegate.startRun(result, cmd) #runner result is tag
+                  if job.done
+                    $scope.assignActives(job)
+                    $scope.$broadcast("Marshall")
+                    return # early return
                   job.commit($q).then (donejob) ->
                       $scope.assignActives(donejob)
                       $scope.$broadcast("Marshall")
