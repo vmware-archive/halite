@@ -318,6 +318,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     $scope.commanding = false
                 return true
             .error (data, status, headers, config) ->
+                ErrorReporter.addAlert('warning', data.error)
                 $scope.commanding = false
 
         $scope.fetchPings = (target) ->

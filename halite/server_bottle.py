@@ -237,6 +237,9 @@ def loadSaltApi(app, opts=None):
         client = salt.client.api.APIClient(opts)
         try:
             results = [client.run(tokenify(cmd, token)) for cmd in cmds]
+            if not results[0]:
+                bottle.response.status = 404
+                return {'error': 'Failed to run command: {0} on target: {1}'.format(str(cmds[0]['fun']), str(cmds[0]['tgt']))}
         except EauthAuthenticationError as ex:
             bottle.abort(code=401, text=repr(ex))
         except Exception as ex:
