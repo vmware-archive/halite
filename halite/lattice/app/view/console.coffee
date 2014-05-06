@@ -231,6 +231,18 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 #if _.size(@cmd.arg) > 1
                  #   delete @cmd.arg[_.size(@cmd.arg) - 1]
 
+            padArgs: () ->
+                ###
+                Fill in args that the user hasn't
+                ###
+                ret = []
+                for arg, i in $scope.defaultVals
+                    if @cmd.arg[i]?
+                        ret.push(@cmd.arg[i])
+                    else
+                        ret.push(arg)
+                return ret
+
             getArgs: () ->
                 #return (val for own key, val of @cmd.arg when val isnt '')
                 return (arg for arg in @cmd.arg when arg isnt '')
@@ -241,7 +253,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     [
                         fun: @cmd.fun,
                         mode: @cmd.mode,
-                        arg: @getArgs()
+                        arg: @padArgs()
                     ]
                 else
                     cmds =
@@ -249,7 +261,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         fun: @cmd.fun,
                         mode: @cmd.mode,
                         tgt: if @cmd.tgt isnt "" then @cmd.tgt else "",
-                        arg: @getArgs(),
+                        arg: @padArgs(),
                         expr_form: @cmd.expr_form
                     ]
 
@@ -415,6 +427,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     required = (String(x) for x in info.args)
                     if info.defaults?
                         defaults = (required.pop() for arg in info.defaults)
+                        defaults.reverse()
                         defaults_vals = (String(x) for x in info.defaults)
                     else
                         defaults = null
