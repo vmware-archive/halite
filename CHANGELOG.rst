@@ -1,3 +1,19 @@
+0.1.17 (2014-05-14)
+=========
+
+Features
+--------
+Add event source kill switch
+Improve command error handling
+Add salt service
+
+Fixes
+-----
+Fix bug with command panel
+Tweak fetchGrains logic so that job completion (prior to HTTP returns) are handled
+Make sure text files don't have exec bit set
+Update spec (thanks to Erik Johnson)
+ 
 0.1.16 (2014-04-07)
 =========
 
