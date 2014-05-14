@@ -32,7 +32,7 @@ pkg_files = [
 pkg_files = ['lattice/{0}'.format(x) for x in pkg_files]
 setup(
     name = 'halite',
-    version = '0.1.16',
+    version = '0.1.17',
     description = 'SaltStack Web UI',
     url = 'https://github.com/saltstack/halite',
     author='SaltStack Inc',
