@@ -231,6 +231,26 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 #if _.size(@cmd.arg) > 1
                  #   delete @cmd.arg[_.size(@cmd.arg) - 1]
 
+            buildArgs: () ->
+              ###
+              Build the arg array to be consumed by the server
+              ###
+              ret = []
+              reqArgsLen = 0
+              if $scope.command.requiredArgs?
+                reqArgsLen = $scope.command.requiredArgs.length
+                for item, j in $scope.command.requiredArgs
+                  ret.push(@cmd.arg[j])
+              if $scope.defaultVals?
+                for arg, i in $scope.defaultVals
+                  offset = reqArgsLen + i
+                  if @cmd.arg[offset]?
+                    ret.push(@cmd.arg[offset])
+                  else
+                    ret.push(arg)
+
+              return ret
+
             getArgs: () ->
                 #return (val for own key, val of @cmd.arg when val isnt '')
                 return (arg for arg in @cmd.arg when arg isnt '')
@@ -241,7 +261,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     [
                         fun: @cmd.fun,
                         mode: @cmd.mode,
-                        arg: @getArgs()
+                        arg: @buildArgs()
                     ]
                 else
                     cmds =
@@ -249,7 +269,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                         fun: @cmd.fun,
                         mode: @cmd.mode,
                         tgt: if @cmd.tgt isnt "" then @cmd.tgt else "",
-                        arg: @getArgs(),
+                        arg: @buildArgs(),
                         expr_form: @cmd.expr_form
                     ]
 
@@ -318,6 +338,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     $scope.commanding = false
                 return true
             .error (data, status, headers, config) ->
+                ErrorReporter.addAlert('warning', data.error)
                 $scope.commanding = false
 
         $scope.fetchPings = (target) ->
@@ -382,7 +403,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
 
         $scope.fillCommandArgs = () ->
           $scope.commandArgs = []
-          $scope.command.cmd.arg = [""]
+          $scope.command.cmd.arg = [null]
           _.each($scope.command.requiredArgs, (arg) ->
             $scope.commandArgs.push new ArgInfo(arg, true))
           _.each($scope.command.optionalArgs, (arg, index) ->
@@ -414,6 +435,7 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                     required = (String(x) for x in info.args)
                     if info.defaults?
                         defaults = (required.pop() for arg in info.defaults)
+                        defaults.reverse()
                         defaults_vals = (String(x) for x in info.defaults)
                     else
                         defaults = null
