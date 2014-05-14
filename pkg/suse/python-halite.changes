@@ -1,4 +1,48 @@
 -------------------------------------------------------------------
+Wed May 14 17:52:20 UTC 2014 - aboe76@gmail.com
+
+- Updated to 0.1.17
+- New Features:
+  - Add event source kill switch
+  - Improve command error handling
+  - Add salt service
+- Bug Fixes:
+  - Fix bug with command panel
+  - Tweak fetchGrains logic so that job completion (prior to HTTP returns) are handled
+  - Make sure text files don't have exec bit set
+  - Update spec (thanks to Erik Johnson)
+
+-------------------------------------------------------------------
+Mon Apr  7 18:56:25 UTC 2014 - aboe76@gmail.com
+
+- Updated to 0.1.16
+- new features:
+  - Add highstate consistency check. (As a result of a brainstorming session with  Dan Garthwaite at Salt Conf - 2014)
+  - New service to handle alerts
+  - Add job service
+  - Documentation changes
+  - Change e2e framework to Protractor
+- Bug Fixes:
+  - Refactor events to own service
+  - Refactor Job handling to be in it's own service
+  - Refactor Minion, Command, Event and Job storage so that App Data is the single source of information for them
+  - Move preload cache to base scope
+  - Move methods to base scope so that they are available to all views
+  - Add tests
+ - rpmlint quickfix see https://github.com/saltstack/lattice/issues/15
+
+-------------------------------------------------------------------
+Thu Jan  2 16:43:13 UTC 2014 - aboe76@gmail.com
+
+- Added license to %doc
+
+-------------------------------------------------------------------
+Tue Dec 31 14:49:36 UTC 2013 - aboe76@gmail.com
+
+- Changes license according upstream
+  Apache-2.0
+
+-------------------------------------------------------------------
 Wed Dec 25 07:35:43 UTC 2013 - aboe76@gmail.com
 
 - Updated to halite 0.1.15

@@ -17,10 +17,10 @@
 
 
 Name:           python-halite
-Version:        0.1.15
+Version:        0.1.17
 Release:        1%{?dist}
 Summary:        Halite the salt Web UI
-License:        MIT
+License:        Apache-2.0
 Group:          System/Monitoring
 Url:            http://saltstack.org/
 Source0:        http://pypi.python.org/packages/source/h/halite/halite-%{version}.tar.gz
@@ -57,10 +57,11 @@ python setup.py install --prefix=%{_prefix} --root=%{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc README.rst
+%doc README.rst LICENSE
 %attr(755,root,root)%{python_sitelib}/halite/bottle.py
 %attr(755,root,root)%{python_sitelib}/halite/server_bottle.py
 %attr(755,root,root)%{python_sitelib}/halite/genindex.py
 %{python_sitelib}/*
 
 %changelog
+
