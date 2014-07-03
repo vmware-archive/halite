@@ -318,7 +318,17 @@ mainApp.controller 'ConsoleCtlr', ['$scope', '$location', '$route', '$q', '$filt
                 cmds = $scope.command.getCmds()
             command = $scope.snagCommand($scope.humanize(cmds), cmds)
 
-            #console.log('Calling SaltApiSrvc.action')
+            if cmds[0]['fun'].indexOf('runner') == 0
+              args = cmds[0]['arg']
+              kwargs = {}
+              for arg, i in args
+                meta = $scope.commandArgs[i]
+                if arg != meta.placeholder
+                  kwargs[meta.value] = arg
+
+              delete cmds[0]['arg']
+              cmds[0]['kwarg'] = kwargs
+
             SaltApiSrvc.action($scope, cmds )
             .success (data, status, headers, config ) ->
                 results = data.return
