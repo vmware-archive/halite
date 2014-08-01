@@ -337,7 +337,7 @@ See quickstart above for an example.
 Install the appropriate HTTP WSGI server selected in the master config above. In
 this case it is "cherrypy". The other tested servers are "paste" and "gevent". The server
 must be multi-threaded, asynchronous, or multi-processing in order to support
-the Server Sent Event streaming connection used by the Web UI.
+the Server Sent Event (SSE) streaming connection used by the Web UI.
 
 Restart the SaltStack Master and navigate your HTML5 compliant browser to
 https://localhost:8080/app or however you have configured your master above.
@@ -403,12 +403,12 @@ The HTTP server provides two functions.
 1) Provide content delivery network for the base load of the web application static
 content such as html and javascript files.
 
-2) Provide dynamic REST api interface to salt/client/api.py module that is used by
+2) Provide dynamic REST API interface to salt/client/api.py module that is used by
 the web application via AJAX and SSE connections. Because SSE and CORS
-(Cross Origin Resource Sharing is not univesally supported even among HTML5 compliant
-browsers, a single server serves both the static content and the rest API).
-An alternative approach would be to to use a web socket to stream the events.
-This would not require CORS. This may be a future option for Halite.
+(Cross Origin Resource Sharing) are not universally supported even among HTML5 compliant
+browsers, a single server has to serve both the static content and the rest API.
+An alternative approach would be to to use a web socket to stream the events,
+this would not require CORS, so it may be a future option for Halite.
 
 To deploy with apache, modify ``server_bottle.startServer`` so it creates the app but
 does not call ``bottle.run`` on it but returns it to MOD_WSGI.
