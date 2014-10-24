@@ -6,7 +6,7 @@ Halite
 very welcome. Join us in #salt on Freenode or on the salt-users mailing
 list.
 
-For best results it is recommended to use Halite with the develop branch of Salt.
+For best results, it is recommended to use Halite with the develop branch of Salt.
 Halite is, however, known to work with Salt version greater than ``Hydrogen``.
 To install the develop branch of Salt:
 
@@ -29,8 +29,8 @@ To pip install Halite.
 
   $ pip install -U halite
 
-This purpose of ths repository is to enable development of custom versions of the
-UI that could be deployed with different servers, different configurations, etc
+This purpose of the repository is to enable development of custom versions of the
+UI that could be deployed with different servers, different configurations, etc.
 and also for development of future features for the Salt packaged version.
 
 Features
@@ -43,10 +43,10 @@ Halite can poll for highstate consistency. This is similar to executing
 ``salt \* state.highstate test=True`` and checking for the results.
 Polling is turned ``OFF`` by default.
 
-To switch polling on navigate to the preferences tab and check
+To switch polling ``ON``, navigate to the ``Preferences`` tab and check
 ``highStateCheck.performCheck``. The poll timer can be adjusted using
-``highStateCheck.intervalSeconds`` and is set to 300 Seconds (5 minutes) by
-default. Once these settings are updated click ``Update`` and reload the page.
+``highStateCheck.intervalSeconds`` and is set to 300 seconds (5 minutes) by
+default. Once these settings are updated, click ``Update`` and reload the page.
 These options are depicted in the screenshot below.
 
 .. image:: screenshots/HighstatePollSettings.png
@@ -74,7 +74,7 @@ to clicks).
 Installation quickstart
 =======================
 
-This section explains installation of the ``devlopment`` version of Halite.
+This section explains installation of the development version of Halite.
 If you are interested in installing Halite as an end user, please follow the
 `tutorial
 <http://docs.saltstack.com/topics/tutorials/halite.html>`_ instead.
@@ -119,10 +119,10 @@ must be installed.
 
 
 
-* Navigate html5 compliant browser to http://localhost:8080/app
+* Navigate HTML5 compliant browser to http://localhost:8080/app
 
 * Login
-The default eauth method is 'pam'. To change go to the preferences page.
+The default eauth method is 'pam'. To change, go to the ``Preferences`` page.
 
 Documentation
 =============
@@ -135,7 +135,7 @@ The navbar has a login form. Enter the eauth username and password to login to s
 .. image:: screenshots/LoggedOut.png
 
 Once logged in, the navbar will display the username highlighted in blue and a logout button.
-To logout click on the logout button.
+To logout click on the ``Logout`` button.
 
 .. image:: screenshots/LoggedIn.png
 
@@ -145,18 +145,18 @@ Click on the SaltStack logo to go to the preferences page
 
 .. image:: screenshots/Preferences.png
 
-On this page one can change the eauth method to something other than 'pam' such
+On this page, one can change the eauth method to something other than 'pam' such
 as 'ldap'.
 
 Check ``fetchGrains`` if you want grains data to be loaded when Halite loads.
 Checking ``preloadJobCache`` will fetch all previously completed, cached jobs.
 
-Once all changes are made click ``Update`` and refresh the browser page.
+Once all changes are made, click ``Update`` and refresh the browser page.
 
 Commands
-----------
+--------
 
-To navigate to the console view click on the 'console' tab.
+To navigate to the console, view click on the ``Console`` tab.
 
 .. image:: screenshots/HomeConsole.png
 
@@ -174,13 +174,13 @@ Expanded Commands
 .. image:: screenshots/CommandForm.png
 
 Click on the downward chevron button to expand the ``Command`` form with additional
-fields for entering any salt module function. To enter "runner" functions prepend
+fields for entering any salt module function. To enter "runner" functions, prepend
 "runner." to the function name. For example, "runner.manage.status". To enter wheel
-functions prepend "wheel." to the wheel function name. For example, "wheel.config.values".
-For commands that require arguments enter them in the arguments fields. The number of argument
+functions, prepend "wheel." to the wheel function name. For example, "wheel.config.values".
+For commands that require arguments, enter them in the arguments fields. The number of argument
 fields equals the number of arguments accepted by the function.
 
-Click on the Execute button or press the Return key to execute the command.
+Click on the ``Execute`` button or press the Return key to execute the command.
 
 You can choose the ``Target Format`` which will be used by the ``Target`` field to target minions.
 
@@ -193,7 +193,7 @@ Checking ``Live Doc Search`` will show the documentation related to the command 
 entered in the ``Function`` field. Un-check it to conserve screen real estate.
 
 Monitors
----------
+--------
 
 The bottom section of the console view has monitor view buttons. Each button will
 show panels with the associated information.
@@ -202,8 +202,8 @@ show panels with the associated information.
 
 Shows panels, one per command that has been executed by this user on this console.
 Clicking on the dropdown button will show the associated job ids that have been
-run with this command and the  completion status via an icon.
-Red is fail, Green is success.
+run with this command and the completion status via an icon.
+Red is fail, green is success.
 Clicking on the button on the panel will rerun the command.
 
 .. image:: screenshots/CommandMonitor.png
@@ -211,13 +211,13 @@ Clicking on the button on the panel will rerun the command.
 * Job Monitor
 
 Shows panels, one per job that has been run by any minion associated with this
-master. Clicking on the associated dropdown button with expand to show Result and Event data.
-Selecting the result button will show the returner and return data
+master. Clicking on the associated dropdown button with expand to show ``Result`` and ``Event`` data.
+Selecting the ``Result`` button will show the returner and return data
 for each minion targeted by the job.
 
 .. image:: screenshots/JobMonitor.png
 
-Selecting the Event button will show the events associated with the job.
+Selecting the ``Event`` button will show the events associated with the job.
 
 .. image:: screenshots/JobMonitorEvent.png
 
@@ -231,7 +231,7 @@ Selecting dropdown buttons will show grains data as well as minion (not job) gen
 
 
 
-With the grains button selected one can see all the grains for the minion.
+With the ``Grains`` button selected, one can see all the grains for the minion.
 
 .. image:: screenshots/MinionGrains.png
 
@@ -287,13 +287,13 @@ For nodejs testing:
 
 
 Deployment
--------------
+----------
 
 There are two approaches to deploying Halite.
 
 1) Use it from Salt.
 The 0.17 release of salt will run halite automatically if the Halite package is
-installed. So for example after installing SaltStack one can install the Halite
+installed. So for example, after installing SaltStack, one can install the Halite
 python package with
 
 .. code-block:: bash
@@ -320,39 +320,39 @@ The .crt file holds the public cert and the .key file holds the private key. Whe
 the "paste" server requires a single .pem file that contains both the cert and key.
 This can be created simply by concatenating the .crt and .key files.
 
-If you want to use a self signed cert you can create one using the Salt .tls module
+If you want to use a self signed cert, you can create one using the Salt ``tls`` module
 
 .. code-block:: bash
 
   salt '*' tls.create_ca_signed_cert test localhost
 
 When using self signed certs, browsers will need approval before accepting the cert.
-If the web application page has been cached with a non https version of the app then
+If the web application page has been cached with a non https version of the app, then
 the browser cache will have to be cleared before it will recognize and prompt to
 accept the self signed certificate.
 
-You will also need to configure the eauth method to be used by users of the WUI.
+You will also need to configure the eauth method to be used by users of the Web UI.
 See quickstart above for an example.
 
-Install the appropriate http wsgi server selected in the master config above. In
-this case its "cherrypy". The other tested servers are "paste" and "gevent". The server
+Install the appropriate HTTP WSGI server selected in the master config above. In
+this case it is "cherrypy". The other tested servers are "paste" and "gevent". The server
 must be multi-threaded, asynchronous, or multi-processing in order to support
-the Server Sent Event streaming connnection used by the WUI.
+the Server Sent Event (SSE) streaming connection used by the Web UI.
 
-Restart the SaltStack Master and navigate your html5 compliant browser to
+Restart the SaltStack Master and navigate your HTML5 compliant browser to
 https://localhost:8080/app or however you have configured your master above.
 
-If you have problems look for "Halite:" in the saltstack master log output.
+If you have problems look for "Halite:" in the SaltStack master log output.
 
 Customized Deployment
-====
+---------------------
 
-The Halite github repository provides a skeleton framework for building your own custom
-deployment. One can run the default bottle.py framwork form the command line thusly
+The Halite Github repository provides a skeleton framework for building your own custom
+deployment. One can run the default bottle.py framework from the command line:
 
 .. code-block:: bash
 
-  $ ./server_bottly.py -g
+  $ ./server_bottle.py -g
   $ ./server_bottle.py -s cherrypy
 
 
@@ -398,28 +398,28 @@ The full set of options is given by
     -C, --coffee          Upon -g option generate to load coffeescript.
     -d, --devel           Development mode.
 
-The http server provides two functions.
+The HTTP server provides two functions.
 
 1) Provide content delivery network for the base load of the web application static
 content such as html and javascript files.
 
-2) Provide dynamic rest api interface to salt/client/api.py module that is used by
-the web application via ajax and SSE connections. Because SSE and CORS
-(Cross Origin Resource Sharing is not univesally supported even among HTML5 compliant
-browsers, a single server serves both the static content and the rest API).
-An alternative approach would be to to use a web socket to stream the events.
-This would not require CORS. This may bea future option for Halite.
+2) Provide dynamic REST API interface to salt/client/api.py module that is used by
+the web application via AJAX and SSE connections. Because SSE and CORS
+(Cross Origin Resource Sharing) are not universally supported even among HTML5 compliant
+browsers, a single server has to serve both the static content and the rest API.
+An alternative approach would be to to use a web socket to stream the events,
+this would not require CORS, so it may be a future option for Halite.
 
-To deploy with apache, modify server_bottle.startServer so it creates the app but
-does not call bottle.run on it but returns it to MOD_WSGI.
+To deploy with apache, modify ``server_bottle.startServer`` so it creates the app but
+does not call ``bottle.run`` on it but returns it to MOD_WSGI.
 See (http://bottlepy.org/docs/dev/deployment.html) for other details in using bottle.py
 with Apache and Mod_wsgi.
 
-To do a custom deployment with some other framework like Django etc. would involve
+Doing a custom deployment with other frameworks like Django, etc. would involve
 replicating the endpoints from server_bottle.
 
 Architecture
--------------
+------------
 
 The following diagram illustrates how the various pieces to Halite interact.
 
