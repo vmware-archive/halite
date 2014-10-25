@@ -20,7 +20,7 @@ angular.module("fetchActivesSrvc", ['appConfigSrvc', 'appUtilSrvc', 'saltApiSrvc
         defer = $q.defer()
         cmd =
           mode: "async"
-          fun: "runner.manage.present"
+          fun: "runner.manage.up"
         SaltApiSrvc.run($scope, [cmd])
         .success (data, status, headers, config) =>
           result = data.return?[0]
