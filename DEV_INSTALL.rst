@@ -20,7 +20,7 @@ Once you install salt please add your user to the ``external_auth`` section. Ple
 Install Halite Deps
 -------------------
 
-Please install ``nodejs`` (v0.10+) and ``npm``. Once you install npm please install coffee-script by doing ``npm install -g coffee-script``. Lastlt install the ``paste`` server by running ``pip install paste``. 
+Please install ``nodejs`` (v0.10+) and ``npm``. Once you install npm please install coffee-script by doing ``npm install -g coffee-script``. Lastly install the ``paste`` server by running ``pip install paste``. 
 
 Install Halite
 --------------
