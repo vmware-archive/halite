@@ -91,7 +91,7 @@ mainApp.controller 'BaseController', ['$scope', '$location', '$route', '$q', '$f
       $scope.fetchActives = () ->
           cmd =
               mode: "async"
-              fun: "runner.manage.present"
+              fun: "runner.manage.up"
 
           $scope.statusing = true
           SaltApiSrvc.run($scope, [cmd])
