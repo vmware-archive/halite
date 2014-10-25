@@ -35,5 +35,6 @@ Once you have the deps installed as stated above, you can clone the code and ins
   $ ./prep_dist.py  # Compiles coffee-script to Javascript
   $ ./halite/server_bottle.py -a 192.168.33.11 -p 8001 # starts halite
 
-You can now navigate to http://192.168.33.11/app to access Halite.
+You can now navigate to http://192.168.33.11/app to access Halite. More `options
+<https://github.com/saltstack/halite/blob/e476b79583506e34c26cdd260eed0c24b9f15c5f/halite/server_bottle.py#L577-L634>`_ can be passed in to ``server_bottle.py``.
 
