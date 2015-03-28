@@ -2,9 +2,8 @@
 Halite
 ======
 
-(Code-name) Halite is a Salt GUI. Status is pre-alpha. Contributions are
-very welcome. Join us in #salt on Freenode or on the salt-users mailing
-list.
+(Code-name) Halite is a Salt GUI. `This project has been retired
+<https://groups.google.com/d/msg/salt-users/rmMWLSaw0RY/N5PGRqDkwQgJ>`_.
 
 For best results, it is recommended to use Halite with the develop branch of Salt.
 Halite is, however, known to work with Salt version greater than ``Hydrogen``.
