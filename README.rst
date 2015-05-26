@@ -76,7 +76,7 @@ Installation quickstart
 This section explains installation of the development version of Halite.
 If you are interested in installing Halite as an end user, please follow the
 `tutorial
-<http://docs.saltstack.com/topics/tutorials/halite.html>`_ instead.
+<http://docs.saltstack.com/en/latest/topics/tutorials/halite.html>`_ instead.
 
 * Setup permissions for users who will use Halite
 For example in master config:
