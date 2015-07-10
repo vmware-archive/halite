@@ -2,8 +2,18 @@
 Halite
 ======
 
-(Code-name) Halite is a Salt GUI. `This project has been retired
+DEPRECATED
+==========
+
+`This project has been retired
 <https://groups.google.com/d/msg/salt-users/rmMWLSaw0RY/N5PGRqDkwQgJ>`_.
+
+The original README is below.
+
+Old README Content
+==================
+
+(Code-name) Halite is a Salt GUI.
 
 For best results, it is recommended to use Halite with the develop branch of Salt.
 Halite is, however, known to work with Salt version greater than ``Hydrogen``.
